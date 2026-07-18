@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>(function(){try{var r=document.documentElement;var t=localStorage.getItem("perfecttune-theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Metronome &mdash; Free, Private, Browser-Only | perfecttune.net</title>
+  <meta name="description" content="Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.">
+  <link rel="canonical" href="https://perfecttune.net/metronome/">
+  <meta name="theme-color" content="#241a14">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="perfecttune.net">
+  <meta property="og:title" content="Metronome &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta property="og:description" content="Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.">
+  <meta property="og:url" content="https://perfecttune.net/metronome/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Metronome &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta name="twitter:description" content="Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.">
+  <link rel="stylesheet" href="/assets/style.css">
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
+      <ul class="tool-nav" id="tool-nav">
+      <li><a href="/" data-panel-link="">Home</a></li>
+      <li><a href="/tuner/" data-panel-link="tuner">Tuner</a></li>
+      <li><a href="/metronome/" data-panel-link="metronome" aria-current="page">Metronome</a></li>
+      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+      </ul>
+      <div class="header-controls">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="wrap">
+        <div class="panel-head">
+          <h1 tabindex="-1">Metronome</h1>
+          <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
+        </div>
+        <p>A swinging brass pendulum keeps time the way a real metronome does, but the clicks underneath it are scheduled a fraction of a second ahead on the Web Audio clock rather than fired one at a time from a JavaScript timer — the standard lookahead-scheduler technique that keeps tempo sample-accurate even if the browser tab is busy or briefly throttled.</p>
+
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Metronome</span>
+        <span class="status-led" id="mt-status" data-state="idle">Idle</span>
+      </div>
+      <div class="gauge-wrap"><div class="gauge-mount" id="mt-gauge"></div></div>
+      <div class="beat-lights" id="mt-lights"></div>
+      <div class="screen">
+        <div class="readout"><span id="mt-bpm-display">120</span><span class="unit">BPM</span></div>
+      </div>
+      <div class="field-row">
+        <div class="field field-slider" style="min-width:220px">
+          <label for="mt-bpm-slider">Tempo</label>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="mt-bpm-slider" min="30" max="300" value="120">
+            <input type="number" id="mt-bpm" min="30" max="300" value="120" style="width:70px">
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="mt-num">Beats / bar</label>
+          <select id="mt-num">
+            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>9</option><option>12</option>
+          </select>
+        </div>
+        <div class="field"><label for="mt-den">Beat unit</label>
+          <select id="mt-den">
+            <option value="2">2</option><option value="4" selected>4</option><option value="8">8</option><option value="16">16</option>
+          </select>
+        </div>
+        <div class="field" style="align-self:flex-end;padding-bottom:8px">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:normal;color:var(--fg)">
+            <input type="checkbox" id="mt-accent" checked style="width:auto"> Accent downbeat
+          </label>
+        </div>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="mt-start">Start</button>
+        <button type="button" class="ctrl-btn ghost" id="mt-tap">Tap Tempo</button>
+      </div>
+    </div>
+
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <h2>How to use the Metronome</h2>
+        <div class="how-to">
+          <ol>
+        <li>Set a tempo with the number field, the slider, or tap it live with Tap Tempo (tap at least twice at the beat you want).</li>
+        <li>Choose a time signature — beats per bar and the beat unit — to set how the accent lights group.</li>
+        <li>Tap Start. The first light in each bar (and the pendulum's turnaround) is accented louder unless you switch Accent off.</li>
+        <li>Change tempo or time signature freely while it's running — the next beat picks up the new setting without a stutter.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+        <dt>Why not just use setInterval for the beat?</dt>
+        <dd>setInterval fires late whenever the browser tab is busy, backgrounded, or the OS deprioritizes it — the errors accumulate and the tempo audibly drifts over a long run. Instead, every click's exact start time is scheduled on the Web Audio clock a fraction of a second ahead of when it plays, which is immune to that kind of jitter.</dd>
+        <dt>What does the pendulum represent?</dt>
+        <dd>It's a real-time view of the same schedule driving the clicks — its position each frame is computed directly from the current and next scheduled beat times, easing between them the way a physical pendulum decelerates at each turnaround, so what you see always matches what you hear.</dd>
+        <dt>How does tap tempo work?</dt>
+        <dd>Each tap is timestamped; once you've tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average — tap steadily for a few beats for the most accurate result.</dd>
+        <dt>Can I use time signatures like 6/8 or 7/8?</dt>
+        <dd>Yes — set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat's real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Related tools</h2>
+        <div class="related-links">
+        <a href="/tuner/">Tuner &rarr;</a>
+        <a href="/tone-generator/">Tone Generator &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </footer>
+  <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why not just use setInterval for the beat?", "acceptedAnswer": {"@type": "Answer", "text": "setInterval fires late whenever the browser tab is busy, backgrounded, or the OS deprioritizes it — the errors accumulate and the tempo audibly drifts over a long run. Instead, every click's exact start time is scheduled on the Web Audio clock a fraction of a second ahead of when it plays, which is immune to that kind of jitter."}}, {"@type": "Question", "name": "What does the pendulum represent?", "acceptedAnswer": {"@type": "Answer", "text": "It's a real-time view of the same schedule driving the clicks — its position each frame is computed directly from the current and next scheduled beat times, easing between them the way a physical pendulum decelerates at each turnaround, so what you see always matches what you hear."}}, {"@type": "Question", "name": "How does tap tempo work?", "acceptedAnswer": {"@type": "Answer", "text": "Each tap is timestamped; once you've tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average — tap steadily for a few beats for the most accurate result."}}, {"@type": "Question", "name": "Can I use time signatures like 6/8 or 7/8?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat's real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one."}}]}</script>
+  <script src="/assets/notes.js"></script>
+  <script src="/assets/gauge.js"></script>
+  <script src="/assets/metronome.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
