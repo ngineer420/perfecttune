@@ -407,7 +407,7 @@ p { margin: 0 0 1em; }
 
 /* the erabbit mark must stay a body-level element AFTER </footer>, with
    zero right/bottom margin so nothing sits below/right of it. See build.py. */
-.erabbit-mark { display: block; width: 10px; margin: 6px 0 0 auto; line-height: 0; }
+.erabbit-mark { display: block; width: 10px; margin: 6px 0 0 auto; line-height: 0; cursor: default; }
 .erabbit-mark img { display: block; width: 10px; height: 10px; }
 
 /* ------------------------------------------------------------ static pages (privacy/terms/404) */
