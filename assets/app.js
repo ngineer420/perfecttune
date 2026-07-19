@@ -48,6 +48,7 @@
     var defaultTitle = document.title;
 
     function show(slug, push) {
+      slug = slug || "tuner"; // homepage shows the primary tool live
       var target = slug ? document.querySelector('[data-panel="' + slug + '"]') : overview;
       if (!target) target = overview;
 

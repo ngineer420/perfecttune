@@ -180,7 +180,7 @@ p { margin: 0 0 1em; }
 
 /* ---------------------------------------------------------------- hero */
 .hero {
-  padding: 56px 0 40px;
+  padding: 26px 0 18px;
   position: relative;
   overflow: hidden;
 }
@@ -194,7 +194,7 @@ p { margin: 0 0 1em; }
   color: var(--accent-strong); margin: 0 0 14px; font-weight: 600;
 }
 .hero h1 {
-  font-size: clamp(32px, 5vw, 52px); margin-bottom: 0.3em; max-width: 16ch;
+  font-size: clamp(28px, 4vw, 40px); margin-bottom: 0.3em; max-width: 16ch;
 }
 .hero .lede { font-size: 18px; max-width: 62ch; color: var(--fg-muted); }
 .privacy-note {
