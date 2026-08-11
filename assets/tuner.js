@@ -112,7 +112,7 @@
       noteEl.innerHTML = '<span class="octave">&mdash;</span>';
       noteEl.classList.remove("in-tune");
       centsEl.innerHTML = "Waiting for a signal&hellip;";
-      freqEl.textContent = "&mdash;";
+      freqEl.textContent = "—";
       targetEl.textContent = "—";
       if (gauge) gauge.setValue(0);
     }

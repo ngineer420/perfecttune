@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>(function(){try{var r=document.documentElement;var t=localStorage.getItem("perfecttune-theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Interval Ear Trainer &mdash; Free, Private, Browser-Only | perfecttune.net</title>
+  <meta name="description" content="Free interval ear trainer. Hear two notes ascending, descending or together and name the interval, from unison to the octave. Equal temperament, A4 = 440 Hz, generated in your browser with no samples.">
+  <link rel="canonical" href="https://perfecttune.net/ear-trainer/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#241a14">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="perfecttune.net">
+  <meta property="og:title" content="Interval Ear Trainer &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta property="og:description" content="Free interval ear trainer. Hear two notes ascending, descending or together and name the interval, from unison to the octave. Equal temperament, A4 = 440 Hz, generated in your browser with no samples.">
+  <meta property="og:url" content="https://perfecttune.net/ear-trainer/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Interval Ear Trainer &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta name="twitter:description" content="Free interval ear trainer. Hear two notes ascending, descending or together and name the interval, from unison to the octave. Equal temperament, A4 = 440 Hz, generated in your browser with no samples.">
+  <link rel="stylesheet" href="/assets/style.css">
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Interval Ear Trainer \u2014 perfecttune.net","url":"https://perfecttune.net/ear-trainer/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free interval ear trainer. Hear two notes ascending, descending or together and name the interval, from unison to the octave. Equal temperament, A4 = 440 Hz, generated in your browser with no samples.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
+      <ul class="tool-nav" id="tool-nav">
+      <li><a href="/" data-panel-link="">Home</a></li>
+      <li><a href="/tuner/" data-panel-link="tuner">Tuner</a></li>
+      <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+      <li><a href="/ear-trainer/" data-panel-link="ear-trainer" aria-current="page">Ear Trainer</a></li>
+      <li><a href="/chords-scales/" data-panel-link="chords-scales">Chords</a></li>
+      <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+      <li><a href="/transposer/" data-panel-link="transposer">Transposer</a></li>
+      </ul>
+      <div class="header-controls">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="wrap">
+        <div class="panel-head">
+          <h1 tabindex="-1">Interval Ear Trainer</h1>
+          <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
+        </div>
+        <p>A tuner tells you when one note is right. Interval training is how you learn to hear whether the <em>next</em> note is right — the exact distance between two pitches, named. Press play, listen to two notes, and pick the interval from unison up to the octave. Every pitch is generated on the spot from equal temperament with A4 at 440 Hz, so the intervals you are learning here are the same ones the tuner measures.</p>
+
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Interval Ear Trainer</span>
+        <span class="status-led" id="et-status" data-state="idle">Idle</span>
+      </div>
+      <div class="screen">
+        <div class="readout"><span id="et-score">0</span><span class="unit">/ <span id="et-total">0</span> correct</span></div>
+        <div class="cents-readout" id="et-feedback" role="status" aria-live="polite">Press Play interval &mdash; two notes will sound, and you name the distance between them.</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Streak</div><div class="stat-value" id="et-streak">0</div></div>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="et-play">Play interval</button>
+        <button type="button" class="ctrl-btn ghost" id="et-replay">Replay</button>
+        <button type="button" class="ctrl-btn ghost" id="et-reveal">Reveal</button>
+      </div>
+      <div class="answer-grid" id="et-answers"></div>
+      <div class="field-row">
+        <div class="field wide"><label for="et-set">Interval set</label><select id="et-set"></select></div>
+        <div class="field wide"><label for="et-direction">Direction</label><select id="et-direction"></select></div>
+        <div class="field"><label for="et-tone">Tone</label>
+          <select id="et-tone">
+            <option value="triangle" selected>Triangle</option>
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Saw</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">Nothing plays until you press a button. A revealed answer counts as a miss, so the score stays honest.</p>
+    </div>
+
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <h2>How to use the Interval Ear Trainer</h2>
+        <div class="how-to">
+          <ol>
+        <li>Press Play interval. Two notes sound — ascending by default — and nothing plays until you press it.</li>
+        <li>Name what you heard with the answer buttons. The first answer you give for each question is the one that counts.</li>
+        <li>Press Replay to hear it again, or Reveal to give up on the current question — a reveal is scored as a miss.</li>
+        <li>Narrow the interval set while you're learning (start with the 4th, 5th and octave), then switch direction to descending or harmonic once ascending feels easy.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+        <dt>Which intervals does it test?</dt>
+        <dd>All thirteen from unison to the octave: unison (0 semitones), minor 2nd (1), major 2nd (2), minor 3rd (3), major 3rd (4), perfect 4th (5), tritone (6), perfect 5th (7), minor 6th (8), major 6th (9), minor 7th (10), major 7th (11) and the octave (12). The answer buttons and the notes you hear are both generated from that one table, so they cannot disagree with each other.</dd>
+        <dt>What tuning does it use?</dt>
+        <dd>Equal temperament with A4 = 440 Hz: every pitch is 440 × 2^((n−69)/12) for MIDI note n, the same formula the tuner uses to decide what is sharp or flat. A perfect fifth above A4 is E5 at 659.26 Hz — the equal-tempered fifth, about two cents narrower than a pure 3:2 ratio.</dd>
+        <dt>Why does the starting note keep moving?</dt>
+        <dd>Because recognizing a note is a different skill from measuring a distance. Each question picks a fresh root between A3 and A4, so the only thing held constant is the interval itself — you have to hear the gap rather than the notes.</dd>
+        <dt>Should I train ascending, descending or harmonic?</dt>
+        <dd>Ascending first: upward melodic leaps are the easiest to hear and the ones your musical memory is already full of. Descending is a genuinely separate skill and deserves its own practice. Harmonic — both notes at once — is the hardest, because you are judging one blended sound rather than two events.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>The thirteen intervals</h2>
+        <p>Every question this trainer asks is one row of this table. The semitone count is what the two notes are actually built from; the example shows the interval measured up from C, spelled the way that degree has to be spelled.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Interval</th><th>Short</th><th>Semitones</th><th>Above C</th></tr></thead>
+          <tbody>
+          <tr><td>Unison</td><td class="mono">P1</td><td class="mono">0</td><td class="mono">C &rarr; C</td></tr>
+          <tr><td>Minor 2nd</td><td class="mono">m2</td><td class="mono">1</td><td class="mono">C &rarr; Db</td></tr>
+          <tr><td>Major 2nd</td><td class="mono">M2</td><td class="mono">2</td><td class="mono">C &rarr; D</td></tr>
+          <tr><td>Minor 3rd</td><td class="mono">m3</td><td class="mono">3</td><td class="mono">C &rarr; Eb</td></tr>
+          <tr><td>Major 3rd</td><td class="mono">M3</td><td class="mono">4</td><td class="mono">C &rarr; E</td></tr>
+          <tr><td>Perfect 4th</td><td class="mono">P4</td><td class="mono">5</td><td class="mono">C &rarr; F</td></tr>
+          <tr><td>Tritone</td><td class="mono">TT</td><td class="mono">6</td><td class="mono">C &rarr; F#</td></tr>
+          <tr><td>Perfect 5th</td><td class="mono">P5</td><td class="mono">7</td><td class="mono">C &rarr; G</td></tr>
+          <tr><td>Minor 6th</td><td class="mono">m6</td><td class="mono">8</td><td class="mono">C &rarr; Ab</td></tr>
+          <tr><td>Major 6th</td><td class="mono">M6</td><td class="mono">9</td><td class="mono">C &rarr; A</td></tr>
+          <tr><td>Minor 7th</td><td class="mono">m7</td><td class="mono">10</td><td class="mono">C &rarr; Bb</td></tr>
+          <tr><td>Major 7th</td><td class="mono">M7</td><td class="mono">11</td><td class="mono">C &rarr; B</td></tr>
+          <tr><td>Octave</td><td class="mono">P8</td><td class="mono">12</td><td class="mono">C &rarr; C</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Related tools</h2>
+        <div class="related-links">
+        <a href="/tuner/">Tuner &rarr;</a>
+        <a href="/chords-scales/">Chord and Scale Dictionary &rarr;</a>
+        <a href="/tone-generator/">Tone Generator &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </footer>
+  <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which intervals does it test?", "acceptedAnswer": {"@type": "Answer", "text": "All thirteen from unison to the octave: unison (0 semitones), minor 2nd (1), major 2nd (2), minor 3rd (3), major 3rd (4), perfect 4th (5), tritone (6), perfect 5th (7), minor 6th (8), major 6th (9), minor 7th (10), major 7th (11) and the octave (12). The answer buttons and the notes you hear are both generated from that one table, so they cannot disagree with each other."}}, {"@type": "Question", "name": "What tuning does it use?", "acceptedAnswer": {"@type": "Answer", "text": "Equal temperament with A4 = 440 Hz: every pitch is 440 × 2^((n−69)/12) for MIDI note n, the same formula the tuner uses to decide what is sharp or flat. A perfect fifth above A4 is E5 at 659.26 Hz — the equal-tempered fifth, about two cents narrower than a pure 3:2 ratio."}}, {"@type": "Question", "name": "Why does the starting note keep moving?", "acceptedAnswer": {"@type": "Answer", "text": "Because recognizing a note is a different skill from measuring a distance. Each question picks a fresh root between A3 and A4, so the only thing held constant is the interval itself — you have to hear the gap rather than the notes."}}, {"@type": "Question", "name": "Should I train ascending, descending or harmonic?", "acceptedAnswer": {"@type": "Answer", "text": "Ascending first: upward melodic leaps are the easiest to hear and the ones your musical memory is already full of. Descending is a genuinely separate skill and deserves its own practice. Harmonic — both notes at once — is the hardest, because you are judging one blended sound rather than two events."}}]}</script>
+  <script src="/assets/notes.js"></script>
+  <script src="/assets/theory.js"></script>
+  <script src="/assets/audio.js"></script>
+  <script src="/assets/gauge.js"></script>
+  <script src="/assets/ear-trainer.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>

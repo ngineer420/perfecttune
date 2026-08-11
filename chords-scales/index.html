@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>(function(){try{var r=document.documentElement;var t=localStorage.getItem("perfecttune-theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chord and Scale Dictionary &mdash; Free, Private, Browser-Only | perfecttune.net</title>
+  <meta name="description" content="Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.">
+  <link rel="canonical" href="https://perfecttune.net/chords-scales/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#241a14">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="perfecttune.net">
+  <meta property="og:title" content="Chord and Scale Dictionary &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta property="og:description" content="Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.">
+  <meta property="og:url" content="https://perfecttune.net/chords-scales/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Chord and Scale Dictionary &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta name="twitter:description" content="Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.">
+  <link rel="stylesheet" href="/assets/style.css">
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord and Scale Dictionary \u2014 perfecttune.net","url":"https://perfecttune.net/chords-scales/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
+      <ul class="tool-nav" id="tool-nav">
+      <li><a href="/" data-panel-link="">Home</a></li>
+      <li><a href="/tuner/" data-panel-link="tuner">Tuner</a></li>
+      <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+      <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Ear Trainer</a></li>
+      <li><a href="/chords-scales/" data-panel-link="chords-scales" aria-current="page">Chords</a></li>
+      <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+      <li><a href="/transposer/" data-panel-link="transposer">Transposer</a></li>
+      </ul>
+      <div class="header-controls">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="wrap">
+        <div class="panel-head">
+          <h1 tabindex="-1">Chord and Scale Dictionary</h1>
+          <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
+        </div>
+        <p>Pick a root and a quality and this builds the answer from the formula rather than looking it up: a major triad is the root plus 4 and 7 semitones, a major scale is 0-2-4-5-7-9-11, and the note names follow from which scale degree each of those intervals lands on. That is why F&#9839; major here spells A&#9839; and E&#9839; rather than B&#9837; and F — the letter comes from the degree, the accidental from the arithmetic.</p>
+
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Chord and Scale Dictionary</span>
+        <span class="status-led" id="cs-status" data-state="idle">Idle</span>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="cs-root">Root</label><select id="cs-root"></select></div>
+        <div class="field wide"><label for="cs-type">Chord, scale or mode</label><select id="cs-type"></select></div>
+      </div>
+      <div class="screen">
+        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25">&mdash;</div>
+        <div class="cents-readout" id="cs-formula">&mdash;</div>
+      </div>
+      <div class="note-chips" id="cs-notes"></div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="cs-play">Play chord</button>
+        <button type="button" class="ctrl-btn ghost" id="cs-alt-play">Play as arpeggio</button>
+      </div>
+      <div class="diagram">
+        <h3>Piano &mdash; two octaves</h3>
+        <div class="diagram-scroll"><div class="piano-mount" id="cs-piano"></div></div>
+      </div>
+      <div class="diagram">
+        <h3>Guitar &mdash; standard tuning, every position in the first 12 frets</h3>
+        <div class="diagram-scroll"><div class="fretboard-mount" id="cs-fretboard"></div></div>
+      </div>
+      <p class="advisory" id="cs-advisory" hidden></p>
+      <p class="hint">Notes are spelled for the key you pick, and nothing sounds until you press Play.</p>
+    </div>
+
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <h2>How to use the Chord and Scale Dictionary</h2>
+        <div class="how-to">
+          <ol>
+        <li>Choose a root note, then a chord quality, scale or mode.</li>
+        <li>Read the notes and the degree under each one — 1, 3, 5 for a major triad; 1, &#9837;3, 5 for a minor one.</li>
+        <li>Press Play chord to hear it as a block, or Play as arpeggio for one note at a time. Scales play up, or down.</li>
+        <li>Use the fretboard map to find a shape: it marks every position of those notes in the first twelve frets of a standard-tuned guitar, with the root in red.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+        <dt>Which chords and scales are included?</dt>
+        <dd>Nine chord qualities — major (0-4-7), minor (0-3-7), diminished (0-3-6), augmented (0-4-8), dominant 7th (0-4-7-10), major 7th (0-4-7-11), minor 7th (0-3-7-10), sus2 (0-2-7) and sus4 (0-5-7) — plus the major scale (0-2-4-5-7-9-11), natural minor (0-2-3-5-7-8-10), harmonic minor (0-2-3-5-7-8-11), melodic minor ascending (0-2-3-5-7-9-11), and the seven diatonic modes, which are generated as rotations of the major scale rather than typed out as seven separate rows that could drift apart.</dd>
+        <dt>Why does it write E# instead of F?</dt>
+        <dd>Because a seven-note scale uses each letter name exactly once, and a chord's third has to be spelled as a third of some kind. In F# major the seventh degree sits a semitone below the octave and has to be an E of some sort, so it is E#, not F — writing F would use the letter F twice and leave the scale with no E at all. The tool takes the letter from the degree and then works out the accidental, which is what you would do by hand.</dd>
+        <dt>What is the fretboard diagram showing?</dt>
+        <dd>Every place those notes fall on a standard-tuned guitar (E A D G B E) between the open strings and the twelfth fret, with the root highlighted — a map of the available material, not one fingering. A real voicing picks a handful of those positions, and which handful depends on your hand, the register you want, and the chord you came from.</dd>
+        <dt>What does the double-accidentals note mean?</dt>
+        <dd>Some roots spell out correctly but impractically. The D# major triad is D#–F##–A#, which is right and is almost never written; the same three pitches are notated Eb–G–Bb. When a selection needs double sharps or double flats, the tool still shows the strict spelling and then names the enharmonic key you would actually meet on paper.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Chord formulas</h2>
+        <p>Semitones counted up from the root. The degree column is what those semitones are called &mdash; a minor triad's <span class="mono">b3</span> is a third that has been flattened, which is why it is still spelled as some kind of third.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Chord</th><th>Degrees</th><th>Semitones</th><th>On C</th></tr></thead>
+          <tbody>
+          <tr><td>Major</td><td class="mono">1 3 5</td><td class="mono">0-4-7</td><td class="mono">C E G</td></tr>
+          <tr><td>Minor</td><td class="mono">1 b3 5</td><td class="mono">0-3-7</td><td class="mono">C Eb G</td></tr>
+          <tr><td>Diminished</td><td class="mono">1 b3 b5</td><td class="mono">0-3-6</td><td class="mono">C Eb Gb</td></tr>
+          <tr><td>Augmented</td><td class="mono">1 3 #5</td><td class="mono">0-4-8</td><td class="mono">C E G#</td></tr>
+          <tr><td>Dominant 7th</td><td class="mono">1 3 5 b7</td><td class="mono">0-4-7-10</td><td class="mono">C E G Bb</td></tr>
+          <tr><td>Major 7th</td><td class="mono">1 3 5 7</td><td class="mono">0-4-7-11</td><td class="mono">C E G B</td></tr>
+          <tr><td>Minor 7th</td><td class="mono">1 b3 5 b7</td><td class="mono">0-3-7-10</td><td class="mono">C Eb G Bb</td></tr>
+          <tr><td>Sus2</td><td class="mono">1 2 5</td><td class="mono">0-2-7</td><td class="mono">C D G</td></tr>
+          <tr><td>Sus4</td><td class="mono">1 4 5</td><td class="mono">0-5-7</td><td class="mono">C F G</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Scale formulas</h2>
+        <p>The modes are the major scale started from each of its own degrees, so they are generated by rotating that one row rather than written out separately. Aeolian is the natural minor and Ionian is the major scale, which is why they are not repeated here.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Scale</th><th>Semitones</th><th>On C</th></tr></thead>
+          <tbody>
+          <tr><td>Major (Ionian)</td><td class="mono">0-2-4-5-7-9-11</td><td class="mono">C D E F G A B</td></tr>
+          <tr><td>Natural minor (Aeolian)</td><td class="mono">0-2-3-5-7-8-10</td><td class="mono">C D Eb F G Ab Bb</td></tr>
+          <tr><td>Harmonic minor</td><td class="mono">0-2-3-5-7-8-11</td><td class="mono">C D Eb F G Ab B</td></tr>
+          <tr><td>Melodic minor (ascending)</td><td class="mono">0-2-3-5-7-9-11</td><td class="mono">C D Eb F G A B</td></tr>
+          <tr><td>Dorian</td><td class="mono">0-2-3-5-7-9-10</td><td class="mono">C D Eb F G A Bb</td></tr>
+          <tr><td>Phrygian</td><td class="mono">0-1-3-5-7-8-10</td><td class="mono">C Db Eb F G Ab Bb</td></tr>
+          <tr><td>Lydian</td><td class="mono">0-2-4-6-7-9-11</td><td class="mono">C D E F# G A B</td></tr>
+          <tr><td>Mixolydian</td><td class="mono">0-2-4-5-7-9-10</td><td class="mono">C D E F G A Bb</td></tr>
+          <tr><td>Locrian</td><td class="mono">0-1-3-5-6-8-10</td><td class="mono">C Db Eb F Gb Ab Bb</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Related tools</h2>
+        <div class="related-links">
+        <a href="/ear-trainer/">Interval Ear Trainer &rarr;</a>
+        <a href="/transposer/">Chord Transposer &rarr;</a>
+        <a href="/tuner/">Tuner &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </footer>
+  <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which chords and scales are included?", "acceptedAnswer": {"@type": "Answer", "text": "Nine chord qualities — major (0-4-7), minor (0-3-7), diminished (0-3-6), augmented (0-4-8), dominant 7th (0-4-7-10), major 7th (0-4-7-11), minor 7th (0-3-7-10), sus2 (0-2-7) and sus4 (0-5-7) — plus the major scale (0-2-4-5-7-9-11), natural minor (0-2-3-5-7-8-10), harmonic minor (0-2-3-5-7-8-11), melodic minor ascending (0-2-3-5-7-9-11), and the seven diatonic modes, which are generated as rotations of the major scale rather than typed out as seven separate rows that could drift apart."}}, {"@type": "Question", "name": "Why does it write E# instead of F?", "acceptedAnswer": {"@type": "Answer", "text": "Because a seven-note scale uses each letter name exactly once, and a chord's third has to be spelled as a third of some kind. In F# major the seventh degree sits a semitone below the octave and has to be an E of some sort, so it is E#, not F — writing F would use the letter F twice and leave the scale with no E at all. The tool takes the letter from the degree and then works out the accidental, which is what you would do by hand."}}, {"@type": "Question", "name": "What is the fretboard diagram showing?", "acceptedAnswer": {"@type": "Answer", "text": "Every place those notes fall on a standard-tuned guitar (E A D G B E) between the open strings and the twelfth fret, with the root highlighted — a map of the available material, not one fingering. A real voicing picks a handful of those positions, and which handful depends on your hand, the register you want, and the chord you came from."}}, {"@type": "Question", "name": "What does the double-accidentals note mean?", "acceptedAnswer": {"@type": "Answer", "text": "Some roots spell out correctly but impractically. The D# major triad is D#–F##–A#, which is right and is almost never written; the same three pitches are notated Eb–G–Bb. When a selection needs double sharps or double flats, the tool still shows the strict spelling and then names the enharmonic key you would actually meet on paper."}}]}</script>
+  <script src="/assets/notes.js"></script>
+  <script src="/assets/theory.js"></script>
+  <script src="/assets/audio.js"></script>
+  <script src="/assets/gauge.js"></script>
+  <script src="/assets/chords-scales.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
