@@ -3,8 +3,10 @@
 One-off static-page generator for perfecttune.net. The shipped site has
 zero build step — this script just avoids hand-duplicating the shared
 head/header/footer boilerplate (and the erabbit mark's exact placement)
-across the homepage panels, three standalone tool pages, two legal pages,
-the 404, and three articles.
+across the homepage panels, seven standalone tool pages, two legal pages,
+the 404, and three articles. Add a tool by adding one entry to TOOLS: the
+nav, the homepage card and panel, the tool page, and the sitemap all follow
+from it. Nothing here is hand-edited afterwards.
 
 Clean-path implementation: GitHub Pages 301-redirects "/slug" -> "/slug/"
 and serves that directory's index.html with the correct text/html type
@@ -16,7 +18,8 @@ import os
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE = "https://perfecttune.net"
-TODAY = "2026-07-18"
+TODAY = "2026-07-18"      # first publication date — articles keep it
+UPDATED = "2026-08-11"    # last build: sitemap lastmod and the legal pages
 PUB_ID = "ca-pub-7560786263587509"
 
 THEME_SCRIPT = (
@@ -33,12 +36,148 @@ ERABBIT = (
     'width="10" height="10" alt=""></a>'
 )
 
-NAV_ITEMS = [
-    ("", "Home"),
-    ("tuner", "Tuner"),
-    ("metronome", "Metronome"),
-    ("tone-generator", "Tone Generator"),
+# ------------------------------------------------- theory reference tables --
+# The runtime source of truth for all of this is assets/theory.js; these lists
+# exist so the tool pages carry the same numbers as readable HTML rather than
+# only as JavaScript. They are checked against theory.js in the browser, so a
+# change to one without the other shows up as a mismatch, not as silence.
+
+LETTERS = ["C", "D", "E", "F", "G", "A", "B"]
+LETTER_SEMITONES = [0, 2, 4, 5, 7, 9, 11]
+
+INTERVAL_TABLE = [
+    # (name, short, semitones, letter steps)
+    ("Unison", "P1", 0, 0),
+    ("Minor 2nd", "m2", 1, 1),
+    ("Major 2nd", "M2", 2, 1),
+    ("Minor 3rd", "m3", 3, 2),
+    ("Major 3rd", "M3", 4, 2),
+    ("Perfect 4th", "P4", 5, 3),
+    ("Tritone", "TT", 6, 3),
+    ("Perfect 5th", "P5", 7, 4),
+    ("Minor 6th", "m6", 8, 5),
+    ("Major 6th", "M6", 9, 5),
+    ("Minor 7th", "m7", 10, 6),
+    ("Major 7th", "M7", 11, 6),
+    ("Octave", "P8", 12, 7),
 ]
+
+CHORD_TABLE = [
+    # (name, semitone offsets, letter steps per offset)
+    ("Major", [0, 4, 7], [0, 2, 4]),
+    ("Minor", [0, 3, 7], [0, 2, 4]),
+    ("Diminished", [0, 3, 6], [0, 2, 4]),
+    ("Augmented", [0, 4, 8], [0, 2, 4]),
+    ("Dominant 7th", [0, 4, 7, 10], [0, 2, 4, 6]),
+    ("Major 7th", [0, 4, 7, 11], [0, 2, 4, 6]),
+    ("Minor 7th", [0, 3, 7, 10], [0, 2, 4, 6]),
+    ("Sus2", [0, 2, 7], [0, 1, 4]),
+    ("Sus4", [0, 5, 7], [0, 3, 4]),
+]
+
+MAJOR_SCALE = [0, 2, 4, 5, 7, 9, 11]
+
+SCALE_TABLE = [
+    ("Major (Ionian)", MAJOR_SCALE),
+    ("Natural minor (Aeolian)", [0, 2, 3, 5, 7, 8, 10]),
+    ("Harmonic minor", [0, 2, 3, 5, 7, 8, 11]),
+    ("Melodic minor (ascending)", [0, 2, 3, 5, 7, 9, 11]),
+    ("Dorian", [(MAJOR_SCALE[(i + 1) % 7] - MAJOR_SCALE[1]) % 12 for i in range(7)]),
+    ("Phrygian", [(MAJOR_SCALE[(i + 2) % 7] - MAJOR_SCALE[2]) % 12 for i in range(7)]),
+    ("Lydian", [(MAJOR_SCALE[(i + 3) % 7] - MAJOR_SCALE[3]) % 12 for i in range(7)]),
+    ("Mixolydian", [(MAJOR_SCALE[(i + 4) % 7] - MAJOR_SCALE[4]) % 12 for i in range(7)]),
+    ("Locrian", [(MAJOR_SCALE[(i + 6) % 7] - MAJOR_SCALE[6]) % 12 for i in range(7)]),
+]
+
+
+def spell_from_c(letter_steps, semitones):
+    """Note name that many letters and semitones above C — the same rule
+    theory.js uses: the letter comes from the degree, the accidental is
+    whatever it takes to land on the requested semitone."""
+    letter = letter_steps % 7
+    octaves = letter_steps // 7
+    natural = LETTER_SEMITONES[letter] + 12 * octaves
+    alter = semitones - natural
+    acc = "#" * alter if alter > 0 else "b" * (-alter)
+    return LETTERS[letter] + acc
+
+
+def degree_label(degree, semitones):
+    octaves = degree // 7
+    diff = semitones - MAJOR_SCALE[degree % 7] - 12 * octaves
+    prefix = "" if diff == 0 else ("#" * diff if diff > 0 else "b" * (-diff))
+    return f"{prefix}{degree + 1}"
+
+
+def interval_table_html():
+    rows = "".join(
+        f'          <tr><td>{name}</td><td class="mono">{short}</td>'
+        f'<td class="mono">{semis}</td><td class="mono">C &rarr; {spell_from_c(steps, semis)}</td></tr>\n'
+        for name, short, semis, steps in INTERVAL_TABLE
+    )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>The thirteen intervals</h2>
+        <p>Every question this trainer asks is one row of this table. The semitone count is what the two notes are actually built from; the example shows the interval measured up from C, spelled the way that degree has to be spelled.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Interval</th><th>Short</th><th>Semitones</th><th>Above C</th></tr></thead>
+          <tbody>
+{rows}          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+"""
+
+
+def formula_tables_html():
+    chord_rows = ""
+    for name, semis, degrees in CHORD_TABLE:
+        degs = " ".join(degree_label(d, s) for d, s in zip(degrees, semis))
+        notes = " ".join(spell_from_c(d, s) for d, s in zip(degrees, semis))
+        chord_rows += (
+            f'          <tr><td>{name}</td><td class="mono">{degs}</td>'
+            f'<td class="mono">{"-".join(str(s) for s in semis)}</td><td class="mono">{notes}</td></tr>\n'
+        )
+    scale_rows = ""
+    for name, semis in SCALE_TABLE:
+        notes = " ".join(spell_from_c(i, s) for i, s in enumerate(semis))
+        scale_rows += (
+            f'          <tr><td>{name}</td>'
+            f'<td class="mono">{"-".join(str(s) for s in semis)}</td><td class="mono">{notes}</td></tr>\n'
+        )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Chord formulas</h2>
+        <p>Semitones counted up from the root. The degree column is what those semitones are called &mdash; a minor triad's <span class="mono">b3</span> is a third that has been flattened, which is why it is still spelled as some kind of third.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Chord</th><th>Degrees</th><th>Semitones</th><th>On C</th></tr></thead>
+          <tbody>
+{chord_rows}          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Scale formulas</h2>
+        <p>The modes are the major scale started from each of its own degrees, so they are generated by rotating that one row rather than written out separately. Aeolian is the natural minor and Ionian is the major scale, which is why they are not repeated here.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Scale</th><th>Semitones</th><th>On C</th></tr></thead>
+          <tbody>
+{scale_rows}          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+"""
+
 
 # ---------------------------------------------------------------- tools --
 
@@ -46,6 +185,7 @@ TOOLS = [
     dict(
         slug="tuner",
         name="Tuner",
+        script="tuner.js",
         tagline="Tune by ear's evil twin — real-time pitch, read off a brass needle.",
         description="Free real-time instrument tuner. Microphone-based pitch detection (autocorrelation) shows the detected note, a cents-off needle and the target frequency — 100% on-device, audio never leaves your browser.",
         icon='<path d="M4.5 16a7.5 7.5 0 0 1 15 0"/><path d="M12 16L16.2 7.6"/><circle cx="12" cy="16" r="1.6" fill="currentColor" stroke="none"/>',
@@ -62,7 +202,7 @@ TOOLS = [
             ("What octave range can it detect?", "Roughly 55 Hz to 1500 Hz, which covers a standard 6-string guitar's low E up through several octaves above — comfortable range for guitar, bass, ukulele, violin, and most vocal ranges."),
             ("Can I tune to something other than A440?", "Yes — the concert pitch field accepts any value from 415–466 Hz, so you can match an orchestra tuning to A442 or a period-instrument ensemble tuning lower, and every note name and cents reading updates accordingly."),
         ],
-        related=["metronome", "tone-generator"],
+        related=["metronome", "tone-generator", "ear-trainer"],
         workspace="""
     <div class="instrument">
       <div class="nameplate">
@@ -91,6 +231,7 @@ TOOLS = [
     dict(
         slug="metronome",
         name="Metronome",
+        script="metronome.js",
         tagline="A pendulum that never drifts — scheduled on the real audio clock.",
         description="Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.",
         icon='<path d="M7.5 21h9L15 4H9L7.5 21z"/><path d="M12 6.5v9"/><circle cx="12" cy="16.5" r="1.3" fill="currentColor" stroke="none"/>',
@@ -107,7 +248,7 @@ TOOLS = [
             ("How does tap tempo work?", "Each tap is timestamped; once you've tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average — tap steadily for a few beats for the most accurate result."),
             ("Can I use time signatures like 6/8 or 7/8?", "Yes — set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat's real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one."),
         ],
-        related=["tuner", "tone-generator"],
+        related=["tuner", "tone-generator", "bpm-tapper"],
         workspace="""
     <div class="instrument">
       <div class="nameplate">
@@ -155,6 +296,7 @@ TOOLS = [
     dict(
         slug="tone-generator",
         name="Tone Generator",
+        script="tone-generator.js",
         tagline="A steady drone to tune, warm up, or check an interval against.",
         description="Free browser-based tone generator / drone. Sine, square, triangle and sawtooth waveforms, frequency or note-name selection, and a live oscilloscope — 100% client-side, no audio files.",
         icon='<path d="M2 13h3l1.5-5 3 10 3-13 3 8h3.5"/>',
@@ -171,7 +313,7 @@ TOOLS = [
             ("What does the oscilloscope actually show?", "It reads the oscillator's real output through an AnalyserNode and redraws the exact waveform shape every animation frame — when you switch from sine to square, you're watching the actual signal change, not an illustration of one."),
             ("What frequency range is available?", "20 Hz to 5000 Hz by direct entry or slider, and the note dropdown covers C0 through B8 — well beyond any acoustic instrument's fundamental range."),
         ],
-        related=["tuner", "metronome"],
+        related=["tuner", "metronome", "ear-trainer"],
         workspace="""
     <div class="instrument">
       <div class="nameplate">
@@ -209,9 +351,239 @@ TOOLS = [
     </div>
 """,
     ),
+    dict(
+        slug="ear-trainer",
+        name="Interval Ear Trainer",
+        nav="Ear Trainer",
+        script="ear-trainer.js",
+        tagline="Two notes, one question — name the distance between them.",
+        description="Free interval ear trainer. Hear two notes ascending, descending or together and name the interval, from unison to the octave. Equal temperament, A4 = 440 Hz, generated in your browser with no samples.",
+        icon='<circle cx="7" cy="17.5" r="2.4" fill="currentColor" stroke="none"/><circle cx="17" cy="15.5" r="2.4" fill="currentColor" stroke="none"/><path d="M9.4 17.5V6.2l10-2v11.3"/><path d="M9.4 8.6l10-2"/>',
+        intro="A tuner tells you when one note is right. Interval training is how you learn to hear whether the <em>next</em> note is right — the exact distance between two pitches, named. Press play, listen to two notes, and pick the interval from unison up to the octave. Every pitch is generated on the spot from equal temperament with A4 at 440 Hz, so the intervals you are learning here are the same ones the tuner measures.",
+        how_to=[
+            "Press Play interval. Two notes sound — ascending by default — and nothing plays until you press it.",
+            "Name what you heard with the answer buttons. The first answer you give for each question is the one that counts.",
+            "Press Replay to hear it again, or Reveal to give up on the current question — a reveal is scored as a miss.",
+            "Narrow the interval set while you're learning (start with the 4th, 5th and octave), then switch direction to descending or harmonic once ascending feels easy.",
+        ],
+        faq=[
+            ("Which intervals does it test?", "All thirteen from unison to the octave: unison (0 semitones), minor 2nd (1), major 2nd (2), minor 3rd (3), major 3rd (4), perfect 4th (5), tritone (6), perfect 5th (7), minor 6th (8), major 6th (9), minor 7th (10), major 7th (11) and the octave (12). The answer buttons and the notes you hear are both generated from that one table, so they cannot disagree with each other."),
+            ("What tuning does it use?", "Equal temperament with A4 = 440 Hz: every pitch is 440 × 2^((n−69)/12) for MIDI note n, the same formula the tuner uses to decide what is sharp or flat. A perfect fifth above A4 is E5 at 659.26 Hz — the equal-tempered fifth, about two cents narrower than a pure 3:2 ratio."),
+            ("Why does the starting note keep moving?", "Because recognizing a note is a different skill from measuring a distance. Each question picks a fresh root between A3 and A4, so the only thing held constant is the interval itself — you have to hear the gap rather than the notes."),
+            ("Should I train ascending, descending or harmonic?", "Ascending first: upward melodic leaps are the easiest to hear and the ones your musical memory is already full of. Descending is a genuinely separate skill and deserves its own practice. Harmonic — both notes at once — is the hardest, because you are judging one blended sound rather than two events."),
+        ],
+        related=["tuner", "chords-scales", "tone-generator"],
+        extra=interval_table_html(),
+        workspace="""
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Interval Ear Trainer</span>
+        <span class="status-led" id="et-status" data-state="idle">Idle</span>
+      </div>
+      <div class="screen">
+        <div class="readout"><span id="et-score">0</span><span class="unit">/ <span id="et-total">0</span> correct</span></div>
+        <div class="cents-readout" id="et-feedback" role="status" aria-live="polite">Press Play interval &mdash; two notes will sound, and you name the distance between them.</div>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Streak</div><div class="stat-value" id="et-streak">0</div></div>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="et-play">Play interval</button>
+        <button type="button" class="ctrl-btn ghost" id="et-replay">Replay</button>
+        <button type="button" class="ctrl-btn ghost" id="et-reveal">Reveal</button>
+      </div>
+      <div class="answer-grid" id="et-answers"></div>
+      <div class="field-row">
+        <div class="field wide"><label for="et-set">Interval set</label><select id="et-set"></select></div>
+        <div class="field wide"><label for="et-direction">Direction</label><select id="et-direction"></select></div>
+        <div class="field"><label for="et-tone">Tone</label>
+          <select id="et-tone">
+            <option value="triangle" selected>Triangle</option>
+            <option value="sine">Sine</option>
+            <option value="square">Square</option>
+            <option value="sawtooth">Saw</option>
+          </select>
+        </div>
+      </div>
+      <p class="hint">Nothing plays until you press a button. A revealed answer counts as a miss, so the score stays honest.</p>
+    </div>
+""",
+    ),
+    dict(
+        slug="chords-scales",
+        name="Chord and Scale Dictionary",
+        nav="Chords",
+        script="chords-scales.js",
+        tagline="Every chord and scale drawn from its formula, spelled the way its key spells it.",
+        description="Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.",
+        icon='<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M9 5v9M15 5v9M3 14h18"/>',
+        intro="Pick a root and a quality and this builds the answer from the formula rather than looking it up: a major triad is the root plus 4 and 7 semitones, a major scale is 0-2-4-5-7-9-11, and the note names follow from which scale degree each of those intervals lands on. That is why F&#9839; major here spells A&#9839; and E&#9839; rather than B&#9837; and F — the letter comes from the degree, the accidental from the arithmetic.",
+        how_to=[
+            "Choose a root note, then a chord quality, scale or mode.",
+            "Read the notes and the degree under each one — 1, 3, 5 for a major triad; 1, &#9837;3, 5 for a minor one.",
+            "Press Play chord to hear it as a block, or Play as arpeggio for one note at a time. Scales play up, or down.",
+            "Use the fretboard map to find a shape: it marks every position of those notes in the first twelve frets of a standard-tuned guitar, with the root in red.",
+        ],
+        faq=[
+            ("Which chords and scales are included?", "Nine chord qualities — major (0-4-7), minor (0-3-7), diminished (0-3-6), augmented (0-4-8), dominant 7th (0-4-7-10), major 7th (0-4-7-11), minor 7th (0-3-7-10), sus2 (0-2-7) and sus4 (0-5-7) — plus the major scale (0-2-4-5-7-9-11), natural minor (0-2-3-5-7-8-10), harmonic minor (0-2-3-5-7-8-11), melodic minor ascending (0-2-3-5-7-9-11), and the seven diatonic modes, which are generated as rotations of the major scale rather than typed out as seven separate rows that could drift apart."),
+            ("Why does it write E# instead of F?", "Because a seven-note scale uses each letter name exactly once, and a chord's third has to be spelled as a third of some kind. In F# major the seventh degree sits a semitone below the octave and has to be an E of some sort, so it is E#, not F — writing F would use the letter F twice and leave the scale with no E at all. The tool takes the letter from the degree and then works out the accidental, which is what you would do by hand."),
+            ("What is the fretboard diagram showing?", "Every place those notes fall on a standard-tuned guitar (E A D G B E) between the open strings and the twelfth fret, with the root highlighted — a map of the available material, not one fingering. A real voicing picks a handful of those positions, and which handful depends on your hand, the register you want, and the chord you came from."),
+            ("What does the double-accidentals note mean?", "Some roots spell out correctly but impractically. The D# major triad is D#–F##–A#, which is right and is almost never written; the same three pitches are notated Eb–G–Bb. When a selection needs double sharps or double flats, the tool still shows the strict spelling and then names the enharmonic key you would actually meet on paper."),
+        ],
+        related=["ear-trainer", "transposer", "tuner"],
+        extra=formula_tables_html(),
+        workspace="""
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Chord and Scale Dictionary</span>
+        <span class="status-led" id="cs-status" data-state="idle">Idle</span>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="cs-root">Root</label><select id="cs-root"></select></div>
+        <div class="field wide"><label for="cs-type">Chord, scale or mode</label><select id="cs-type"></select></div>
+      </div>
+      <div class="screen">
+        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25">&mdash;</div>
+        <div class="cents-readout" id="cs-formula">&mdash;</div>
+      </div>
+      <div class="note-chips" id="cs-notes"></div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="cs-play">Play chord</button>
+        <button type="button" class="ctrl-btn ghost" id="cs-alt-play">Play as arpeggio</button>
+      </div>
+      <div class="diagram">
+        <h3>Piano &mdash; two octaves</h3>
+        <div class="diagram-scroll"><div class="piano-mount" id="cs-piano"></div></div>
+      </div>
+      <div class="diagram">
+        <h3>Guitar &mdash; standard tuning, every position in the first 12 frets</h3>
+        <div class="diagram-scroll"><div class="fretboard-mount" id="cs-fretboard"></div></div>
+      </div>
+      <p class="advisory" id="cs-advisory" hidden></p>
+      <p class="hint">Notes are spelled for the key you pick, and nothing sounds until you press Play.</p>
+    </div>
+""",
+    ),
+    dict(
+        slug="bpm-tapper",
+        name="BPM Tapper",
+        nav="BPM Tapper",
+        script="bpm-tapper.js",
+        tagline="Tap a couple of bars, read the tempo, hand it to the metronome.",
+        description="Free tap tempo tool: tap along with any track to read its BPM, see how steady your taps actually were, and send the tempo straight to the metronome. No microphone, no upload, no permissions.",
+        icon='<circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/><path d="M6.6 6.6a7.6 7.6 0 0 0 0 10.8M17.4 6.6a7.6 7.6 0 0 1 0 10.8"/>',
+        intro="Tap the pad along with whatever you're listening to and the tempo appears: the BPM is the average of the intervals between your last twelve taps, the same averaging the metronome's own Tap Tempo button does. The steadiness figure beside it is the standard deviation of those intervals, which is how you tell a tempo you actually found from one you only approximated.",
+        how_to=[
+            "Tap the pad on the beat — twice gives you a number, eight or more gives you a tempo. The space bar taps too.",
+            "Watch the steadiness reading: the smaller the &plusmn; milliseconds, the more your own taps agreed with each other.",
+            "Press Send to the metronome to open the metronome with this tempo already loaded. Nothing plays there until you press Start.",
+            "Pause for more than about two seconds and the next tap begins a fresh measurement, so two different songs never end up in one average.",
+        ],
+        faq=[
+            ("How many taps do I need?", "Two taps give you one interval and therefore a number; eight give you a tempo. Every extra tap adds another interval to the average and the last twelve are kept, so a couple of bars of steady tapping settles the reading to within a fraction of a BPM."),
+            ("What is the steadiness figure?", "The standard deviation of the intervals between your taps, in milliseconds. At 120 BPM one beat is 500 ms, so ±10 ms means your taps agreed to within about two percent and the reading is real; ±80 ms means the number is an average of some fairly loose tapping rather than a tempo."),
+            ("Does it listen to my music?", "No — there is no microphone involved in this tool at all. It measures the timing of your own taps and nothing else. The only sound it can make is an optional click on each tap, which is switched off by default."),
+            ("Why does it reset when I stop?", "A gap of more than 2.2 seconds is treated as the end of a measurement rather than as one very slow beat. Without that rule, coming back after a pause would fold a long idle gap into the average and drag the tempo down with it."),
+        ],
+        related=["metronome", "tuner", "transposer"],
+        workspace="""
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">BPM Tapper</span>
+        <span class="status-led" id="bt-status" data-state="idle">Idle</span>
+      </div>
+      <div class="screen">
+        <div class="readout"><span id="bt-bpm">&mdash;</span><span class="unit">BPM</span></div>
+        <div class="cents-readout" id="bt-rounded" role="status" aria-live="polite">Tap at least twice.</div>
+      </div>
+      <button type="button" class="tap-pad" id="bt-pad">Tap here on the beat<small>or press space</small></button>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-label">Taps</div><div class="stat-value" id="bt-taps">&mdash;</div></div>
+        <div class="stat"><div class="stat-label">Beat length</div><div class="stat-value" id="bt-ms">&mdash;</div></div>
+        <div class="stat"><div class="stat-label">Steadiness</div><div class="stat-value" id="bt-steady">&mdash;</div></div>
+      </div>
+      <p class="hint" id="bt-note-values"></p>
+      <div class="controls-row">
+        <a class="ctrl-btn primary" id="bt-send" aria-disabled="true">Send to the metronome</a>
+        <button type="button" class="ctrl-btn ghost" id="bt-reset">Reset</button>
+      </div>
+      <div class="field-row">
+        <div class="field" style="min-width:0">
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:normal;color:var(--fg)">
+            <input type="checkbox" id="bt-click" style="width:auto"> Click on each tap
+          </label>
+        </div>
+      </div>
+      <p class="hint">Your taps are the only thing that can make a sound here, and only with the click switched on.</p>
+    </div>
+""",
+    ),
+    dict(
+        slug="transposer",
+        name="Chord Transposer",
+        nav="Transposer",
+        script="transposer.js",
+        tagline="Move a progression to a new key with the accidentals spelled properly.",
+        description="Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.",
+        icon='<path d="M4 9h13l-3.4-3.4M20 15H7l3.4 3.4"/>',
+        intro="Type a progression, choose how far to move it, and get the chords back spelled for the key you land in. Quality suffixes are never touched — m7&#9837;5 and add9 come out exactly as they went in — and the enharmonic convention is stated rather than guessed at: by default every root is spelled as the nearest spelling to the target key on the circle of fifths, so three semitones up from C gives E&#9837;, not D&#9839;.",
+        how_to=[
+            "Type or paste your chords into the top box, separated by spaces or line breaks.",
+            "Choose how far to move them. Each step in the dropdown is labelled with its interval name, so &ldquo;+7&rdquo; also reads &ldquo;perfect 5th up&rdquo;.",
+            "Leave spelling on Auto to have the result spelled for the target key, or force sharps or flats if your chart needs them.",
+            "Read the chips, or copy the plain-text result — it keeps your original spacing and line breaks.",
+        ],
+        faq=[
+            ("How does it choose between F# and Gb?", "Auto spells every root as the nearest spelling to the target key on the circle of fifths. Transposing C Am F G7 up three semitones lands in E♭, a key with three flats, so the result is E♭ Cm A♭ B♭7 rather than the D♯ Cm G♯ A♯7 that a sharps-only tool would hand you. Where two spellings sit equally far from the key — F♯ and G♭ are both six accidentals — it takes the sharp. The Sharps and Flats options override the whole thing."),
+            ("What happens to chord qualities and slash chords?", "Nothing at all happens to the quality: everything after the root letter and its accidental is copied through untouched, so 7, maj7, m7b5, sus4, add9 and 13#11 all survive intact. A slash bass is parsed as its own note and transposed with the chord, so Am7/G up two semitones is Bm7/A."),
+            ("Can I paste a lyric sheet?", "Not usefully. Anything starting with a letter from A to G is treated as a chord symbol, so a word like “And” would be transposed along with the chords. Give it chords — anything it does not read as one is passed through untouched and listed underneath the result."),
+            ("Does transposing change how the progression sounds?", "In equal temperament the intervals inside every chord are preserved exactly, which is the whole point of twelve equal semitones, so the harmony is identical. What changes is the register, which open strings and easy keyboard shapes are available, and how the voicings sit under the hand."),
+        ],
+        related=["chords-scales", "ear-trainer", "metronome"],
+        workspace="""
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Chord Transposer</span>
+        <span class="status-led" data-state="idle">Silent tool</span>
+      </div>
+      <div class="io-block">
+        <label for="tr-input">Chords in</label>
+        <textarea id="tr-input" rows="3" spellcheck="false">C  Am  F  G7</textarea>
+      </div>
+      <div class="field-row">
+        <div class="field wide"><label for="tr-semitones">Transpose by</label><select id="tr-semitones"></select></div>
+        <div class="field wide"><label for="tr-spelling">Spelling</label>
+          <select id="tr-spelling">
+            <option value="auto" selected>Auto &mdash; spell for the target key</option>
+            <option value="sharps">Sharps &mdash; C# D# F# G# A#</option>
+            <option value="flats">Flats &mdash; Db Eb Gb Ab Bb</option>
+          </select>
+        </div>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn ghost" id="tr-down">&minus;1 semitone</button>
+        <button type="button" class="ctrl-btn ghost" id="tr-up">+1 semitone</button>
+      </div>
+      <div class="chord-chips" id="tr-chips"></div>
+      <p class="summary-line" id="tr-summary" role="status" aria-live="polite"></p>
+      <p class="advisory" id="tr-note" hidden></p>
+      <div class="io-block">
+        <label for="tr-text">Chords out</label>
+        <textarea id="tr-text" class="io-text" rows="3" readonly></textarea>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="tr-copy">Copy result</button>
+      </div>
+      <p class="hint">Enharmonic convention: Auto spells each root as the nearest spelling to the target key on the circle of fifths.</p>
+    </div>
+""",
+    ),
 ]
 
 TOOL_BY_SLUG = {t["slug"]: t for t in TOOLS}
+
+# Nav follows the tool list, so a new tool can never be added without one.
+NAV_ITEMS = [("", "Home")] + [(t["slug"], t.get("nav", t["name"])) for t in TOOLS]
 
 ARTICLES = [
     dict(
@@ -244,6 +616,7 @@ def head(title, description, canonical_path, json_ld, extra_style=""):
   <title>{title}</title>
   <meta name="description" content="{description}">
   <link rel="canonical" href="{url}">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#241a14">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="perfecttune.net">
@@ -299,6 +672,8 @@ def footer_and_close(scripts, faq_json_ld=None):
   </footer>
   {ERABBIT}
   {faq_script}<script src="/assets/notes.js"></script>
+  <script src="/assets/theory.js"></script>
+  <script src="/assets/audio.js"></script>
   <script src="/assets/gauge.js"></script>
   {script_tags}
   <script src="/assets/app.js"></script>
@@ -334,8 +709,8 @@ def write(path, content):
 # ---------------------------------------------------------------- homepage --
 
 def build_homepage():
-    title = "perfecttune.net &mdash; Tuner, Metronome &amp; Tone Generator for Musicians"
-    description = "Free browser-based musician's toolkit: a real-time instrument tuner, a sample-accurate metronome, and a drone tone generator. 100% client-side &mdash; nothing you play or say ever leaves your device."
+    title = "perfecttune.net &mdash; Tuner, Metronome, Ear Trainer &amp; Practice Tools"
+    description = "Free browser-based musician's toolkit: a real-time instrument tuner, a sample-accurate metronome, a drone tone generator, an interval ear trainer, a chord and scale dictionary, a BPM tapper and a chord transposer. 100% client-side &mdash; nothing you play or say ever leaves your device."
     json_ld = (
         '{"@context":"https://schema.org","@type":"WebSite","name":"perfecttune.net",'
         '"url":"https://perfecttune.net/",'
@@ -351,9 +726,9 @@ def build_homepage():
         <path d="M0 100 Q 62 170 125 100 T 250 100 T 375 100 T 500 100 T 625 100 T 750 100 T 875 100 T 1000 100" fill="none" stroke="var(--teal-600)" stroke-width="2" opacity="0.15"/>
       </svg>
       <div class="wrap">
-        <p class="eyebrow">Tuner &middot; Metronome &middot; Tone Generator</p>
-        <h1>Three instruments, one brass panel.</h1>
-        <p class="lede">A real-time tuner, a metronome that never drifts, and a drone tone generator &mdash; each built like a piece of analog gear, each running entirely in this browser tab.</p>
+        <p class="eyebrow">Tuner &middot; Metronome &middot; Ear Trainer &middot; Chords &middot; Tempo &middot; Transposer</p>
+        <h1>A whole practice session, one brass panel.</h1>
+        <p class="lede">Tune up, set a tempo, train your ear, look up a chord and move a progression into a new key &mdash; seven instruments built like pieces of analog gear, all running entirely in this browser tab.</p>
         {privacy_note_html()}
       </div>
     </section>
@@ -404,7 +779,7 @@ def build_homepage():
 """
 
     body = b + hero + panels + learn_more
-    scripts = ["tuner.js", "metronome.js", "tone-generator.js"]
+    scripts = [t["script"] for t in TOOLS]
     full = h + body + footer_and_close(scripts)
     write("index.html", full)
 
@@ -464,7 +839,14 @@ def build_tool_page(t):
     body += """        </dl>
       </div>
     </section>
+"""
 
+    # Reference tables (intervals, chord and scale formulas) for the tools that
+    # have one — real page content for a reader without JavaScript, and the
+    # same numbers the tool itself runs on.
+    body += t.get("extra", "")
+
+    body += """
     <section class="content-section">
       <div class="wrap">
         <h2>Related tools</h2>
@@ -479,12 +861,7 @@ def build_tool_page(t):
   </main>
 """
 
-    scripts_map = {
-        "tuner": ["tuner.js"],
-        "metronome": ["metronome.js"],
-        "tone-generator": ["tone-generator.js"],
-    }
-    full = h + b + body + footer_and_close(scripts_map[t["slug"]], faq_jsonld(t["faq"]))
+    full = h + b + body + footer_and_close([t["script"]], faq_jsonld(t["faq"]))
     write(f"{t['slug']}/index.html", full)
     write(f"{t['slug']}.html", full)
 
@@ -513,13 +890,13 @@ def build_legal(slug, title_text, body_html):
 
 
 def build_privacy():
-    body = f"""      <p><em>Last updated {TODAY}.</em></p>
+    body = f"""      <p><em>Last updated {UPDATED}.</em></p>
       <h2>What perfecttune.net does not collect</h2>
       <p>perfecttune.net has no accounts, no server-side database, and no analytics beacons. There is nothing to sign up for and nothing about your usage is logged anywhere we control.</p>
       <h2>Microphone audio (Tuner)</h2>
       <p>The Tuner requests microphone access only after you tap Start. The resulting audio stream is connected directly to a Web Audio <code>AnalyserNode</code> inside your own browser tab, analyzed frame by frame with an on-device pitch-detection algorithm, and immediately discarded &mdash; it is never recorded, saved, or transmitted anywhere. Tapping Stop releases the microphone; closing or navigating away from the tab does the same.</p>
       <h2>Everything else runs locally too</h2>
-      <p>The Metronome's clicks and the Tone Generator's drone are synthesized entirely on-device with the Web Audio API &mdash; no audio files are downloaded, and no sound is uploaded. Your theme preference (light/dark) is stored in your browser's <code>localStorage</code> and never leaves your device either.</p>
+      <p>The Metronome's clicks, the Tone Generator's drone, the Ear Trainer's intervals and the Chord and Scale Dictionary's chords are all synthesized on-device with the Web Audio API &mdash; no audio files are downloaded, and no sound is uploaded. The BPM Tapper measures the timing of your own taps and uses no microphone at all, and the Chord Transposer is pure arithmetic in the page. Your theme preference (light/dark) is stored in your browser's <code>localStorage</code> and never leaves your device either.</p>
       <h2>Advertising</h2>
       <p>This site shows ads served by Google AdSense. Google may use cookies and similar technologies to serve ads based on your prior visits to this and other websites. You can learn more about how Google uses data and manage your ad settings at <a href="https://policies.google.com/technologies/ads" rel="noopener">policies.google.com/technologies/ads</a>.</p>
       <h2>Third parties</h2>
@@ -531,11 +908,11 @@ def build_privacy():
 
 
 def build_terms():
-    body = f"""      <p><em>Last updated {TODAY}.</em></p>
+    body = f"""      <p><em>Last updated {UPDATED}.</em></p>
       <h2>Using the site</h2>
-      <p>perfecttune.net's Tuner, Metronome, and Tone Generator are provided free of charge, as-is, for anyone to use. There is no account to create and no fee to pay.</p>
+      <p>perfecttune.net's Tuner, Metronome, Tone Generator, Interval Ear Trainer, Chord and Scale Dictionary, BPM Tapper and Chord Transposer are provided free of charge, as-is, for anyone to use. There is no account to create and no fee to pay.</p>
       <h2>No warranty</h2>
-      <p>These tools are built with care but are not a substitute for a professional-grade tuner or click track in a critical performance or recording setting. Pitch detection and timing accuracy depend on your microphone, browser, and device; perfecttune.net is provided without warranty of any kind, express or implied.</p>
+      <p>These tools are built with care but are not a substitute for a professional-grade tuner or click track in a critical performance or recording setting. Pitch detection and timing accuracy depend on your microphone, browser, and device; chord, scale and transposition results follow standard equal-tempered theory but your chart's own notation conventions may differ. perfecttune.net is provided without warranty of any kind, express or implied.</p>
       <h2>Audio &amp; hearing</h2>
       <p>The Tone Generator and Metronome produce audible tones. Start at a low volume, especially when using headphones, and use your own judgment about safe listening levels and durations.</p>
       <h2>Acceptable use</h2>
@@ -550,7 +927,7 @@ def build_terms():
 
 def build_404():
     title = "Page not found | perfecttune.net"
-    description = "This page doesn't exist. Find the tuner, metronome or tone generator from the perfecttune.net homepage."
+    description = "This page doesn't exist. Find the tuner, metronome, ear trainer and the rest of the practice tools from the perfecttune.net homepage."
     json_ld = '{"@context":"https://schema.org","@type":"WebPage","name":"' + title + '","url":"' + SITE + '/404.html"}'
     # 404 may omit ads per convention; build a lightweight head manually.
     url = SITE + "/404.html"
@@ -563,6 +940,7 @@ def build_404():
   <title>{title}</title>
   <meta name="description" content="{description}">
   <link rel="canonical" href="{url}">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#241a14">
   <link rel="stylesheet" href="/assets/style.css">
   <script type="application/ld+json">{json_ld}</script>
@@ -573,7 +951,7 @@ def build_404():
     <div class="wrap notfound">
       <div class="big">&mdash;&mdash;</div>
       <h1>Page not found</h1>
-      <p>That page doesn't exist &mdash; but the tuner, metronome and tone generator are all one tap away.</p>
+      <p>That page doesn't exist &mdash; but the tuner, metronome, ear trainer and the rest of the practice tools are all one tap away.</p>
       <p><a href="/">&larr; Back to perfecttune.net</a></p>
     </div>
   </main>
@@ -665,7 +1043,7 @@ def build_misc():
     write("ads.txt", "google.com, pub-7560786263587509, DIRECT, f08c47fec0942fa0\n")
 
     urls = ["/"] + [f"/{t['slug']}/" for t in TOOLS] + ["/privacy/", "/terms/"] + [f"/articles/{a['slug']}.html" for a in ARTICLES]
-    entries = "\n".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{TODAY}</lastmod></url>" for u in urls)
+    entries = "\n".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{UPDATED}</lastmod></url>" for u in urls)
     sitemap = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>\n'
     write("sitemap.xml", sitemap)
 

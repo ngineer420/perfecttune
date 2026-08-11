@@ -48,8 +48,12 @@
     var defaultTitle = document.title;
     var hero = document.querySelector(".hero");
 
-    function show(slug, push) {
-      slug = slug || "tuner"; // homepage shows the primary tool live
+    // The homepage lands on the tuner rather than a menu — a live tool is the
+    // better first screen. But an explicit "All tools" or "Home" click (and a
+    // Back to a page that was showing the grid) has to reach the overview: with
+    // seven tools that grid is the only place each one is described.
+    function show(slug, push, fromHistory) {
+      if (!slug && !push && !fromHistory) slug = "tuner";
       var target = slug ? document.querySelector('[data-panel="' + slug + '"]') : overview;
       if (!target) target = overview;
 
@@ -101,7 +105,7 @@
 
     window.addEventListener("popstate", function (e) {
       var slug = e.state && e.state.panel ? e.state.panel : null;
-      show(slug, false);
+      show(slug, false, !!e.state);
     });
 
     show(null, false);

@@ -43,12 +43,10 @@
     var noteQueue = [];
     var tapTimes = [];
 
+    // One AudioContext for the whole site (assets/audio.js), created on the
+    // first user gesture and shared with the other sound-making tools.
     function getAudioCtx() {
-      if (!audioCtx) {
-        var AC = window.AudioContext || window.webkitAudioContext;
-        audioCtx = new AC();
-      }
-      if (audioCtx.state === "suspended") audioCtx.resume();
+      audioCtx = window.PerfectTuneAudio.context();
       return audioCtx;
     }
 
@@ -220,6 +218,17 @@
 
     renderLights();
     setBpm(120);
+
+    // The BPM Tapper hands a tempo over as /metronome/?bpm=NNN. It only
+    // pre-loads the number — nothing starts until Start is pressed.
+    var fromQuery = /[?&]bpm=(\d+(?:\.\d+)?)/.exec(window.location.search);
+    if (fromQuery) {
+      var handed = Number(fromQuery[1]);
+      if (handed >= 30 && handed <= 300) {
+        setBpm(handed);
+        statusEl.textContent = "Tempo set";
+      }
+    }
   }
 
   document.addEventListener("DOMContentLoaded", initMetronome);

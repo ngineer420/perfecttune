@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script>(function(){try{var r=document.documentElement;var t=localStorage.getItem("perfecttune-theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){}})();</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chord Transposer &mdash; Free, Private, Browser-Only | perfecttune.net</title>
+  <meta name="description" content="Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.">
+  <link rel="canonical" href="https://perfecttune.net/transposer/">
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <meta name="theme-color" content="#241a14">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="perfecttune.net">
+  <meta property="og:title" content="Chord Transposer &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta property="og:description" content="Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.">
+  <meta property="og:url" content="https://perfecttune.net/transposer/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Chord Transposer &mdash; Free, Private, Browser-Only | perfecttune.net">
+  <meta name="twitter:description" content="Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.">
+  <link rel="stylesheet" href="/assets/style.css">
+  
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord Transposer \u2014 perfecttune.net","url":"https://perfecttune.net/transposer/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
+      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
+      <ul class="tool-nav" id="tool-nav">
+      <li><a href="/" data-panel-link="">Home</a></li>
+      <li><a href="/tuner/" data-panel-link="tuner">Tuner</a></li>
+      <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+      <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Ear Trainer</a></li>
+      <li><a href="/chords-scales/" data-panel-link="chords-scales">Chords</a></li>
+      <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+      <li><a href="/transposer/" data-panel-link="transposer" aria-current="page">Transposer</a></li>
+      </ul>
+      <div class="header-controls">
+        <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <div class="wrap">
+        <div class="panel-head">
+          <h1 tabindex="-1">Chord Transposer</h1>
+          <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
+        </div>
+        <p>Type a progression, choose how far to move it, and get the chords back spelled for the key you land in. Quality suffixes are never touched — m7&#9837;5 and add9 come out exactly as they went in — and the enharmonic convention is stated rather than guessed at: by default every root is spelled as the nearest spelling to the target key on the circle of fifths, so three semitones up from C gives E&#9837;, not D&#9839;.</p>
+
+    <div class="instrument">
+      <div class="nameplate">
+        <span class="nameplate-label">Chord Transposer</span>
+        <span class="status-led" data-state="idle">Silent tool</span>
+      </div>
+      <div class="io-block">
+        <label for="tr-input">Chords in</label>
+        <textarea id="tr-input" rows="3" spellcheck="false">C  Am  F  G7</textarea>
+      </div>
+      <div class="field-row">
+        <div class="field wide"><label for="tr-semitones">Transpose by</label><select id="tr-semitones"></select></div>
+        <div class="field wide"><label for="tr-spelling">Spelling</label>
+          <select id="tr-spelling">
+            <option value="auto" selected>Auto &mdash; spell for the target key</option>
+            <option value="sharps">Sharps &mdash; C# D# F# G# A#</option>
+            <option value="flats">Flats &mdash; Db Eb Gb Ab Bb</option>
+          </select>
+        </div>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn ghost" id="tr-down">&minus;1 semitone</button>
+        <button type="button" class="ctrl-btn ghost" id="tr-up">+1 semitone</button>
+      </div>
+      <div class="chord-chips" id="tr-chips"></div>
+      <p class="summary-line" id="tr-summary" role="status" aria-live="polite"></p>
+      <p class="advisory" id="tr-note" hidden></p>
+      <div class="io-block">
+        <label for="tr-text">Chords out</label>
+        <textarea id="tr-text" class="io-text" rows="3" readonly></textarea>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="tr-copy">Copy result</button>
+      </div>
+      <p class="hint">Enharmonic convention: Auto spells each root as the nearest spelling to the target key on the circle of fifths.</p>
+    </div>
+
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <h2>How to use the Chord Transposer</h2>
+        <div class="how-to">
+          <ol>
+        <li>Type or paste your chords into the top box, separated by spaces or line breaks.</li>
+        <li>Choose how far to move them. Each step in the dropdown is labelled with its interval name, so &ldquo;+7&rdquo; also reads &ldquo;perfect 5th up&rdquo;.</li>
+        <li>Leave spelling on Auto to have the result spelled for the target key, or force sharps or flats if your chart needs them.</li>
+        <li>Read the chips, or copy the plain-text result — it keeps your original spacing and line breaks.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+        <dt>How does it choose between F# and Gb?</dt>
+        <dd>Auto spells every root as the nearest spelling to the target key on the circle of fifths. Transposing C Am F G7 up three semitones lands in E♭, a key with three flats, so the result is E♭ Cm A♭ B♭7 rather than the D♯ Cm G♯ A♯7 that a sharps-only tool would hand you. Where two spellings sit equally far from the key — F♯ and G♭ are both six accidentals — it takes the sharp. The Sharps and Flats options override the whole thing.</dd>
+        <dt>What happens to chord qualities and slash chords?</dt>
+        <dd>Nothing at all happens to the quality: everything after the root letter and its accidental is copied through untouched, so 7, maj7, m7b5, sus4, add9 and 13#11 all survive intact. A slash bass is parsed as its own note and transposed with the chord, so Am7/G up two semitones is Bm7/A.</dd>
+        <dt>Can I paste a lyric sheet?</dt>
+        <dd>Not usefully. Anything starting with a letter from A to G is treated as a chord symbol, so a word like “And” would be transposed along with the chords. Give it chords — anything it does not read as one is passed through untouched and listed underneath the result.</dd>
+        <dt>Does transposing change how the progression sounds?</dt>
+        <dd>In equal temperament the intervals inside every chord are preserved exactly, which is the whole point of twelve equal semitones, so the harmony is identical. What changes is the register, which open strings and easy keyboard shapes are available, and how the voicings sit under the hand.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Related tools</h2>
+        <div class="related-links">
+        <a href="/chords-scales/">Chord and Scale Dictionary &rarr;</a>
+        <a href="/ear-trainer/">Interval Ear Trainer &rarr;</a>
+        <a href="/metronome/">Metronome &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <ul class="footer-links">
+        <li><a href="/privacy/">Privacy</a></li>
+        <li><a href="/terms/">Terms</a></li>
+      </ul>
+    </div>
+  </footer>
+  <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How does it choose between F# and Gb?", "acceptedAnswer": {"@type": "Answer", "text": "Auto spells every root as the nearest spelling to the target key on the circle of fifths. Transposing C Am F G7 up three semitones lands in E♭, a key with three flats, so the result is E♭ Cm A♭ B♭7 rather than the D♯ Cm G♯ A♯7 that a sharps-only tool would hand you. Where two spellings sit equally far from the key — F♯ and G♭ are both six accidentals — it takes the sharp. The Sharps and Flats options override the whole thing."}}, {"@type": "Question", "name": "What happens to chord qualities and slash chords?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing at all happens to the quality: everything after the root letter and its accidental is copied through untouched, so 7, maj7, m7b5, sus4, add9 and 13#11 all survive intact. A slash bass is parsed as its own note and transposed with the chord, so Am7/G up two semitones is Bm7/A."}}, {"@type": "Question", "name": "Can I paste a lyric sheet?", "acceptedAnswer": {"@type": "Answer", "text": "Not usefully. Anything starting with a letter from A to G is treated as a chord symbol, so a word like “And” would be transposed along with the chords. Give it chords — anything it does not read as one is passed through untouched and listed underneath the result."}}, {"@type": "Question", "name": "Does transposing change how the progression sounds?", "acceptedAnswer": {"@type": "Answer", "text": "In equal temperament the intervals inside every chord are preserved exactly, which is the whole point of twelve equal semitones, so the harmony is identical. What changes is the register, which open strings and easy keyboard shapes are available, and how the voicings sit under the hand."}}]}</script>
+  <script src="/assets/notes.js"></script>
+  <script src="/assets/theory.js"></script>
+  <script src="/assets/audio.js"></script>
+  <script src="/assets/gauge.js"></script>
+  <script src="/assets/transposer.js"></script>
+  <script src="/assets/app.js"></script>
+</body>
+</html>
