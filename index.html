@@ -42,6 +42,24 @@
       </div>
     </div>
   </header>
+  <nav class="preset-nav" aria-label="Instrument tuners">
+    <div class="wrap">
+      <span class="preset-nav-label">Tuners</span>
+      <ul>
+        <li><a href="/tuner/" data-panel-link="tuner">Chromatic</a></li>
+        <li><a href="/guitar-tuner/">Guitar</a></li>
+        <li><a href="/bass-tuner/">Bass</a></li>
+        <li><a href="/ukulele-tuner/">Ukulele</a></li>
+        <li><a href="/violin-tuner/">Violin</a></li>
+        <li><a href="/banjo-tuner/">Banjo</a></li>
+        <li><a href="/cello-tuner/">Cello</a></li>
+        <li><a href="/drop-d-tuner/">Drop D</a></li>
+        <li><a href="/dadgad-tuner/">DADGAD</a></li>
+        <li><a href="/open-g-tuner/">Open G</a></li>
+        <li><a href="/half-step-down-tuner/">Half Step</a></li>
+      </ul>
+    </div>
+  </nav>
   <main>
     <section class="hero">
       <svg class="hero-waveform" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
@@ -104,29 +122,117 @@
           <h2 tabindex="-1">Tuner</h2>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
-        <p>Play a single sustained note — a guitar string, a violin open string, a hummed pitch, anything — and perfecttune listens through your microphone, estimates the fundamental frequency with an autocorrelation pitch detector, and swings a brass needle to show how many cents sharp or flat you are against the nearest equal-tempered note.</p>
+        <p>Pick an instrument and a tuning, then tune it either way round: tap a string to hear its exact pitch and match it by ear, or start the microphone and read how many cents sharp or flat you are off a brass needle. The reference tones and the string chart need no permissions at all &mdash; the microphone is an upgrade, not a gate.</p>
 
-    <div class="instrument">
+    <div class="instrument tuner-instrument" data-default-tuning="guitar-standard">
       <div class="nameplate">
         <span class="nameplate-label">Tuner</span>
         <span class="status-led" id="tn-status" data-state="idle">Idle</span>
       </div>
-      <div class="gauge-wrap"><div class="gauge-mount" id="tn-gauge"></div></div>
-      <div class="screen">
-        <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
-        <div class="cents-readout" id="tn-cents">Waiting for a signal&hellip;</div>
-      </div>
-      <div class="field-row" style="margin-top:18px">
-        <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
-        <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
+      <div class="field-row">
+        <div class="field wide"><label for="tn-tuning">Instrument &amp; tuning</label>
+          <select id="tn-tuning">
+            <optgroup label="Guitar">
+              <option value="guitar-standard" selected>Standard &mdash; EADGBE</option>
+              <option value="guitar-drop-d">Drop D &mdash; DADGBE</option>
+              <option value="guitar-dadgad">DADGAD</option>
+              <option value="guitar-open-g">Open G &mdash; DGDGBD</option>
+              <option value="guitar-open-d">Open D &mdash; DADF#AD</option>
+              <option value="guitar-half-step">Half step down &mdash; E&#9837; standard</option>
+            </optgroup>
+            <optgroup label="Bass">
+              <option value="bass-4">4-string &mdash; EADG</option>
+              <option value="bass-5">5-string &mdash; BEADG</option>
+            </optgroup>
+            <optgroup label="Ukulele">
+              <option value="ukulele-gcea">Standard &mdash; GCEA</option>
+            </optgroup>
+            <optgroup label="Violin">
+              <option value="violin-gdae">Standard &mdash; GDAE</option>
+            </optgroup>
+            <optgroup label="Cello">
+              <option value="cello-cgda">Standard &mdash; CGDA</option>
+            </optgroup>
+            <optgroup label="Banjo">
+              <option value="banjo-open-g">Open G &mdash; gDGBD</option>
+            </optgroup>
+          </select>
+        </div>
         <div class="field"><label for="tn-a4">Concert pitch (A4)</label><input type="number" id="tn-a4" min="415" max="466" value="440" inputmode="numeric"></div>
       </div>
-      <div class="controls-row">
-        <button type="button" class="ctrl-btn primary" id="tn-start">Start</button>
-        <button type="button" class="ctrl-btn stop" id="tn-stop">Stop</button>
+      <div class="string-chart" id="tn-strings" data-tuning="guitar-standard">
+        <div class="string-chart-head">
+          <h3 class="string-chart-title" id="tn-tuning-name">Guitar &mdash; Standard (EADGBE)</h3>
+          <div class="string-chart-actions">
+            <button type="button" class="chip-btn" id="tn-play-all">Play all strings</button>
+            <button type="button" class="chip-btn is-on" id="tn-auto" aria-pressed="true">Auto</button>
+          </div>
+        </div>
+        <table class="string-table" id="tn-table">
+          <caption class="visually-hidden">Guitar &mdash; Standard (EADGBE): string number, note and frequency at A4 = 440 Hz</caption>
+          <thead>
+            <tr><th scope="col">String</th><th scope="col">Note</th><th scope="col">Frequency</th><th scope="col">Reference tone</th></tr>
+          </thead>
+          <tbody id="tn-tbody">
+              <tr data-index="0" data-midi="40">
+                <th scope="row" class="st-num">6th</th>
+                <td class="st-note">E2</td>
+                <td class="st-freq mono">82.41 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="0"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 6th string, E2</span></button><button type="button" class="string-btn target" data-target="0" aria-pressed="false">Target<span class="visually-hidden"> the 6th string, E2</span></button></td>
+              </tr>
+              <tr data-index="1" data-midi="45">
+                <th scope="row" class="st-num">5th</th>
+                <td class="st-note">A2</td>
+                <td class="st-freq mono">110.00 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="1"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 5th string, A2</span></button><button type="button" class="string-btn target" data-target="1" aria-pressed="false">Target<span class="visually-hidden"> the 5th string, A2</span></button></td>
+              </tr>
+              <tr data-index="2" data-midi="50">
+                <th scope="row" class="st-num">4th</th>
+                <td class="st-note">D3</td>
+                <td class="st-freq mono">146.83 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="2"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 4th string, D3</span></button><button type="button" class="string-btn target" data-target="2" aria-pressed="false">Target<span class="visually-hidden"> the 4th string, D3</span></button></td>
+              </tr>
+              <tr data-index="3" data-midi="55">
+                <th scope="row" class="st-num">3rd</th>
+                <td class="st-note">G3</td>
+                <td class="st-freq mono">196.00 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="3"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 3rd string, G3</span></button><button type="button" class="string-btn target" data-target="3" aria-pressed="false">Target<span class="visually-hidden"> the 3rd string, G3</span></button></td>
+              </tr>
+              <tr data-index="4" data-midi="59">
+                <th scope="row" class="st-num">2nd</th>
+                <td class="st-note">B3</td>
+                <td class="st-freq mono">246.94 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="4"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 2nd string, B3</span></button><button type="button" class="string-btn target" data-target="4" aria-pressed="false">Target<span class="visually-hidden"> the 2nd string, B3</span></button></td>
+              </tr>
+              <tr data-index="5" data-midi="64">
+                <th scope="row" class="st-num">1st</th>
+                <td class="st-note">E4</td>
+                <td class="st-freq mono">329.63 Hz</td>
+                <td class="st-actions"><button type="button" class="string-btn tone" data-tone="5"><span aria-hidden="true">&#9834;</span> Tone<span class="visually-hidden"> for the 1st string, E4</span></button><button type="button" class="string-btn target" data-target="5" aria-pressed="false">Target<span class="visually-hidden"> the 1st string, E4</span></button></td>
+              </tr>
+          </tbody>
+        </table>
+        <p class="hint string-chart-hint" id="tn-target-note">Tap <strong>Tone</strong> to hear a string and tune to it by ear &mdash; no microphone needed. <strong>Auto</strong> is on, so the needle below follows whichever string you are nearest.</p>
       </div>
-      <p class="error-msg" id="tn-error"></p>
-      <p class="hint">Microphone audio is processed on-device and never leaves your browser.</p>
+
+      <div class="tuner-live">
+        <h3 class="live-title">Live pitch &mdash; microphone</h3>
+        <div class="gauge-wrap"><div class="gauge-mount" id="tn-gauge"></div></div>
+        <div class="screen">
+          <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
+          <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
+        </div>
+        <div class="field-row" style="margin-top:14px">
+          <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
+          <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
+        </div>
+        <div class="controls-row">
+          <button type="button" class="ctrl-btn primary" id="tn-start">Start listening</button>
+          <button type="button" class="ctrl-btn stop" id="tn-stop">Stop</button>
+        </div>
+        <p class="error-msg" id="tn-error"></p>
+      </div>
+      <p class="hint">Microphone audio is processed on-device and never leaves your browser &mdash; and the chart and reference tones above never need it at all.</p>
     </div>
 
         <p style="margin-top:16px;font-size:14px"><a href="/tuner/#how-it-works">Full guide &amp; FAQ for the Tuner &rarr;</a></p>
@@ -404,6 +510,54 @@
         <p style="margin-top:16px;font-size:14px"><a href="/transposer/#how-it-works">Full guide &amp; FAQ for the Chord Transposer &rarr;</a></p>
       </div>
     </section>
+    <section class="content-section" id="instrument-tuners">
+      <div class="wrap">
+        <h2>Tune your instrument</h2>
+        <p>The same tuner with the strings already filled in: every string's target frequency printed on the page, a reference tone on each one, and a needle if you want to give it a microphone. Alternate guitar tunings have their own pages too.</p>
+        <div class="preset-grid">
+          <a class="preset-card" href="/guitar-tuner/">
+            <span class="preset-card-name">Guitar Tuner</span>
+            <span class="preset-card-notes mono">E2 A2 D3 G3 B3 E4</span>
+          </a>
+          <a class="preset-card" href="/bass-tuner/">
+            <span class="preset-card-name">Bass Tuner</span>
+            <span class="preset-card-notes mono">E1 A1 D2 G2</span>
+          </a>
+          <a class="preset-card" href="/ukulele-tuner/">
+            <span class="preset-card-name">Ukulele Tuner</span>
+            <span class="preset-card-notes mono">G4 C4 E4 A4</span>
+          </a>
+          <a class="preset-card" href="/violin-tuner/">
+            <span class="preset-card-name">Violin Tuner</span>
+            <span class="preset-card-notes mono">G3 D4 A4 E5</span>
+          </a>
+          <a class="preset-card" href="/banjo-tuner/">
+            <span class="preset-card-name">Banjo Tuner</span>
+            <span class="preset-card-notes mono">G4 D3 G3 B3 D4</span>
+          </a>
+          <a class="preset-card" href="/cello-tuner/">
+            <span class="preset-card-name">Cello Tuner</span>
+            <span class="preset-card-notes mono">C2 G2 D3 A3</span>
+          </a>
+          <a class="preset-card" href="/drop-d-tuner/">
+            <span class="preset-card-name">Drop D Tuner</span>
+            <span class="preset-card-notes mono">D2 A2 D3 G3 B3 E4</span>
+          </a>
+          <a class="preset-card" href="/dadgad-tuner/">
+            <span class="preset-card-name">DADGAD Tuner</span>
+            <span class="preset-card-notes mono">D2 A2 D3 G3 A3 D4</span>
+          </a>
+          <a class="preset-card" href="/open-g-tuner/">
+            <span class="preset-card-name">Open G Tuner</span>
+            <span class="preset-card-notes mono">D2 G2 D3 G3 B3 D4</span>
+          </a>
+          <a class="preset-card" href="/half-step-down-tuner/">
+            <span class="preset-card-name">Half Step Down Tuner</span>
+            <span class="preset-card-notes mono">E&#9837;2 A&#9837;2 D&#9837;3 G&#9837;3 B&#9837;3 E&#9837;4</span>
+          </a>
+        </div>
+      </div>
+    </section>
     <section class="content-section">
       <div class="wrap">
         <h2>Learn more</h2>
@@ -429,6 +583,8 @@
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>
   <script src="/assets/gauge.js"></script>
+  <script src="/assets/pitch.js"></script>
+  <script src="/assets/tunings.js"></script>
   <script src="/assets/tuner.js"></script>
   <script src="/assets/metronome.js"></script>
   <script src="/assets/tone-generator.js"></script>

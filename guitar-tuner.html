@@ -4,22 +4,22 @@
   <script>(function(){try{var r=document.documentElement;var t=localStorage.getItem("perfecttune-theme");if(!t){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light";}r.setAttribute("data-theme",t);}catch(e){}})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Tuner &mdash; Free, Private, Browser-Only | perfecttune.net</title>
-  <meta name="description" content="Free real-time instrument tuner with presets for guitar, bass, ukulele, violin, cello and banjo. Reference tone per string plus microphone pitch detection down to 31 Hz — 100% on-device, audio never leaves your browser.">
-  <link rel="canonical" href="https://perfecttune.net/tuner/">
+  <title>Guitar Tuner - Standard, Drop D, DADGAD and More | perfecttune.net</title>
+  <meta name="description" content="Tune a guitar in your browser using reference tones for every string or live microphone pitch detection. Standard, drop D, DADGAD, open G and open D.">
+  <link rel="canonical" href="https://perfecttune.net/guitar-tuner/">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#241a14">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="perfecttune.net">
-  <meta property="og:title" content="Tuner &mdash; Free, Private, Browser-Only | perfecttune.net">
-  <meta property="og:description" content="Free real-time instrument tuner with presets for guitar, bass, ukulele, violin, cello and banjo. Reference tone per string plus microphone pitch detection down to 31 Hz — 100% on-device, audio never leaves your browser.">
-  <meta property="og:url" content="https://perfecttune.net/tuner/">
+  <meta property="og:title" content="Guitar Tuner - Standard, Drop D, DADGAD and More | perfecttune.net">
+  <meta property="og:description" content="Tune a guitar in your browser using reference tones for every string or live microphone pitch detection. Standard, drop D, DADGAD, open G and open D.">
+  <meta property="og:url" content="https://perfecttune.net/guitar-tuner/">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Tuner &mdash; Free, Private, Browser-Only | perfecttune.net">
-  <meta name="twitter:description" content="Free real-time instrument tuner with presets for guitar, bass, ukulele, violin, cello and banjo. Reference tone per string plus microphone pitch detection down to 31 Hz — 100% on-device, audio never leaves your browser.">
+  <meta name="twitter:title" content="Guitar Tuner - Standard, Drop D, DADGAD and More | perfecttune.net">
+  <meta name="twitter:description" content="Tune a guitar in your browser using reference tones for every string or live microphone pitch detection. Standard, drop D, DADGAD, open G and open D.">
   <link rel="stylesheet" href="/assets/style.css">
   
-  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free real-time instrument tuner with presets for guitar, bass, ukulele, violin, cello and banjo. Reference tone per string plus microphone pitch detection down to 31 Hz — 100% on-device, audio never leaves your browser.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Guitar Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/guitar-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a guitar in your browser using reference tones for every string or live microphone pitch detection. Standard, drop D, DADGAD, open G and open D.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -29,7 +29,7 @@
       <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
       <ul class="tool-nav" id="tool-nav">
       <li><a href="/" data-panel-link="">Home</a></li>
-      <li><a href="/tuner/" data-panel-link="tuner" aria-current="page">Tuner</a></li>
+      <li><a href="/tuner/" data-panel-link="tuner" class="is-section">Tuner</a></li>
       <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
       <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
       <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Ear Trainer</a></li>
@@ -46,8 +46,8 @@
     <div class="wrap">
       <span class="preset-nav-label">Tuners</span>
       <ul>
-        <li><a href="/tuner/" data-panel-link="tuner" aria-current="page">Chromatic</a></li>
-        <li><a href="/guitar-tuner/">Guitar</a></li>
+        <li><a href="/tuner/" data-panel-link="tuner">Chromatic</a></li>
+        <li><a href="/guitar-tuner/" aria-current="page">Guitar</a></li>
         <li><a href="/bass-tuner/">Bass</a></li>
         <li><a href="/ukulele-tuner/">Ukulele</a></li>
         <li><a href="/violin-tuner/">Violin</a></li>
@@ -64,15 +64,15 @@
     <section class="panel">
       <div class="wrap">
         <div class="panel-head">
-          <h1 tabindex="-1">Tuner</h1>
+          <h1 tabindex="-1">Guitar Tuner</h1>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
-        <p>Pick an instrument and a tuning, then tune it either way round: tap a string to hear its exact pitch and match it by ear, or start the microphone and read how many cents sharp or flat you are off a brass needle. The reference tones and the string chart need no permissions at all &mdash; the microphone is an upgrade, not a gate.</p>
+        <p>Standard tuning is E2 82.41 Hz, A2 110.00 Hz, D3 146.83 Hz, G3 196.00 Hz, B3 246.94 Hz and E4 329.63 Hz, sixth string to first. Tap any string in the chart and the browser plays that exact pitch, so the whole guitar can be tuned by ear with no microphone at all. Allow the mic and you get live pitch detection as well &mdash; the note you are actually playing, read on the fly and measured against the target.</p>
         <p class="privacy-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg> Microphone audio is processed entirely in your browser and never uploaded.</p>
 
     <div class="instrument tuner-instrument" data-default-tuning="guitar-standard">
       <div class="nameplate">
-        <span class="nameplate-label">Tuner</span>
+        <span class="nameplate-label">Guitar Tuner</span>
         <span class="status-led" id="tn-status" data-state="idle">Idle</span>
       </div>
       <div class="field-row">
@@ -186,13 +186,13 @@
 
     <section class="content-section" id="how-it-works">
       <div class="wrap">
-        <h2>How to use the Tuner</h2>
+        <h2>How to use the Guitar Tuner</h2>
         <div class="how-to">
           <ol>
-        <li>Choose your instrument and tuning from the picker &mdash; twelve presets from a 5-string bass to a reentrant ukulele, with every string's target frequency listed underneath.</li>
-        <li>Tap Tone on any string to hear that exact pitch, and tune to it by ear. Nothing is requested and nothing is recorded; this alone will get an instrument in tune.</li>
-        <li>For a needle, tap Start listening and allow microphone access. Audio is analyzed locally, frame by frame, and never uploaded.</li>
-        <li>Leave Auto on to have the needle follow whichever string you are closest to, or tap Target on one string to pin it there &mdash; useful when a string is so far out that the nearest string is the wrong one.</li>
+        <li>Choose your tuning from the selector &mdash; standard EADGBE is loaded by default, and drop D, DADGAD, open G, open D and half step down sit alongside it.</li>
+        <li>Tap a string in the chart to hear its reference pitch, then turn the peg until the beating between your string and the tone slows to nothing.</li>
+        <li>For live readings, allow microphone access and play one string at a time, letting the note ring while the needle settles.</li>
+        <li>Go through all six strings and then start again from the sixth, because every string you tighten pulls the neck a little further forward and drags the others flat.</li>
           </ol>
         </div>
       </div>
@@ -200,42 +200,32 @@
 
     <section class="content-section">
       <div class="wrap">
-        <h2>FAQ</h2>
-        <dl class="faq">
-        <dt>Do I need to give microphone permission to use this?</dt>
-        <dd>No. Every string in every preset has a reference tone you can play through your speakers or headphones and tune to by ear, and the full chart of notes and target frequencies is on the page before anything is requested. Microphone access adds a live needle; it is not required for the page to do its job.</dd>
-        <dt>Does my microphone audio get uploaded anywhere?</dt>
-        <dd>No. The microphone stream is only ever connected to a local Web Audio AnalyserNode in your own browser tab — it is analyzed and immediately discarded, frame by frame. Nothing is recorded, saved, or sent to any server.</dd>
-        <dt>Will it detect a 5-string bass low B?</dt>
-        <dd>Yes. That note is 30.87 Hz, and one cycle of it is over 1500 samples at 48 kHz — a conventional 2048-sample tuner window holds barely one and a third cycles and cannot resolve it. Selecting a low tuning here lengthens the analysis window to 16384 samples, and the detector normalizes for the fact that a bass string's fundamental is far quieter than its harmonics, so it reports the fundamental rather than the octave above it.</dd>
-        <dt>Why does it say "No clear pitch"?</dt>
-        <dd>The detector needs a single, sustained, reasonably clean tone. Chords, percussive plucks, background noise, or a very quiet signal won't produce a stable enough waveform to lock onto — let the note ring and try again a little louder.</dd>
-        <dt>Can I tune to something other than A440?</dt>
-        <dd>Yes — the concert pitch field accepts any value from 415–466 Hz, so you can match an orchestra tuning to A442 or a period-instrument ensemble tuning lower. Every string's target frequency in the chart is recomputed from that value, so the numbers on screen are always the numbers being aimed at.</dd>
-        </dl>
+        <h2>Tuning by ear with the reference tones</h2>
+<p>The reference tones are not a fallback for when the microphone fails. Matching two pitches by ear is quick and it is the only method that works on a noisy stage, where a mic hears the drummer as clearly as it hears you.</p><p>What you are listening for is beating. Two pitches close but not identical reinforce and cancel each other in turn, and the combined sound pulses at the rate of their difference in Hz &mdash; a string two Hz below the reference wobbles twice a second. Tighten it and the wobble slows; when it disappears the two pitches are identical. There is no in-between reading to interpret.</p><p>Beating is easiest to hear on the middle strings, D3 146.83 Hz and G3 196.00 Hz. Down on E2 82.41 Hz the pulses are slow and easy to miss, so sound the reference and the string one after the other instead of together, and judge which of the two sits higher.</p>
       </div>
     </section>
 
     <section class="content-section">
       <div class="wrap">
-        <h2>Every preset, every string</h2>
-        <p>Twelve tunings, generated from the one table the tuner itself runs on &mdash; so what is printed here is exactly what the needle aims at. Frequencies are equal temperament at A4 = 440 Hz; the tunings with a page of their own are linked.</p>
+        <h2>The five alternate tunings on this page</h2>
+<p>Switching tuning rewrites both halves of the tool: the reference tones you tap, and the targets that live detection measures against.</p><ul><li><strong>Drop D</strong> moves the sixth string alone, E2 82.41 Hz down to D2 73.42 Hz.</li><li><strong>DADGAD</strong> takes drop D and lowers the second and first strings a whole tone as well, to A3 220.00 Hz and D4 293.66 Hz.</li><li><strong>Open G</strong> drops the sixth, fifth and first so the open set sounds a G major chord: D2 73.42, G2 98.00, D3 146.83, G3 196.00, B3 246.94 and D4 293.66 Hz.</li><li><strong>Open D</strong> lowers the sixth, third, second and first, giving D2 73.42, A2 110.00, D3 146.83, F&#9839;3 185.00, A3 220.00 and D4 293.66 Hz.</li><li><strong>Half step down</strong> takes every string down one semitone, to E&#9837;2 77.78, A&#9837;2 103.83, D&#9837;3 138.59, G&#9837;3 185.00, B&#9837;3 233.08 and E&#9837;4 311.13 Hz.</li></ul>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Every guitar tuning in the picker</h2>
+        <p>All six are selectable from the dropdown above without leaving this page, and the four with the most repertoire behind them have a page of their own. The frequencies are the ones the needle actually aims at, derived from equal temperament at A4 = 440 Hz &mdash; change concert pitch in the tuner and every one of them moves with it.</p>
         <div class="table-scroll">
         <table class="data-table">
           <thead><tr><th>Tuning</th><th>Strings, low to high</th><th>Frequency (Hz, A4 = 440)</th></tr></thead>
           <tbody>
-          <tr><td><a href="/guitar-tuner/">Guitar &mdash; Standard (EADGBE)</a></td><td class="mono">E2 A2 D3 G3 B3 E4</td><td class="mono">82.41 110.00 146.83 196.00 246.94 329.63</td></tr>
+          <tr><td>Guitar &mdash; Standard (EADGBE)</td><td class="mono">E2 A2 D3 G3 B3 E4</td><td class="mono">82.41 110.00 146.83 196.00 246.94 329.63</td></tr>
           <tr><td><a href="/drop-d-tuner/">Guitar &mdash; Drop D (DADGBE)</a></td><td class="mono">D2 A2 D3 G3 B3 E4</td><td class="mono">73.42 110.00 146.83 196.00 246.94 329.63</td></tr>
           <tr><td><a href="/dadgad-tuner/">Guitar &mdash; DADGAD</a></td><td class="mono">D2 A2 D3 G3 A3 D4</td><td class="mono">73.42 110.00 146.83 196.00 220.00 293.66</td></tr>
           <tr><td><a href="/open-g-tuner/">Guitar &mdash; Open G (DGDGBD)</a></td><td class="mono">D2 G2 D3 G3 B3 D4</td><td class="mono">73.42 98.00 146.83 196.00 246.94 293.66</td></tr>
           <tr><td>Guitar &mdash; Open D (DADF#AD)</td><td class="mono">D2 A2 D3 F&#9839;3 A3 D4</td><td class="mono">73.42 110.00 146.83 185.00 220.00 293.66</td></tr>
           <tr><td><a href="/half-step-down-tuner/">Guitar &mdash; Half step down (E&#9837; standard)</a></td><td class="mono">E&#9837;2 A&#9837;2 D&#9837;3 G&#9837;3 B&#9837;3 E&#9837;4</td><td class="mono">77.78 103.83 138.59 185.00 233.08 311.13</td></tr>
-          <tr><td><a href="/bass-tuner/">Bass &mdash; 4-string (EADG)</a></td><td class="mono">E1 A1 D2 G2</td><td class="mono">41.20 55.00 73.42 98.00</td></tr>
-          <tr><td><a href="/bass-tuner/">Bass &mdash; 5-string (BEADG)</a></td><td class="mono">B0 E1 A1 D2 G2</td><td class="mono">30.87 41.20 55.00 73.42 98.00</td></tr>
-          <tr><td><a href="/ukulele-tuner/">Ukulele &mdash; Standard (GCEA)</a></td><td class="mono">G4 C4 E4 A4</td><td class="mono">392.00 261.63 329.63 440.00</td></tr>
-          <tr><td><a href="/violin-tuner/">Violin &mdash; Standard (GDAE)</a></td><td class="mono">G3 D4 A4 E5</td><td class="mono">196.00 293.66 440.00 659.26</td></tr>
-          <tr><td><a href="/cello-tuner/">Cello &mdash; Standard (CGDA)</a></td><td class="mono">C2 G2 D3 A3</td><td class="mono">65.41 98.00 146.83 220.00</td></tr>
-          <tr><td><a href="/banjo-tuner/">Banjo &mdash; Open G (gDGBD)</a></td><td class="mono">G4 D3 G3 B3 D4</td><td class="mono">392.00 146.83 196.00 246.94 293.66</td></tr>
           </tbody>
         </table>
         </div>
@@ -244,11 +234,45 @@
 
     <section class="content-section">
       <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+        <dt>Can I tune without a microphone?</dt>
+        <dd>Yes, and nothing is missing if you do. Every string in the chart is a playable reference tone at its exact frequency, so with the mic denied or absent you still have all six pitches on tap. Play the tone, play your string, and listen for the beating between them to slow down and stop. The microphone only adds the second mode: live detection of the pitch you are actually producing, reported in cents.</dd>
+        <dt>Is anything I play sent to a server?</dt>
+        <dd>No. The microphone stream is only ever connected to a local Web Audio AnalyserNode in your own browser tab, where it is analyzed for pitch and discarded frame by frame. The detection itself &mdash; a normalized square difference autocorrelation with McLeod peak picking &mdash; runs on your own device. Nothing is recorded, saved, or sent anywhere, and closing the tab ends the stream.</dd>
+        <dt>Why is my guitar out of tune again a minute later?</dt>
+        <dd>Usually one of three things. New strings are still stretching and will keep dropping for their first few hours. Tuning down to a note leaves the winding slack at the post, so always arrive from below &mdash; if you overshoot, go flat and come back up. And the neck behaves like a spring, so tightening one string releases a little tension on the other five. A second pass answers all three.</dd>
+        <dt>What does the A4 setting do?</dt>
+        <dd>It sets the reference the entire chart is derived from. Every frequency above follows from A4 by equal temperament, so moving A4 moves all six targets together. The default is 440 Hz and the range is 415 to 466 Hz. Use 415 Hz for baroque pitch, or match a piano that has settled a few Hz off standard rather than tuning the guitar into a fight with it.</dd>
+        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Other tuners</h2>
+        <div class="related-links">
+        <a href="/tuner/">Chromatic tuner &rarr;</a>
+        <a href="/bass-tuner/">Bass Tuner &rarr;</a>
+        <a href="/ukulele-tuner/">Ukulele Tuner &rarr;</a>
+        <a href="/violin-tuner/">Violin Tuner &rarr;</a>
+        <a href="/banjo-tuner/">Banjo Tuner &rarr;</a>
+        <a href="/cello-tuner/">Cello Tuner &rarr;</a>
+        <a href="/drop-d-tuner/">Drop D Tuner &rarr;</a>
+        <a href="/dadgad-tuner/">DADGAD Tuner &rarr;</a>
+        <a href="/open-g-tuner/">Open G Tuner &rarr;</a>
+        <a href="/half-step-down-tuner/">Half Step Down Tuner &rarr;</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
         <h2>Related tools</h2>
         <div class="related-links">
+        <a href="/chords-scales/">Chord and Scale Dictionary &rarr;</a>
         <a href="/metronome/">Metronome &rarr;</a>
-        <a href="/tone-generator/">Tone Generator &rarr;</a>
-        <a href="/ear-trainer/">Interval Ear Trainer &rarr;</a>
+        <a href="/transposer/">Chord Transposer &rarr;</a>
         </div>
       </div>
     </section>
@@ -263,7 +287,7 @@
     </div>
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Do I need to give microphone permission to use this?", "acceptedAnswer": {"@type": "Answer", "text": "No. Every string in every preset has a reference tone you can play through your speakers or headphones and tune to by ear, and the full chart of notes and target frequencies is on the page before anything is requested. Microphone access adds a live needle; it is not required for the page to do its job."}}, {"@type": "Question", "name": "Does my microphone audio get uploaded anywhere?", "acceptedAnswer": {"@type": "Answer", "text": "No. The microphone stream is only ever connected to a local Web Audio AnalyserNode in your own browser tab — it is analyzed and immediately discarded, frame by frame. Nothing is recorded, saved, or sent to any server."}}, {"@type": "Question", "name": "Will it detect a 5-string bass low B?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. That note is 30.87 Hz, and one cycle of it is over 1500 samples at 48 kHz — a conventional 2048-sample tuner window holds barely one and a third cycles and cannot resolve it. Selecting a low tuning here lengthens the analysis window to 16384 samples, and the detector normalizes for the fact that a bass string's fundamental is far quieter than its harmonics, so it reports the fundamental rather than the octave above it."}}, {"@type": "Question", "name": "Why does it say \"No clear pitch\"?", "acceptedAnswer": {"@type": "Answer", "text": "The detector needs a single, sustained, reasonably clean tone. Chords, percussive plucks, background noise, or a very quiet signal won't produce a stable enough waveform to lock onto — let the note ring and try again a little louder."}}, {"@type": "Question", "name": "Can I tune to something other than A440?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — the concert pitch field accepts any value from 415–466 Hz, so you can match an orchestra tuning to A442 or a period-instrument ensemble tuning lower. Every string's target frequency in the chart is recomputed from that value, so the numbers on screen are always the numbers being aimed at."}}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I tune without a microphone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, and nothing is missing if you do. Every string in the chart is a playable reference tone at its exact frequency, so with the mic denied or absent you still have all six pitches on tap. Play the tone, play your string, and listen for the beating between them to slow down and stop. The microphone only adds the second mode: live detection of the pitch you are actually producing, reported in cents."}}, {"@type": "Question", "name": "Is anything I play sent to a server?", "acceptedAnswer": {"@type": "Answer", "text": "No. The microphone stream is only ever connected to a local Web Audio AnalyserNode in your own browser tab, where it is analyzed for pitch and discarded frame by frame. The detection itself &mdash; a normalized square difference autocorrelation with McLeod peak picking &mdash; runs on your own device. Nothing is recorded, saved, or sent anywhere, and closing the tab ends the stream."}}, {"@type": "Question", "name": "Why is my guitar out of tune again a minute later?", "acceptedAnswer": {"@type": "Answer", "text": "Usually one of three things. New strings are still stretching and will keep dropping for their first few hours. Tuning down to a note leaves the winding slack at the post, so always arrive from below &mdash; if you overshoot, go flat and come back up. And the neck behaves like a spring, so tightening one string releases a little tension on the other five. A second pass answers all three."}}, {"@type": "Question", "name": "What does the A4 setting do?", "acceptedAnswer": {"@type": "Answer", "text": "It sets the reference the entire chart is derived from. Every frequency above follows from A4 by equal temperament, so moving A4 moves all six targets together. The default is 440 Hz and the range is 415 to 466 Hz. Use 415 Hz for baroque pitch, or match a piano that has settled a few Hz off standard rather than tuning the guitar into a fight with it."}}]}</script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>
