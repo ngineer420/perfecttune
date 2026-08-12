@@ -884,8 +884,21 @@ TOOLS = [
 
 TOOL_BY_SLUG = {t["slug"]: t for t in TOOLS}
 
-# Nav follows the tool list, so a new tool can never be added without one.
-NAV_ITEMS = [("", "Home")] + [(t["slug"], t.get("nav", t["name"])) for t in TOOLS]
+# The portfolio toolbar's tier-1 list (ngineer420.github.io#13, with the
+# errata). Nav follows the tool list, so a new tool can never be added without
+# one. "Home" is not in it: the wordmark is the home link and the spec does not
+# spend a rail or sheet slot on it.
+#   slug -> rail chip text (<= 18 chars), sheet anchor text
+NAV_LABELS = {
+    "tuner":          ("Tuner",      "Chromatic Tuner"),
+    "metronome":      ("Metronome",  "Metronome"),
+    "tone-generator": ("Tone",       "Tone Generator"),
+    "ear-trainer":    ("Ear Trainer", "Interval Ear Trainer"),
+    "chords-scales":  ("Chords",     "Chord and Scale Dictionary"),
+    "bpm-tapper":     ("BPM Tapper", "BPM Tapper"),
+    "transposer":     ("Transposer", "Chord Transposer"),
+}
+NAV_ITEMS = [(t["slug"], *NAV_LABELS[t["slug"]]) for t in TOOLS]
 
 
 # ------------------------------------------------------------ tuner pages --
@@ -954,9 +967,14 @@ PRESET_BY_SLUG = {p["slug"]: p for p in PRESET_PAGES}
 TUNING_PAGE_BY_TUNING = {p["tuning"]: p["slug"] for p in PRESET_PAGES}
 TUNING_PAGE_BY_TUNING["bass-5"] = "bass-tuner"
 
-# The second nav row, carried on every page. The main tool nav stays at
-# seven items; ten more would drown it, and these are all one tool anyway.
-PRESET_NAV = [("tuner", "Chromatic")] + [(p["slug"], p["nav"]) for p in PRESET_PAGES]
+# Tier 2: every one of these is the tuner with a tuning baked in, so none of
+# them appears in the rail or the sheet body. They get one hub link at the
+# bottom of the sheet, plus real <a href> sibling chips inside the tuner's own
+# surface, where a tuning is a parameter and not a peer of the other six tools.
+# This list used to be a second nav bar on all 21 pages, including privacy,
+# terms and 404.
+TUNER_VARIANTS = [("tuner", "Chromatic")] + [(p["slug"], p["nav"]) for p in PRESET_PAGES]
+TUNER_OWNED = {slug for slug, _ in TUNER_VARIANTS[1:]}
 
 ARTICLES = [
     dict(
@@ -1007,56 +1025,93 @@ def head(title, description, canonical_path, json_ld, extra_style=""):
 """
 
 
-def preset_nav(current_slug):
-    """The tuner-preset strip, under the main nav on every page. Ten more
-    entries in the header itself would swamp seven tools; as its own row it
-    also gives every page on the site a direct link to every tuner, which is
-    the internal linking these pages need to be found in the first place.
-    The Chromatic entry keeps its data-panel-link so it still switches
-    panels rather than reloading when it is clicked on the homepage."""
-    items = []
-    for slug, label in PRESET_NAV:
-        current = ' aria-current="page"' if slug == current_slug else ""
-        panel = ' data-panel-link="tuner"' if slug == "tuner" else ""
-        items.append(f'        <li><a href="/{slug}/"{panel}{current}>{label}</a></li>')
-    links = "\n".join(items)
-    return f"""  <nav class="preset-nav" aria-label="Instrument tuners">
-    <div class="wrap">
-      <span class="preset-nav-label">Tuners</span>
-      <ul>
-{links}
-      </ul>
-    </div>
+def toolbar(current_slug, section=None):
+    """The portfolio toolbar: one non-wrapping rail of chips and a labelled
+    <details> sheet, a direct child of <body> immediately after </header>.
+
+    `section` marks the tool a page belongs to without claiming to BE that
+    page: /drop-d-tuner/ is the Tuner with a tuning baked in, but
+    aria-current="page" on the Tuner link there would be a lie to a screen
+    reader. It gets aria-current="true" — "the current item in this set" —
+    which is what stops the rail rendering unselected on all ten preset pages.
+    """
+    def mark(slug):
+        if slug == current_slug:
+            return ' aria-current="page"'
+        if section and slug == section:
+            return ' aria-current="true"'
+        return ""
+
+    rail = "\n".join(
+        f'      <li><a href="/{slug}/" data-panel-link="{slug}"{mark(slug)}>{label}</a></li>'
+        for slug, label, _long in NAV_ITEMS
+    )
+    # Flat, not grouped: seven destinations is well inside the eight where
+    # group headings stop earning their line.
+    sheet = "\n".join(
+        f'        <li><a href="/{slug}/" data-panel-link="{slug}"{mark(slug)}>{long}</a></li>'
+        for slug, _label, long in NAV_ITEMS
+    )
+    hub_mark = ' aria-current="true"' if section == "tuner" and current_slug != "tuner" else ""
+    n = len(NAV_ITEMS)
+    return f"""  <nav class="toolbar" aria-label="Tools">
+    <details class="tb-menu">
+      <summary class="tb-trigger" aria-label="All {n} tools">
+        <span class="tb-glyph" aria-hidden="true">&#9636;</span>
+        <span class="tb-label">All {n}<span class="tb-label-long"> tools</span></span>
+      </summary>
+      <div class="tb-sheet is-flat">
+        <ul>
+{sheet}
+        </ul>
+        <p class="tb-hub"><a href="/tuner/"{hub_mark}>All {len(TUNER_VARIANTS) - 1} instrument tunings &rarr;</a></p>
+      </div>
+    </details>
+    <div class="tb-scrim"></div>
+    <ul class="tb-rail">
+{rail}
+    </ul>
   </nav>
 """
 
 
+def tuner_chips(current_slug):
+    """The tier-2 switcher, under the h1 of the tuner and of every preset page.
+
+    Real links with real hrefs, so they work with JavaScript off and are
+    crawlable. Nothing intercepts the click: these pages differ by more than a
+    preset — the heading, the string chart and the copy are written for the
+    tuning they name.
+    """
+    items = "\n".join(
+        f'        <li><a class="chip-link" href="/{slug}/"'
+        + (' aria-current="page"' if slug == current_slug else "")
+        + f'>{label}</a></li>'
+        for slug, label in TUNER_VARIANTS
+    )
+    return f"""      <nav class="chip-row" aria-label="Tuning">
+        <span class="chip-row-label" id="tuning-chips-label">Tuning</span>
+        <ul aria-labelledby="tuning-chips-label">
+{items}
+        </ul>
+      </nav>
+"""
+
+
 def header(current_slug, section=None):
-    """section marks the tool a page belongs to without claiming to BE that
-    page: /drop-d-tuner/ is part of the Tuner, but aria-current="page" on the
-    Tuner link there would be a lie to a screen reader."""
-    links = []
-    for slug, label in NAV_ITEMS:
-        href = "/" if slug == "" else f"/{slug}/"
-        current = ' aria-current="page"' if slug == current_slug else ""
-        cls = ' class="is-section"' if section and slug == section and slug != current_slug else ""
-        panel = slug
-        links.append(f'      <li><a href="{href}" data-panel-link="{panel}"{current}{cls}>{label}</a></li>')
-    nav = "\n".join(links)
+    """Brand and one icon button, no links, and not sticky: sticky chrome can
+    overlay an AdSense anchor unit. Every link lives in the toolbar below."""
     return f"""<body>
+  <a class="skip-link" href="#main">Skip to the tool</a>
   <header class="site-header">
     <div class="wrap">
       <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
-      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
-      <ul class="tool-nav" id="tool-nav">
-{nav}
-      </ul>
       <div class="header-controls">
         <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       </div>
     </div>
   </header>
-{preset_nav(current_slug)}"""
+{toolbar(current_slug, section)}"""
 
 
 def footer_and_close(scripts, faq_json_ld=None):
@@ -1146,7 +1201,7 @@ def build_homepage():
     h = head(title, description, "/", json_ld)
     b = header("")
 
-    hero = f"""  <main>
+    hero = f"""  <main id="main">
     <section class="hero">
       <svg class="hero-waveform" viewBox="0 0 1000 200" preserveAspectRatio="none" aria-hidden="true">
         <path d="M0 100 Q 62 20 125 100 T 250 100 T 375 100 T 500 100 T 625 100 T 750 100 T 875 100 T 1000 100" fill="none" stroke="var(--brass-500)" stroke-width="2" opacity="0.25"/>
@@ -1247,15 +1302,16 @@ def build_tool_page(t):
     b = header(t["slug"])
 
     priv = privacy_note_html() + "\n" if t["slug"] == "tuner" else ""
+    chips = tuner_chips("tuner") if t["slug"] == "tuner" else ""
 
-    body = f"""  <main>
+    body = f"""  <main id="main">
     <section class="panel">
       <div class="wrap">
         <div class="panel-head">
           <h1 tabindex="-1">{t['name']}</h1>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
-        <p>{t['intro']}</p>
+{chips}        <p>{t['intro']}</p>
 {priv}{workspace_of(t)}
       </div>
     </section>
@@ -1591,7 +1647,7 @@ PRESET_COPY = {
 
 def more_tuners_html(current_slug):
     links = ""
-    for slug, label in PRESET_NAV:
+    for slug, label in TUNER_VARIANTS:
         if slug == current_slug:
             continue
         name = "Chromatic tuner" if slug == "tuner" else PRESET_BY_SLUG[slug]["h1"]
@@ -1618,14 +1674,14 @@ def build_preset_page(p):
     h = head(title, description, f"/{p['slug']}/", json_ld)
     b = header(p["slug"], section="tuner")
 
-    body = f"""  <main>
+    body = f"""  <main id="main">
     <section class="panel">
       <div class="wrap">
         <div class="panel-head">
           <h1 tabindex="-1">{p['h1']}</h1>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
-        <p>{copy['intro']}</p>
+{tuner_chips(p['slug'])}        <p>{copy['intro']}</p>
 {privacy_note_html()}
 {tuner_workspace(t, p['h1'])}
       </div>
@@ -1708,7 +1764,7 @@ def build_legal(slug, title_text, body_html):
     )
     h = head(title, description, f"/{slug}/", json_ld)
     b = header("")
-    body = f"""  <main class="legal">
+    body = f"""  <main id="main" class="legal">
     <div class="wrap">
       <h1>{title_text}</h1>
 {body_html}
@@ -1778,7 +1834,7 @@ def build_404():
 </head>
 """
     b = header("")
-    body = """  <main>
+    body = """  <main id="main">
     <div class="wrap notfound">
       <div class="big">&mdash;&mdash;</div>
       <h1>Page not found</h1>
@@ -1852,7 +1908,7 @@ def build_articles():
         )
         h = head(title, a["description"], f"/articles/{a['slug']}.html", json_ld)
         b = header("")
-        body = f"""  <main class="article">
+        body = f"""  <main id="main" class="article">
     <div class="wrap">
       <h1>{a['title']}</h1>
       <p class="article-meta">perfecttune.net &middot; {TODAY}</p>

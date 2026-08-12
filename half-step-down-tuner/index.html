@@ -23,50 +23,68 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to the tool</a>
   <header class="site-header">
     <div class="wrap">
       <a href="/" class="wordmark" data-panel-link=""><span class="fork">&#127932;</span> perfecttune</a>
-      <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="tool-nav" aria-label="Toggle menu">&#9776;</button>
-      <ul class="tool-nav" id="tool-nav">
-      <li><a href="/" data-panel-link="">Home</a></li>
-      <li><a href="/tuner/" data-panel-link="tuner" class="is-section">Tuner</a></li>
-      <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
-      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
-      <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Ear Trainer</a></li>
-      <li><a href="/chords-scales/" data-panel-link="chords-scales">Chords</a></li>
-      <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
-      <li><a href="/transposer/" data-panel-link="transposer">Transposer</a></li>
-      </ul>
       <div class="header-controls">
         <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Toggle light and dark theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg></button>
       </div>
     </div>
   </header>
-  <nav class="preset-nav" aria-label="Instrument tuners">
-    <div class="wrap">
-      <span class="preset-nav-label">Tuners</span>
-      <ul>
-        <li><a href="/tuner/" data-panel-link="tuner">Chromatic</a></li>
-        <li><a href="/guitar-tuner/">Guitar</a></li>
-        <li><a href="/bass-tuner/">Bass</a></li>
-        <li><a href="/ukulele-tuner/">Ukulele</a></li>
-        <li><a href="/violin-tuner/">Violin</a></li>
-        <li><a href="/banjo-tuner/">Banjo</a></li>
-        <li><a href="/cello-tuner/">Cello</a></li>
-        <li><a href="/drop-d-tuner/">Drop D</a></li>
-        <li><a href="/dadgad-tuner/">DADGAD</a></li>
-        <li><a href="/open-g-tuner/">Open G</a></li>
-        <li><a href="/half-step-down-tuner/" aria-current="page">Half Step</a></li>
-      </ul>
-    </div>
+  <nav class="toolbar" aria-label="Tools">
+    <details class="tb-menu">
+      <summary class="tb-trigger" aria-label="All 7 tools">
+        <span class="tb-glyph" aria-hidden="true">&#9636;</span>
+        <span class="tb-label">All 7<span class="tb-label-long"> tools</span></span>
+      </summary>
+      <div class="tb-sheet is-flat">
+        <ul>
+        <li><a href="/tuner/" data-panel-link="tuner" aria-current="true">Chromatic Tuner</a></li>
+        <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+        <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+        <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Interval Ear Trainer</a></li>
+        <li><a href="/chords-scales/" data-panel-link="chords-scales">Chord and Scale Dictionary</a></li>
+        <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+        <li><a href="/transposer/" data-panel-link="transposer">Chord Transposer</a></li>
+        </ul>
+        <p class="tb-hub"><a href="/tuner/" aria-current="true">All 10 instrument tunings &rarr;</a></p>
+      </div>
+    </details>
+    <div class="tb-scrim"></div>
+    <ul class="tb-rail">
+      <li><a href="/tuner/" data-panel-link="tuner" aria-current="true">Tuner</a></li>
+      <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+      <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone</a></li>
+      <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Ear Trainer</a></li>
+      <li><a href="/chords-scales/" data-panel-link="chords-scales">Chords</a></li>
+      <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+      <li><a href="/transposer/" data-panel-link="transposer">Transposer</a></li>
+    </ul>
   </nav>
-  <main>
+  <main id="main">
     <section class="panel">
       <div class="wrap">
         <div class="panel-head">
           <h1 tabindex="-1">Half Step Down Tuner</h1>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
+      <nav class="chip-row" aria-label="Tuning">
+        <span class="chip-row-label" id="tuning-chips-label">Tuning</span>
+        <ul aria-labelledby="tuning-chips-label">
+        <li><a class="chip-link" href="/tuner/">Chromatic</a></li>
+        <li><a class="chip-link" href="/guitar-tuner/">Guitar</a></li>
+        <li><a class="chip-link" href="/bass-tuner/">Bass</a></li>
+        <li><a class="chip-link" href="/ukulele-tuner/">Ukulele</a></li>
+        <li><a class="chip-link" href="/violin-tuner/">Violin</a></li>
+        <li><a class="chip-link" href="/banjo-tuner/">Banjo</a></li>
+        <li><a class="chip-link" href="/cello-tuner/">Cello</a></li>
+        <li><a class="chip-link" href="/drop-d-tuner/">Drop D</a></li>
+        <li><a class="chip-link" href="/dadgad-tuner/">DADGAD</a></li>
+        <li><a class="chip-link" href="/open-g-tuner/">Open G</a></li>
+        <li><a class="chip-link" href="/half-step-down-tuner/" aria-current="page">Half Step</a></li>
+        </ul>
+      </nav>
         <p>Half step down keeps every interval of standard tuning and moves the whole instrument one semitone lower: E&#9837;2 77.78 Hz, A&#9837;2 103.83 Hz, D&#9837;3 138.59 Hz, G&#9837;3 185.00 Hz, B&#9837;3 233.08 Hz and E&#9837;4 311.13 Hz. Every shape you already know still works, it simply sounds a semitone below the name you call it. Tap a string for its reference tone, or allow the microphone for live detection.</p>
         <p class="privacy-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3z"/></svg> Microphone audio is processed entirely in your browser and never uploaded.</p>
 
