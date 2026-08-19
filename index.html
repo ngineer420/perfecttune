@@ -38,15 +38,32 @@
         <span class="tb-glyph" aria-hidden="true">&#9636;</span>
         <span class="tb-label">All 7<span class="tb-label-long"> tools</span></span>
       </summary>
-      <div class="tb-sheet is-flat">
+      <div class="tb-sheet">
+        <p class="tb-grouplabel">Tools</p>
         <ul>
-        <li><a href="/tuner/" data-panel-link="tuner">Chromatic Tuner</a></li>
-        <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
-        <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
-        <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Interval Ear Trainer</a></li>
-        <li><a href="/chords-scales/" data-panel-link="chords-scales">Chord and Scale Dictionary</a></li>
-        <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
-        <li><a href="/transposer/" data-panel-link="transposer">Chord Transposer</a></li>
+          <li><a href="/tuner/" data-panel-link="tuner">Chromatic Tuner</a></li>
+          <li><a href="/metronome/" data-panel-link="metronome">Metronome</a></li>
+          <li><a href="/tone-generator/" data-panel-link="tone-generator">Tone Generator</a></li>
+          <li><a href="/ear-trainer/" data-panel-link="ear-trainer">Interval Ear Trainer</a></li>
+          <li><a href="/chords-scales/" data-panel-link="chords-scales">Chord and Scale Dictionary</a></li>
+          <li><a href="/bpm-tapper/" data-panel-link="bpm-tapper">BPM Tapper</a></li>
+          <li><a href="/transposer/" data-panel-link="transposer">Chord Transposer</a></li>
+        </ul>
+        <p class="tb-grouplabel">Practice tempos</p>
+        <ul class="tb-cols">
+          <li><a href="/60-bpm-metronome/" data-panel-link="60-bpm-metronome">60 BPM</a></li>
+          <li><a href="/70-bpm-metronome/" data-panel-link="70-bpm-metronome">70 BPM</a></li>
+          <li><a href="/80-bpm-metronome/" data-panel-link="80-bpm-metronome">80 BPM</a></li>
+          <li><a href="/90-bpm-metronome/" data-panel-link="90-bpm-metronome">90 BPM</a></li>
+          <li><a href="/100-bpm-metronome/" data-panel-link="100-bpm-metronome">100 BPM</a></li>
+          <li><a href="/110-bpm-metronome/" data-panel-link="110-bpm-metronome">110 BPM</a></li>
+          <li><a href="/120-bpm-metronome/" data-panel-link="120-bpm-metronome">120 BPM</a></li>
+          <li><a href="/130-bpm-metronome/" data-panel-link="130-bpm-metronome">130 BPM</a></li>
+          <li><a href="/140-bpm-metronome/" data-panel-link="140-bpm-metronome">140 BPM</a></li>
+          <li><a href="/150-bpm-metronome/" data-panel-link="150-bpm-metronome">150 BPM</a></li>
+          <li><a href="/160-bpm-metronome/" data-panel-link="160-bpm-metronome">160 BPM</a></li>
+          <li><a href="/180-bpm-metronome/" data-panel-link="180-bpm-metronome">180 BPM</a></li>
+          <li><a href="/200-bpm-metronome/" data-panel-link="200-bpm-metronome">200 BPM</a></li>
         </ul>
         <p class="tb-hub"><a href="/tuner/">All 10 instrument tunings &rarr;</a></p>
       </div>
@@ -246,7 +263,7 @@
           <h2 tabindex="-1">Metronome</h2>
           <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
         </div>
-        <p>A swinging brass pendulum keeps time the way a real metronome does, but the clicks underneath it are scheduled a fraction of a second ahead on the Web Audio clock rather than fired one at a time from a JavaScript timer — the standard lookahead-scheduler technique that keeps tempo sample-accurate even if the browser tab is busy or briefly throttled.</p>
+        <p>A swinging brass pendulum keeps time the way a real metronome does, but the clicks underneath it are scheduled a fraction of a second ahead on the Web Audio clock rather than fired one at a time from a JavaScript timer &mdash; the standard lookahead-scheduler technique that keeps tempo sample-accurate even if the browser tab is busy or briefly throttled. On top of that beat you get the three things a practice metronome actually needs: subdivisions down to sixteenths, a swing control that pushes the offbeat towards the triplet grid, and a trainer that walks the tempo up a few BPM at a time while you play.</p>
 
     <div class="instrument">
       <div class="nameplate">
@@ -263,7 +280,7 @@
           <label for="mt-bpm-slider">Tempo</label>
           <div style="display:flex;align-items:center;gap:10px;width:100%">
             <input type="range" id="mt-bpm-slider" min="30" max="300" value="120">
-            <input type="number" id="mt-bpm" min="30" max="300" value="120" style="width:70px">
+            <input type="number" id="mt-bpm" min="30" max="300" value="120" style="width:70px" aria-label="Tempo in BPM">
           </div>
         </div>
       </div>
@@ -278,11 +295,44 @@
             <option value="2">2</option><option value="4" selected>4</option><option value="8">8</option><option value="16">16</option>
           </select>
         </div>
-        <div class="field" style="align-self:flex-end;padding-bottom:8px">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:normal;color:var(--fg)">
-            <input type="checkbox" id="mt-accent" checked style="width:auto"> Accent downbeat
-          </label>
+        <div class="field field-toggle">
+          <label><input type="checkbox" id="mt-accent" checked> Accent downbeat</label>
         </div>
+      </div>
+      <div class="mt-block">
+        <p class="mt-block-title">Subdivision and swing</p>
+        <div class="field-row">
+          <div class="field wide"><label for="mt-subdiv">Clicks per beat</label>
+            <select id="mt-subdiv">
+              <option value="1" selected>Quarters &mdash; one per beat</option>
+              <option value="2">Eighths &mdash; two per beat</option>
+              <option value="3">Triplets &mdash; three per beat</option>
+              <option value="4">Sixteenths &mdash; four per beat</option>
+            </select>
+          </div>
+          <div class="field field-slider" style="min-width:210px">
+            <label for="mt-swing">Swing</label>
+            <input type="range" id="mt-swing" min="0" max="66" value="0" disabled>
+            <output class="mt-swing-out" id="mt-swing-out" for="mt-swing">Eighths or triplets only</output>
+          </div>
+        </div>
+        <p class="mt-note">Subdivision clicks are quieter and higher than the beat, so the pulse stays the loudest thing in the bar. Swing applies to eighths and triplets only, and pushes the offbeat of each pair later &mdash; 33% lands it on the triplet grid, 50% on a dotted eighth. The downbeat never moves.</p>
+      </div>
+      <div class="mt-block">
+        <p class="mt-block-title">Tempo trainer</p>
+        <div class="field-row">
+          <div class="field field-toggle">
+            <label><input type="checkbox" id="mt-ramp"> Ramp the tempo</label>
+          </div>
+          <div class="field"><label for="mt-ramp-from">Start</label><input type="number" id="mt-ramp-from" min="30" max="300" value="80" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-step">Step</label><input type="number" id="mt-ramp-step" min="1" max="30" value="4" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-bars">Every (bars)</label><input type="number" id="mt-ramp-bars" min="1" max="64" value="8" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-to">Stop at</label><input type="number" id="mt-ramp-to" min="30" max="300" value="140" inputmode="numeric"></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-label">Bar</div><div class="stat-value" id="mt-bar-count">&mdash;</div></div>
+        </div>
+        <p class="mt-note"><span id="mt-ramp-status" role="status" aria-live="polite">Trainer off &mdash; the tempo stays exactly where you put it.</span><span id="mt-ramp-count" aria-live="off"></span></p>
       </div>
       <div class="controls-row">
         <button type="button" class="ctrl-btn primary" id="mt-start">Start</button>
@@ -556,6 +606,66 @@
           <a class="preset-card" href="/half-step-down-tuner/">
             <span class="preset-card-name">Half Step Down Tuner</span>
             <span class="preset-card-notes mono">E&#9837;2 A&#9837;2 D&#9837;3 G&#9837;3 B&#9837;3 E&#9837;4</span>
+          </a>
+        </div>
+      </div>
+    </section>
+    <section class="content-section" id="practice-tempos">
+      <div class="wrap">
+        <h2>Practise at a set tempo</h2>
+        <p>The same metronome with the tempo already dialled in, and a page about what that particular speed is for &mdash; what gets played there, which Italian marking covers it, and which subdivision to put underneath it.</p>
+        <div class="preset-grid">
+          <a class="preset-card" href="/60-bpm-metronome/">
+            <span class="preset-card-name">60 BPM Metronome</span>
+            <span class="preset-card-notes mono">Largo &middot; Lento &middot; Larghetto</span>
+          </a>
+          <a class="preset-card" href="/70-bpm-metronome/">
+            <span class="preset-card-name">70 BPM Metronome</span>
+            <span class="preset-card-notes mono">Adagio &middot; Adagietto</span>
+          </a>
+          <a class="preset-card" href="/80-bpm-metronome/">
+            <span class="preset-card-name">80 BPM Metronome</span>
+            <span class="preset-card-notes mono">Adagietto &middot; Andante &middot; Andantino</span>
+          </a>
+          <a class="preset-card" href="/90-bpm-metronome/">
+            <span class="preset-card-name">90 BPM Metronome</span>
+            <span class="preset-card-notes mono">Andante &middot; Andantino</span>
+          </a>
+          <a class="preset-card" href="/100-bpm-metronome/">
+            <span class="preset-card-name">100 BPM Metronome</span>
+            <span class="preset-card-notes mono">Andante &middot; Andantino</span>
+          </a>
+          <a class="preset-card" href="/110-bpm-metronome/">
+            <span class="preset-card-name">110 BPM Metronome</span>
+            <span class="preset-card-notes mono">Moderato</span>
+          </a>
+          <a class="preset-card" href="/120-bpm-metronome/">
+            <span class="preset-card-name">120 BPM Metronome</span>
+            <span class="preset-card-notes mono">Moderato &middot; Allegretto &middot; Allegro</span>
+          </a>
+          <a class="preset-card" href="/130-bpm-metronome/">
+            <span class="preset-card-name">130 BPM Metronome</span>
+            <span class="preset-card-notes mono">Allegro</span>
+          </a>
+          <a class="preset-card" href="/140-bpm-metronome/">
+            <span class="preset-card-name">140 BPM Metronome</span>
+            <span class="preset-card-notes mono">Allegro</span>
+          </a>
+          <a class="preset-card" href="/150-bpm-metronome/">
+            <span class="preset-card-name">150 BPM Metronome</span>
+            <span class="preset-card-notes mono">Allegro</span>
+          </a>
+          <a class="preset-card" href="/160-bpm-metronome/">
+            <span class="preset-card-name">160 BPM Metronome</span>
+            <span class="preset-card-notes mono">Vivace</span>
+          </a>
+          <a class="preset-card" href="/180-bpm-metronome/">
+            <span class="preset-card-name">180 BPM Metronome</span>
+            <span class="preset-card-notes mono">Presto</span>
+          </a>
+          <a class="preset-card" href="/200-bpm-metronome/">
+            <span class="preset-card-name">200 BPM Metronome</span>
+            <span class="preset-card-notes mono">Presto &middot; Prestissimo</span>
           </a>
         </div>
       </div>
