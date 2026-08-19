@@ -3,10 +3,13 @@
 One-off static-page generator for perfecttune.net. The shipped site has
 zero build step — this script just avoids hand-duplicating the shared
 head/header/footer boilerplate (and the erabbit mark's exact placement)
-across the homepage panels, seven standalone tool pages, two legal pages,
-the 404, and three articles. Add a tool by adding one entry to TOOLS: the
-nav, the homepage card and panel, the tool page, and the sitemap all follow
-from it. Nothing here is hand-edited afterwards.
+across the homepage panels, seven standalone tool pages, ten per-tuning
+tuner pages, thirteen per-tempo metronome pages, two legal pages, the 404,
+and three articles. Add a tool by adding one entry to TOOLS, a tuning page
+by adding one to PRESET_PAGES, a tempo page by adding a number to
+BPM_VALUES and its prose to BPM_COPY: the nav, the homepage card, the page
+itself and the sitemap all follow from it. Nothing here is hand-edited
+afterwards.
 
 Clean-path implementation: GitHub Pages 301-redirects "/slug" -> "/slug/"
 and serves that directory's index.html with the correct text/html type
@@ -19,7 +22,7 @@ import os
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE = "https://perfecttune.net"
 TODAY = "2026-07-18"      # first publication date — articles keep it
-UPDATED = "2026-08-11"    # last build: sitemap lastmod and the legal pages
+UPDATED = "2026-08-19"    # last build: sitemap lastmod and the legal pages
 PUB_ID = "ca-pub-7560786263587509"
 
 THEME_SCRIPT = (
@@ -497,6 +500,95 @@ def tuning_reference_html(ids, heading, blurb, current=None):
 """
 
 
+# --------------------------------------------------------------- metronome --
+# One chassis, rendered for the metronome itself and for every per-tempo
+# landing page. A tempo page differs by exactly one attribute — data-bpm on
+# the chassis — which metronome.js reads at start-up, so the slider, the
+# number field, the big readout and the scheduler all agree with the headline
+# before a single click has been scheduled. The alternative (a query string,
+# or a second copy of this markup with different value= attributes) either
+# flashes 120 first or lets the two drift apart.
+
+def metronome_workspace(bpm=120, nameplate="Metronome"):
+    data_bpm = f' data-bpm="{bpm}"' if bpm != 120 else ""
+    return f"""
+    <div class="instrument"{data_bpm}>
+      <div class="nameplate">
+        <span class="nameplate-label">{nameplate}</span>
+        <span class="status-led" id="mt-status" data-state="idle">Idle</span>
+      </div>
+      <div class="gauge-wrap"><div class="gauge-mount" id="mt-gauge"></div></div>
+      <div class="beat-lights" id="mt-lights"></div>
+      <div class="screen">
+        <div class="readout"><span id="mt-bpm-display">{bpm}</span><span class="unit">BPM</span></div>
+      </div>
+      <div class="field-row">
+        <div class="field field-slider" style="min-width:220px">
+          <label for="mt-bpm-slider">Tempo</label>
+          <div style="display:flex;align-items:center;gap:10px;width:100%">
+            <input type="range" id="mt-bpm-slider" min="30" max="300" value="{bpm}">
+            <input type="number" id="mt-bpm" min="30" max="300" value="{bpm}" style="width:70px" aria-label="Tempo in BPM">
+          </div>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label for="mt-num">Beats / bar</label>
+          <select id="mt-num">
+            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>9</option><option>12</option>
+          </select>
+        </div>
+        <div class="field"><label for="mt-den">Beat unit</label>
+          <select id="mt-den">
+            <option value="2">2</option><option value="4" selected>4</option><option value="8">8</option><option value="16">16</option>
+          </select>
+        </div>
+        <div class="field field-toggle">
+          <label><input type="checkbox" id="mt-accent" checked> Accent downbeat</label>
+        </div>
+      </div>
+      <div class="mt-block">
+        <p class="mt-block-title">Subdivision and swing</p>
+        <div class="field-row">
+          <div class="field wide"><label for="mt-subdiv">Clicks per beat</label>
+            <select id="mt-subdiv">
+              <option value="1" selected>Quarters &mdash; one per beat</option>
+              <option value="2">Eighths &mdash; two per beat</option>
+              <option value="3">Triplets &mdash; three per beat</option>
+              <option value="4">Sixteenths &mdash; four per beat</option>
+            </select>
+          </div>
+          <div class="field field-slider" style="min-width:210px">
+            <label for="mt-swing">Swing</label>
+            <input type="range" id="mt-swing" min="0" max="66" value="0" disabled>
+            <output class="mt-swing-out" id="mt-swing-out" for="mt-swing">Eighths or triplets only</output>
+          </div>
+        </div>
+        <p class="mt-note">Subdivision clicks are quieter and higher than the beat, so the pulse stays the loudest thing in the bar. Swing applies to eighths and triplets only, and pushes the offbeat of each pair later &mdash; 33% lands it on the triplet grid, 50% on a dotted eighth. The downbeat never moves.</p>
+      </div>
+      <div class="mt-block">
+        <p class="mt-block-title">Tempo trainer</p>
+        <div class="field-row">
+          <div class="field field-toggle">
+            <label><input type="checkbox" id="mt-ramp"> Ramp the tempo</label>
+          </div>
+          <div class="field"><label for="mt-ramp-from">Start</label><input type="number" id="mt-ramp-from" min="30" max="300" value="80" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-step">Step</label><input type="number" id="mt-ramp-step" min="1" max="30" value="4" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-bars">Every (bars)</label><input type="number" id="mt-ramp-bars" min="1" max="64" value="8" inputmode="numeric"></div>
+          <div class="field"><label for="mt-ramp-to">Stop at</label><input type="number" id="mt-ramp-to" min="30" max="300" value="140" inputmode="numeric"></div>
+        </div>
+        <div class="stat-row">
+          <div class="stat"><div class="stat-label">Bar</div><div class="stat-value" id="mt-bar-count">&mdash;</div></div>
+        </div>
+        <p class="mt-note"><span id="mt-ramp-status" role="status" aria-live="polite">Trainer off &mdash; the tempo stays exactly where you put it.</span><span id="mt-ramp-count" aria-live="off"></span></p>
+      </div>
+      <div class="controls-row">
+        <button type="button" class="ctrl-btn primary" id="mt-start">Start</button>
+        <button type="button" class="ctrl-btn ghost" id="mt-tap">Tap Tempo</button>
+      </div>
+    </div>
+"""
+
+
 # ---------------------------------------------------------------- tools --
 
 TOOLS = [
@@ -534,66 +626,30 @@ TOOLS = [
         slug="metronome",
         name="Metronome",
         script="metronome.js",
-        tagline="A pendulum that never drifts — scheduled on the real audio clock.",
-        description="Free browser-based metronome with tap tempo, adjustable time signature and an accented downbeat. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.",
+        tagline="A pendulum that never drifts \u2014 scheduled on the real audio clock.",
+        description="Free browser-based metronome with eighth, triplet and sixteenth subdivisions, adjustable swing, a tempo-ramp trainer and tap tempo. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.",
         icon='<path d="M7.5 21h9L15 4H9L7.5 21z"/><path d="M12 6.5v9"/><circle cx="12" cy="16.5" r="1.3" fill="currentColor" stroke="none"/>',
-        intro="A swinging brass pendulum keeps time the way a real metronome does, but the clicks underneath it are scheduled a fraction of a second ahead on the Web Audio clock rather than fired one at a time from a JavaScript timer — the standard lookahead-scheduler technique that keeps tempo sample-accurate even if the browser tab is busy or briefly throttled.",
+        intro="A swinging brass pendulum keeps time the way a real metronome does, but the clicks underneath it are scheduled a fraction of a second ahead on the Web Audio clock rather than fired one at a time from a JavaScript timer &mdash; the standard lookahead-scheduler technique that keeps tempo sample-accurate even if the browser tab is busy or briefly throttled. On top of that beat you get the three things a practice metronome actually needs: subdivisions down to sixteenths, a swing control that pushes the offbeat towards the triplet grid, and a trainer that walks the tempo up a few BPM at a time while you play.",
         how_to=[
             "Set a tempo with the number field, the slider, or tap it live with Tap Tempo (tap at least twice at the beat you want).",
-            "Choose a time signature — beats per bar and the beat unit — to set how the accent lights group.",
-            "Tap Start. The first light in each bar (and the pendulum's turnaround) is accented louder unless you switch Accent off.",
-            "Change tempo or time signature freely while it's running — the next beat picks up the new setting without a stutter.",
+            "Choose a time signature &mdash; beats per bar and the beat unit &mdash; to set how the accent lights group.",
+            "Pick a subdivision if you want the inside of the beat filled in: eighths, triplets or sixteenths, clicked quieter and higher than the pulse. On eighths or triplets, the swing slider pushes the offbeat later, from straight through a triplet shuffle at 33% to a dotted-eighth feel at 50%.",
+            "To drill a passage up to speed, tick Ramp the tempo and give it a start, a step, a bar count and a ceiling &mdash; 80, +4, every 8 bars, stop at 140 &mdash; then press Start and play. The tempo climbs on its own and stops at the target.",
+            "Change anything while it is running. The next beat picks up the new setting without a stutter.",
         ],
         faq=[
-            ("Why not just use setInterval for the beat?", "setInterval fires late whenever the browser tab is busy, backgrounded, or the OS deprioritizes it — the errors accumulate and the tempo audibly drifts over a long run. Instead, every click's exact start time is scheduled on the Web Audio clock a fraction of a second ahead of when it plays, which is immune to that kind of jitter."),
-            ("What does the pendulum represent?", "It's a real-time view of the same schedule driving the clicks — its position each frame is computed directly from the current and next scheduled beat times, easing between them the way a physical pendulum decelerates at each turnaround, so what you see always matches what you hear."),
-            ("How does tap tempo work?", "Each tap is timestamped; once you've tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average — tap steadily for a few beats for the most accurate result."),
-            ("Can I use time signatures like 6/8 or 7/8?", "Yes — set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat's real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one."),
+            ("Why not just use setInterval for the beat?", "setInterval fires late whenever the browser tab is busy, backgrounded, or the OS deprioritizes it \u2014 the errors accumulate and the tempo audibly drifts over a long run. Instead, every click\u2019s exact start time is scheduled on the Web Audio clock a fraction of a second ahead of when it plays, which is immune to that kind of jitter."),
+            ("Do the beat lights count subdivisions too?", "No, and deliberately. Turning on sixteenths does not turn a bar of 4/4 into sixteen beats: the lights, the accented downbeat, the pendulum and the bar counter all keep counting quarter notes, and the extra clicks are simply sounded inside each beat at a lower level. A subdivision that moved the accent every fourth click would be a tempo change wearing a disguise."),
+            ("What does the swing percentage actually mean?", "It is the fraction of one subdivision by which the offbeat is delayed. At 0% a pair of eighths is even. At 33% the second eighth arrives two thirds of the way through the beat \u2014 that is the triplet-based shuffle you hear in jazz and blues. At 50% it lands three quarters of the way through, which is a dotted eighth followed by a sixteenth, and the slider\u2019s 66% ceiling is harder still \u2014 useful mainly for exaggerating a feel while you are learning it. Note that this is a percentage of the subdivision and not of the beat, so it does not line up with the swing control in a sequencer, where 50% usually means straight. Most recorded swing is far gentler than a full shuffle: on this scale, often only 10 to 25%."),
+            ("Why can I only swing eighths and triplets?", "Because swing is a displacement of the offbeat towards the triplet grid, and that only means something when there is an offbeat to displace. A plain quarter has nothing inside it. Sixteenths as the primary division are already denser than the grid swing would push them towards, so a swing control there would just be smearing the timing rather than producing a recognised feel."),
+            ("How should I use the tempo trainer?", "Set the ceiling to the tempo the music is actually marked at, the start to somewhere you can play the passage cleanly with no mistakes at all, and the step small \u2014 4 BPM is usually enough that you cannot feel the change happen. Eight bars per step is a good default: long enough to settle, short enough that a full run from 80 to 140 takes about five minutes. If you start making mistakes, the tempo you can actually play is the last one you got through cleanly, not the one on the screen."),
+            ("Can I use time signatures like 6/8 or 7/8?", "Yes \u2014 set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat\u2019s real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one."),
+            ("What does the pendulum represent?", "It\u2019s a real-time view of the same schedule driving the clicks \u2014 its position each frame is computed directly from the current and next scheduled beat times, easing between them the way a physical pendulum decelerates at each turnaround, so what you see always matches what you hear. It swings once per beat whatever the subdivision is set to."),
+            ("How does tap tempo work?", "Each tap is timestamped; once you\u2019ve tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average \u2014 tap steadily for a few beats for the most accurate result."),
         ],
         related=["tuner", "tone-generator", "bpm-tapper"],
-        workspace="""
-    <div class="instrument">
-      <div class="nameplate">
-        <span class="nameplate-label">Metronome</span>
-        <span class="status-led" id="mt-status" data-state="idle">Idle</span>
-      </div>
-      <div class="gauge-wrap"><div class="gauge-mount" id="mt-gauge"></div></div>
-      <div class="beat-lights" id="mt-lights"></div>
-      <div class="screen">
-        <div class="readout"><span id="mt-bpm-display">120</span><span class="unit">BPM</span></div>
-      </div>
-      <div class="field-row">
-        <div class="field field-slider" style="min-width:220px">
-          <label for="mt-bpm-slider">Tempo</label>
-          <div style="display:flex;align-items:center;gap:10px;width:100%">
-            <input type="range" id="mt-bpm-slider" min="30" max="300" value="120">
-            <input type="number" id="mt-bpm" min="30" max="300" value="120" style="width:70px">
-          </div>
-        </div>
-      </div>
-      <div class="field-row">
-        <div class="field"><label for="mt-num">Beats / bar</label>
-          <select id="mt-num">
-            <option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option><option>9</option><option>12</option>
-          </select>
-        </div>
-        <div class="field"><label for="mt-den">Beat unit</label>
-          <select id="mt-den">
-            <option value="2">2</option><option value="4" selected>4</option><option value="8">8</option><option value="16">16</option>
-          </select>
-        </div>
-        <div class="field" style="align-self:flex-end;padding-bottom:8px">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;text-transform:none;letter-spacing:normal;color:var(--fg)">
-            <input type="checkbox" id="mt-accent" checked style="width:auto"> Accent downbeat
-          </label>
-        </div>
-      </div>
-      <div class="controls-row">
-        <button type="button" class="ctrl-btn primary" id="mt-start">Start</button>
-        <button type="button" class="ctrl-btn ghost" id="mt-tap">Tap Tempo</button>
-      </div>
-    </div>
-""",
+        extra=lambda: tempo_marking_table_html(),
+        workspace=lambda: metronome_workspace(),
     ),
     dict(
         slug="tone-generator",
@@ -1046,12 +1102,18 @@ def toolbar(current_slug, section=None):
         f'      <li><a href="/{slug}/" data-panel-link="{slug}"{mark(slug)}>{label}</a></li>'
         for slug, label, _long in NAV_ITEMS
     )
-    # Flat, not grouped: seven destinations is well inside the eight where
-    # group headings stop earning their line.
-    sheet = "\n".join(
-        f'        <li><a href="/{slug}/" data-panel-link="{slug}"{mark(slug)}>{long}</a></li>'
-        for slug, _label, long in NAV_ITEMS
-    )
+    # Grouped, not flat. Seven destinations fitted one unlabelled list; the
+    # thirteen per-tempo pages take it past the eight where group headings
+    # start earning their line, and "Practice tempos" is the label that keeps
+    # a column of bare numbers from reading as a page count.
+    def sheet_items(pairs):
+        return "\n".join(
+            f'          <li><a href="/{slug}/" data-panel-link="{slug}"{mark(slug)}>{label}</a></li>'
+            for slug, label in pairs
+        )
+
+    tools_list = sheet_items([(slug, long) for slug, _label, long in NAV_ITEMS])
+    tempo_list = sheet_items([(b["slug"], b["nav"]) for b in BPM_PAGES])
     hub_mark = ' aria-current="true"' if section == "tuner" and current_slug != "tuner" else ""
     n = len(NAV_ITEMS)
     return f"""  <nav class="toolbar" aria-label="Tools">
@@ -1060,9 +1122,14 @@ def toolbar(current_slug, section=None):
         <span class="tb-glyph" aria-hidden="true">&#9636;</span>
         <span class="tb-label">All {n}<span class="tb-label-long"> tools</span></span>
       </summary>
-      <div class="tb-sheet is-flat">
+      <div class="tb-sheet">
+        <p class="tb-grouplabel">Tools</p>
         <ul>
-{sheet}
+{tools_list}
+        </ul>
+        <p class="tb-grouplabel">Practice tempos</p>
+        <ul class="tb-cols">
+{tempo_list}
         </ul>
         <p class="tb-hub"><a href="/tuner/"{hub_mark}>All {len(TUNER_VARIANTS) - 1} instrument tunings &rarr;</a></p>
       </div>
@@ -1264,6 +1331,24 @@ def build_homepage():
     </section>
 """
 
+    tempo_pages = """    <section class="content-section" id="practice-tempos">
+      <div class="wrap">
+        <h2>Practise at a set tempo</h2>
+        <p>The same metronome with the tempo already dialled in, and a page about what that particular speed is for &mdash; what gets played there, which Italian marking covers it, and which subdivision to put underneath it.</p>
+        <div class="preset-grid">
+"""
+    for bp in BPM_PAGES:
+        words = " &middot; ".join(marking_names(bp["bpm"])) or "&mdash;"
+        tempo_pages += f"""          <a class="preset-card" href="/{bp['slug']}/">
+            <span class="preset-card-name">{bp['h1']}</span>
+            <span class="preset-card-notes mono">{words}</span>
+          </a>
+"""
+    tempo_pages += """        </div>
+      </div>
+    </section>
+"""
+
     learn_more = """    <section class="content-section">
       <div class="wrap">
         <h2>Learn more</h2>
@@ -1277,7 +1362,7 @@ def build_homepage():
   </main>
 """
 
-    body = b + hero + panels + tuner_pages + learn_more
+    body = b + hero + panels + tuner_pages + tempo_pages + learn_more
     scripts = scripts_for(TOOLS)
     full = h + body + footer_and_close(scripts)
     write("index.html", full)
@@ -1302,7 +1387,11 @@ def build_tool_page(t):
     b = header(t["slug"])
 
     priv = privacy_note_html() + "\n" if t["slug"] == "tuner" else ""
-    chips = tuner_chips("tuner") if t["slug"] == "tuner" else ""
+    chips = ""
+    if t["slug"] == "tuner":
+        chips = tuner_chips("tuner")
+    elif t["slug"] == "metronome":
+        chips = tempo_chips("metronome")
 
     body = f"""  <main id="main">
     <section class="panel">
@@ -1753,6 +1842,726 @@ def build_preset_page(p):
     write(f"{p['slug']}.html", full)
 
 
+# ------------------------------------------------------------------ tempo --
+# The Italian tempo words and the metronome bands the standard reference
+# tables give them. The bands overlap on purpose and always have: these words
+# name a character first and a speed second, which is why largo ("broad") and
+# lento ("slow") cover the same numbers and mean different things. Every
+# marking a BPM page claims is read out of this one table, so a page cannot
+# assert a range the metronome page's table contradicts.
+#   (word, gloss, low BPM, high BPM)
+TEMPO_MARKINGS = [
+    ("Larghissimo", "very, very slow", 1, 24),
+    ("Grave", "slow and solemn", 25, 45),
+    ("Largo", "broadly", 40, 60),
+    ("Lento", "slowly", 45, 60),
+    ("Larghetto", "rather broadly", 60, 66),
+    ("Adagio", "slowly, with ease", 66, 76),
+    ("Adagietto", "a little adagio", 70, 80),
+    ("Andante", "at a walking pace", 76, 108),
+    ("Andantino", "slightly quicker than andante", 80, 108),
+    ("Moderato", "moderately", 108, 120),
+    ("Allegretto", "moderately quick", 112, 120),
+    ("Allegro", "fast and bright", 120, 156),
+    ("Vivace", "lively", 156, 176),
+    ("Presto", "very fast", 168, 200),
+    ("Prestissimo", "as fast as it will go", 200, 260),
+]
+
+
+def markings_at(bpm):
+    """Every word whose band contains this tempo, in table order."""
+    return [m for m in TEMPO_MARKINGS if m[2] <= bpm <= m[3]]
+
+
+def marking_names(bpm):
+    return [m[0] for m in markings_at(bpm)]
+
+
+# The tempo set. Round numbers people actually type, plus the three round
+# numbers that happen to sit on a marking boundary (60, 120, 200) and so have
+# something of their own to say. The connoisseur Maelzel values — 66, 76, 108,
+# 132, 152, 176 — are deliberately absent: near-zero search volume, and a page
+# for one of them would differ from its neighbour by an integer.
+BPM_VALUES = [60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 180, 200]
+
+
+def bpm_slug(bpm):
+    return "%d-bpm-metronome" % bpm
+
+
+def bpm_partners(bpm):
+    """The half and the double of this tempo, when both are pages we ship.
+    Half and double are the two relationships a musician actually uses: a
+    passage practised at half speed, and a half-time feel that is written at
+    one tempo and heard at the other."""
+    out = []
+    if bpm % 2 == 0 and bpm // 2 in BPM_VALUES:
+        out.append(("half", bpm // 2))
+    if bpm * 2 in BPM_VALUES:
+        out.append(("double", bpm * 2))
+    return out
+
+
+def fmt_ms(seconds):
+    return "%d ms" % round(seconds * 1000)
+
+
+def bpm_math_html(bpm):
+    """The arithmetic of one tempo, written out. Not filler: 'how many
+    sixteenths a minute is 150 BPM' is the actual question behind 'can I play
+    this', and the answer is different on every page."""
+    spb = 60.0 / bpm
+    rows = [
+        ("Quarter note &mdash; the beat", bpm, spb),
+        ("Eighth note", bpm * 2, spb / 2),
+        ("Eighth-note triplet", bpm * 3, spb / 3),
+        ("Sixteenth note", bpm * 4, spb / 4),
+        ("Bar of 4/4", bpm / 4.0, spb * 4),
+    ]
+    body = ""
+    for name, per_min, dur in rows:
+        per = ("%.1f" % per_min).rstrip("0").rstrip(".")
+        body += (
+            f'          <tr><td>{name}</td><td class="mono">{per}</td>'
+            f'<td class="mono">{fmt_ms(dur)}</td></tr>\n'
+        )
+    partners = bpm_partners(bpm)
+    tail = ""
+    if partners:
+        bits = []
+        for kind, other in partners:
+            word = "half of this" if kind == "half" else "twice this"
+            bits.append(f'<a href="/{bpm_slug(other)}/">{other} BPM</a> is {word}')
+        tail = (
+            "<p>Two tempos on this site are one arithmetic step away: "
+            + ", and ".join(bits)
+            + ". Practising a passage at the slower one and hearing it at the faster one is the same "
+            "notes at the same subdivision, counted differently.</p>"
+        )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>What {bpm} BPM works out to</h2>
+        <p>Every number below follows from one division: sixty seconds over {bpm} beats. It is worth knowing the sixteenth-note figure before you decide a passage is playable &mdash; that is the rate your hands actually have to move at, not the tempo on the page.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Note value</th><th>Per minute</th><th>One lasts</th></tr></thead>
+          <tbody>
+{body}          </tbody>
+        </table>
+        </div>
+        {tail}
+      </div>
+    </section>
+"""
+
+
+def marking_band_html(bpm):
+    """The markings whose bands contain this tempo, plus the neighbours on
+    either side, so a page shows where its number sits in the sequence rather
+    than just naming one word."""
+    here = markings_at(bpm)
+    if here:
+        first = TEMPO_MARKINGS.index(here[0])
+        last = TEMPO_MARKINGS.index(here[-1])
+    else:
+        first = last = 0
+    lo = max(0, first - 1)
+    hi = min(len(TEMPO_MARKINGS), last + 2)
+    rows = ""
+    for word, gloss, low, high in TEMPO_MARKINGS[lo:hi]:
+        covers = low <= bpm <= high
+        pages = [b for b in BPM_VALUES if low <= b <= high]
+        links = ", ".join(
+            f'<a href="/{bpm_slug(b)}/">{b}</a>' if b != bpm else f"<strong>{b}</strong>"
+            for b in pages
+        ) or "&mdash;"
+        name = f"<strong>{word}</strong>" if covers else word
+        rows += (
+            f'          <tr><td>{name}</td><td>{gloss}</td>'
+            f'<td class="mono">{low}&ndash;{high}</td><td class="mono">{links}</td></tr>\n'
+        )
+    words = marking_names(bpm)
+    if len(words) == 1:
+        lead = f"{bpm} BPM sits inside one band, {words[0]}."
+    elif len(words) == 2:
+        lead = f"{bpm} BPM is covered by two words at once, {words[0]} and {words[1]}."
+    else:
+        lead = (
+            f"{bpm} BPM is covered by {len(words)} words at once: "
+            + ", ".join(words[:-1]) + " and " + words[-1] + "."
+        )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Where {bpm} BPM falls in the Italian markings</h2>
+        <p>{lead} Overlap is normal and is not a defect of the system: these words were in use for a century and a half before Maelzel's metronome existed, and they describe a character &mdash; how the music carries itself &mdash; with speed as a consequence. The bands below are the ones the standard reference tables give.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Marking</th><th>Sense</th><th>BPM</th><th>Tempo pages in this band</th></tr></thead>
+          <tbody>
+{rows}          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+"""
+
+
+def tempo_marking_table_html():
+    """The whole marking table, for the metronome's own page. Also the one
+    place every tempo page is linked from a tier-1 tool page."""
+    rows = ""
+    for word, gloss, low, high in TEMPO_MARKINGS:
+        pages = [b for b in BPM_VALUES if low <= b <= high]
+        links = ", ".join(f'<a href="/{bpm_slug(b)}/">{b}</a>' for b in pages) or "&mdash;"
+        rows += (
+            f'          <tr><td>{word}</td><td>{gloss}</td>'
+            f'<td class="mono">{low}&ndash;{high}</td><td class="mono">{links}</td></tr>\n'
+        )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Tempo markings and the BPM they mean</h2>
+        <p>Beethoven was the first major composer to publish metronome marks alongside these words, in 1817, and the words had already been in use for well over a century by then. That order matters: the Italian tells you the character and the number tells you the speed, which is why the bands below overlap and why two of them can be true of the same tempo at once. Every band that contains one of the tempo pages on this site links to it.</p>
+        <div class="table-scroll">
+        <table class="data-table">
+          <thead><tr><th>Marking</th><th>Sense</th><th>BPM</th><th>Tempo pages</th></tr></thead>
+          <tbody>
+{rows}          </tbody>
+        </table>
+        </div>
+      </div>
+    </section>
+"""
+
+
+def tempo_chips(current_slug):
+    """The tier-2 switcher for tempo, under the h1 of the metronome and of
+    every per-tempo page. Real links, like the tuner's — nothing intercepts
+    the click, because these pages differ by more than a preset."""
+    items = '        <li><a class="chip-link" href="/metronome/"'
+    items += ' aria-current="page"' if current_slug == "metronome" else ""
+    items += ">Any tempo</a></li>\n"
+    for bpm in BPM_VALUES:
+        slug = bpm_slug(bpm)
+        cur = ' aria-current="page"' if slug == current_slug else ""
+        items += f'        <li><a class="chip-link" href="/{slug}/"{cur}>{bpm}</a></li>\n'
+    return f"""      <nav class="chip-row" aria-label="Tempo">
+        <span class="chip-row-label" id="tempo-chips-label">BPM</span>
+        <ul aria-labelledby="tempo-chips-label">
+{items}      </ul>
+      </nav>
+"""
+
+
+# The prose for the tempo pages. Kept apart from the renderer for the same
+# reason the tuner pages are: the machinery is twenty lines and the same on
+# every page, and the copy is the page. Nothing here is generated. A tempo
+# page that differed from its neighbour by one integer and one Italian word
+# would be a doorway page, so every entry names what is actually played at
+# that speed, what it is worth practising at, and which subdivision to put
+# under it.
+#
+# Rule kept throughout: tempo WORDS that composers themselves wrote are
+# quoted; metronome NUMBERS for particular works are not invented. Where a
+# piece is only conventionally played near a tempo, it says so.
+BPM_COPY = {
+    60: dict(
+        title="60 BPM Metronome - One Beat a Second, Largo to Larghetto",
+        description="A 60 BPM metronome, preset and ready. One beat per second exactly, on the border between largo and larghetto - the tempo for long tones, intonation and slow-movement phrasing.",
+        intro="At 60 BPM a beat is one second, exactly, which makes this the one tempo on the dial you can check against a clock rather than against another metronome. It is also the border post between largo and larghetto, and slow enough that the hard part is no longer playing the notes &mdash; it is arriving on the beat rather than somewhere in the neighbourhood of it. The metronome below is already set to 60; press Start.",
+        how_to=[
+            "Press Start. The pendulum takes one second to cross and one to come back, so a full swing is a bar of 2/4 and two full swings are a bar of 4/4.",
+            "Turn on eighth notes before you decide the click is too slow to be useful. A second is a long time to hold a pulse in your head, and the drift you cannot hear against a bare 60 is obvious against 120 clicks a minute.",
+            "For tone work &mdash; long bows, sustained singing, held wind notes &mdash; set beats per bar to 4 and give each note a whole bar. That is four seconds a note, which is long enough for intonation to sag audibly if it is going to.",
+            "For rhythm work, keep the accent on and count out loud. At this tempo counting aloud is what stops you rushing the second half of every bar.",
+        ],
+        sections=[
+            ("What 60 BPM is genuinely useful for",
+             "<p>Slow tempos are not just fast ones with more room. They test something different. At 60 BPM there is a full second of silence between clicks, and human timekeeping is far worse over that gap than most players expect &mdash; the internal pulse wanders, and only the click coming back tells you it did. That is exactly why it is the right speed for the work where accuracy is not about speed at all.</p><p>Intonation is the obvious one. A wind player holding four-second notes, a string player drawing a full bow to a four-beat bar, a singer sustaining a vowel: all of them are being asked to keep a pitch steady for longer than a fast tempo ever demands, and 60 BPM gives a bar exactly four seconds long to measure it against. Run this alongside a reference pitch and you have the whole exercise &mdash; a drone to sit against and a bar to hold it for.</p><p>The second use is diagnostic. Play a passage you think you know at 60 with sixteenths clicking underneath, and every note that was arriving slightly early or late at speed becomes impossible to hide. Most players find their sixteenth-note runs are not even; they are two fast notes and two slow ones, and only a slow tempo with a dense subdivision shows it.</p>"),
+            ("Largo, lento and larghetto all meet at 60",
+             "<p>Three Italian words claim this number. Largo runs 40 to 60, lento 45 to 60, and larghetto starts at 60 &mdash; so 60 BPM is simultaneously the fastest largo, the fastest lento, and the slowest larghetto. That is not sloppiness in the reference tables. Largo means broad, not slow; lento means slow. A largo is meant to sound spacious and unhurried, and a piece can be broad at 56 and merely slow at 56 depending on what it is doing.</p><p>Chopin's Prelude in E minor, Op. 28 No. 4, is marked Largo, and its left hand is a chain of repeated chords that change by one note at a time &mdash; the marking is telling you how to weigh them, not only how far apart to put them. Satie headed the first Gymnopedie <em>Lent et douloureux</em>, slow and sorrowful, which is the same instruction given in French and with the character stated outright.</p><p>Larghetto, meanwhile, is a diminutive: a little largo, which by convention means slightly quicker than one. The -etto ending does the same job in adagietto and allegretto further up the scale.</p>"),
+        ],
+        faq=[
+            ("Is 60 BPM the same as one beat per second?",
+             "Yes, exactly, and it is the only round tempo where the arithmetic is that clean. Sixty beats in sixty seconds is one per second, so a bar of 4/4 is four seconds and a bar of 3/4 is three. If you ever want to check that a metronome is honest, 60 BPM against a clock's second hand is the test that needs no equipment."),
+            ("Why do I drift at 60 BPM when I have no trouble at 120?",
+             "Because you are being asked to hold the pulse for twice as long without help. Timekeeping error grows with the gap you have to bridge, and a second is a long gap. This is the argument for subdivisions: switch the metronome to eighths and you are bridging half a second at a time, with the beat still accented so you never lose which one is which. If eighths feel easy, sixteenths at 60 are 240 clicks a minute and leave nowhere to hide."),
+            ("What is the difference between largo and lento?",
+             "Character. Both cover roughly the same numbers, but largo means broad and lento means slow. A largo asks for weight and space in each note; a lento just asks you not to hurry. In practice the composer's other instructions &mdash; the dynamics, the articulation, whether the line is one long phrase or a series of separate events &mdash; tell you which reading is wanted more reliably than the word alone does."),
+            ("Can I use a 60 BPM click for a piece in 6/8?",
+             "Yes, but decide what the 60 is counting first. If the dotted quarter is the pulse, set beats per bar to 2 and turn on triplets, and each click group is one dotted-quarter beat divided into its three eighths. If you want the eighth note itself at 60, set the beat unit to 8 and beats per bar to 6. The metronome computes each beat's real length from both numbers, so it will not quietly give you a quarter-note pulse when you asked for an eighth-note one."),
+        ],
+        related=["tone-generator", "tuner", "bpm-tapper"],
+    ),
+    70: dict(
+        title="70 BPM Metronome - Adagio and Adagietto, and Half of 140",
+        description="A 70 BPM metronome, preset and ready. Adagio and adagietto both cover this tempo - and 70 is exactly half of 140, which is where a fast passage goes to be learned.",
+        intro="70 BPM is where two markings overlap &mdash; adagio runs 66 to 76, adagietto 70 to 80 &mdash; and where a lot of practice actually happens, because 70 is exactly half of 140. Halving a tempo is the oldest trick in the practice room and the only one that changes nothing but the clock: the same notes, the same subdivision, the same fingering, at a speed where you can see what your hands are doing. The metronome below is set to 70.",
+        how_to=[
+            "Press Start and play the passage you cannot yet play, at this speed, without a single mistake. If there is a mistake, 70 is still too fast for it.",
+            "Put eighth notes under it. At 70 the beat is long enough that the halfway point is genuinely uncertain, and an eighth-note click removes the guess.",
+            "When four passes in a row are clean, use the tempo trainer rather than typing a new number: start 70, step 4, every 8 bars, stop at whatever the piece is marked. The climb is gradual enough that no single step feels like a jump.",
+            "If the piece is marked around 140, remember that everything you play here is the same music at half speed. Count the subdivision you will need at 140, not the one that is comfortable at 70.",
+        ],
+        sections=[
+            ("The tempo a fast passage gets slowed down to",
+             "<p>Halving is the practice tempo that needs no arithmetic and introduces no error. Take a passage marked 140 and play it at 70 and every relationship inside the bar is preserved exactly &mdash; a sixteenth is still a sixteenth relative to the beat, the accents fall in the same places, the bowing or the picking pattern is identical. Nothing has to be re-learned on the way back up, which is not true of the other common shortcut, which is to play it at whatever speed feels safe and quietly simplify the hard bar.</p><p>What halving buys you is time to notice. At 140 a sixteenth note lasts 107 milliseconds, which is under the threshold at which most players can consciously place a note; you are executing a pattern, not making decisions. At 70 the same note lasts 214 milliseconds and you can hear whether your third finger is landing with the beat or just after it. The mistake is not slow practice &mdash; it is slow practice that never gets used, so decide before you start what you are listening for.</p>"),
+            ("Adagio, adagietto, and how far a marking is from a number",
+             "<p>Adagio's band is 66 to 76 and adagietto's is 70 to 80, so 70 BPM is both. The -etto is a diminutive: an adagietto is a little adagio, and by convention a little adagio is a slightly quicker one, the same way a larghetto is quicker than a largo.</p><p>The most famous adagietto in the repertoire shows how loosely any of this maps onto a number. The fourth movement of Mahler's Fifth Symphony is headed Adagietto, sehr langsam &mdash; two words and no number &mdash; and recordings of it run from around seven minutes to over twelve &mdash; nearly a factor of two, from conductors who all read the same word on the same page. If you ever wondered whether a tempo marking is a suggestion, that is your answer. It tells you what kind of thing this is. The number you settle on is a decision you still have to make.</p>"),
+        ],
+        faq=[
+            ("Is 70 BPM slow?",
+             "By the markings, yes: it sits in adagio and adagietto, which are among the slowest bands in common use \u2014 only largo, lento and larghetto are below them. By practice-room standards it is not slow at all, because slow practice for a difficult passage often means 50 or 60 per cent of the target and the target is frequently well above 140. What 70 reliably is, is slow enough to fix things and quick enough that a long phrase still hangs together as a phrase."),
+            ("How do I get from 70 to full speed?",
+             "Small steps with a fixed number of clean repetitions between them. The trainer on this page does exactly that: give it a start, a step of 4 BPM, a bar count of 8, and a ceiling, and it climbs on its own so you never stop to change a number. The rule that matters is not the size of the step, it is that a step you cannot play cleanly means going back down, not pushing through."),
+            ("What subdivision should I use at 70?",
+             "Eighths for almost everything. The beat is 857 milliseconds long, which is more than enough room to arrive late at the halfway point without noticing. If the music itself is in sixteenths, use sixteenths &mdash; 280 clicks a minute is dense but perfectly countable at this tempo, and matching the click to the fastest note in the passage is the point of the exercise."),
+        ],
+        related=["bpm-tapper", "tone-generator", "ear-trainer"],
+    ),
+    80: dict(
+        title="80 BPM Metronome - The Andante Floor and Where Practice Starts",
+        description="An 80 BPM metronome, preset and ready. The bottom of andante and the tempo most players start a new passage at, before stepping it up 4 BPM at a time.",
+        intro="80 BPM is the tempo people mean when they say start slow. It is the slowest round number inside andante, the bottom of andantino, and the top of adagietto, and it is the number that shows up as the starting rung on almost every published practice ladder &mdash; not because there is anything magic about it, but because it is slow enough to fix a mistake and quick enough that a four-bar phrase still sounds like a phrase rather than a list of notes. The metronome below is set to 80.",
+        how_to=[
+            "Press Start and play the passage through once at 80 with no metronome adjustments. What you are finding out is whether 80 is already too fast for it.",
+            "Turn on sixteenths if the passage has any. At 80 that is 320 clicks a minute, dense enough to expose a run that is not even and slow enough that you can hear which of the four notes is early.",
+            "Tick Ramp the tempo, set start 80, step 4, every 8 bars, and a ceiling you can name. Then play until it stops climbing, or until you make a mistake &mdash; whichever comes first is the useful piece of information.",
+            "Come back the next day and start at 80 again. The tempo you can play cold is the tempo you actually have.",
+        ],
+        sections=[
+            ("Why the ladder starts here",
+             "<p>The reason 80 works as a starting rung is that it is roughly half to two thirds of the tempo most repertoire is actually marked at, and that ratio is where slow practice stops being a different activity. Below about half speed, a passage loses its shape: the phrasing decisions you make at 40 per cent are not the ones the music needs, and you can end up practising a version of the piece nobody will ever play. At 80, a passage marked 120 or 140 still moves.</p><p>The step size matters more than the start. Four BPM is small enough to be genuinely imperceptible &mdash; from 80 to 84 the beat shortens by 36 milliseconds &mdash; which means your hands adapt without being told to. Eight bars is long enough to settle at each rung. Run that from 80 to 140 and it is fifteen steps across sixteen tempos, a little under five minutes of continuous playing, which is a real practice session rather than a warm-up.</p><p>The discipline that makes any of this work is the one nobody enjoys: a rung you cannot play cleanly means going back down a rung, not pushing through. Speed built on top of an error is speed at the error.</p>"),
+            ("Andante means walking, and walking is faster than this",
+             "<p>Andante is usually glossed as at a walking pace, and its band runs 76 to 108 &mdash; so 80 BPM is andante very near its slowest. It is worth noticing that a real walk is faster than that. Ordinary adult walking cadence is well over a hundred steps a minute, and a brisk one is nearer 120. Andante at 80 is a stroll, not a walk, and the difference tells you something about how these words were meant.</p><p>They are not measurements. They describe the way music carries itself, and walking was a metaphor for a music that moves steadily and does not hurry, in a century when the alternative to walking was standing still or riding. When Chopin marked the Nocturne Op. 9 No. 2 Andante, he wrote it in 12/8 &mdash; the pulse you would set a metronome to is the dotted quarter, which is far slower than 80, while the eighth notes underneath run at three times that. The word describes the whole texture. The number only ever describes one layer of it.</p>"),
+        ],
+        faq=[
+            ("Is 80 BPM a good tempo to start practising at?",
+             "For most passages, yes, provided you can play the passage at 80 with no mistakes at all. That condition is the whole method. If 80 already produces errors, the useful starting tempo is lower, and it does not matter how slow it has to be &mdash; a passage you can only play at 60 is a passage you cannot yet play at 80, and no amount of repetition at 80 will change that."),
+            ("How long should I stay at each tempo?",
+             "Long enough for several clean repetitions in a row, which for most passages is between four and eight bars per step. The trainer on this page defaults to eight. What you are waiting for is not the clock, it is the point where the passage stops requiring attention &mdash; when you can think about the phrasing instead of the notes, the tempo is yours and you can move up."),
+            ("What is the difference between andante and andantino?",
+             "Less than you would like. Andantino is a diminutive of andante, and the two words have historically been read both ways: as slightly faster than andante, which is the modern convention and the one the reference tables follow, and as slightly slower, which is how some eighteenth-century sources used it. Both bands are given as 76 to 108 and 80 to 108, effectively the same range. Take the character from the music."),
+            ("How many notes a minute is 80 BPM in sixteenths?",
+             "320, or 5.3 a second. That is comfortably inside what most players can execute and comfortably outside what most can consciously place, which is exactly why practising with a sixteenth-note click at 80 is worth doing: the click makes each of those 320 notes a checkable event rather than part of a blur."),
+        ],
+        related=["bpm-tapper", "chords-scales", "tuner"],
+    ),
+    90: dict(
+        title="90 BPM Metronome - Mid-Andante, and the Tempo Hip-Hop Was Built On",
+        description="A 90 BPM metronome, preset and ready. The middle of andante, the heart of boom-bap hip-hop, and the speed where a sixteenth-note run starts to expose uneven fingers.",
+        intro="90 BPM sits in the middle of andante, which is the widest band in the whole marking system, and it is the tempo an enormous amount of recorded music simply lives at &mdash; classic hip-hop production in particular, which mostly sits between the mid-80s and the mid-90s. It is also the speed at which sixteenth notes reach six a second, which is roughly where evenness stops being automatic for most players. The metronome below is set to 90.",
+        how_to=[
+            "Press Start and count 1 2 3 4 aloud. At 90 a bar of 4/4 lasts 2.67 seconds, slow enough to count comfortably and fast enough that a phrase does not sag.",
+            "For a groove, set eighths and turn the swing slider up to somewhere between 10 and 25 per cent. That is well short of a full shuffle, which is where a lot of programmed hip-hop actually sits - late, but nowhere near the triplet grid.",
+            "For technique, use straight sixteenths with no swing and play a scale one note per click. Six notes a second is where unevenness becomes audible instead of merely present.",
+            "In 6/8, set beats per bar to 2 and turn on triplets: each of the two clicks is a dotted quarter and the three eighths inside it are filled in.",
+        ],
+        sections=[
+            ("Six notes a second, and what breaks there",
+             "<p>At 90 BPM a sixteenth note lasts 167 milliseconds, and four of them fill each 667-millisecond beat. Six notes a second does not sound demanding written down, and it is not &mdash; almost anyone can produce six notes in a second. What is demanding is producing six evenly spaced notes in a second, repeatedly, with the fourth one not arriving fractionally early because it is the one where the hand changes position.</p><p>This is why 90 is a more useful technical tempo than it looks. Slower than this and an uneven run can be corrected consciously between notes; faster and you cannot hear the unevenness at all, only feel that the passage is uncomfortable. Around 90, with a sixteenth-note click running, the two are simultaneously true: the error is audible and there is just enough time to notice which note caused it. Play the run, listen for the note that arrives against the click rather than on it, and then practise the two-note pair around it rather than the whole run again.</p>"),
+            ("The tempo a whole genre settled on",
+             "<p>Sampled, drum-machine hip-hop of the boom-bap kind mostly lives between about 85 and 95 BPM, and 90 is squarely in the middle of it. There is a mechanical reason as well as a musical one: at that tempo, a bar of four is long enough for a two-bar drum loop to breathe and for a vocal line to fit a lot of syllables per bar without crowding, and the kick-snare pattern lands at a walking rate rather than a dancing one.</p><p>If you are programming or playing along at 90, the swing control matters more than the tempo does. A completely straight sixteenth grid at 90 sounds mechanical in a way that is instantly recognisable, and most of the records this tempo is associated with are not straight &mdash; the offbeat sixteenth sits late, somewhere short of a full triplet. Set the subdivision to sixteenths for the grid, or to eighths with swing up around 15 or 20 per cent to hear what a small displacement actually does to the feel &mdash; a fifth of the way to a shuffle is already plenty.</p>"),
+        ],
+        faq=[
+            ("Is 90 BPM fast or slow?",
+             "It is in the middle of andante, the band that covers 76 to 108, which puts it in the middle of the slow half of the marking system. In popular music terms it is mid-tempo: slower than almost anything you would dance to, faster than a ballad, and about the rate of a relaxed heartbeat under mild exertion."),
+            ("What time signature should I use at 90?",
+             "Whatever the music is in &mdash; but if it is in 6/8 or 12/8, set beats per bar to 2 or 4 and turn on triplets rather than setting beats per bar to 6 or 12. The metronome will happily click six times a bar, but that gives you six equal beats, and 6/8 is two beats of three, not six of one. The triplet subdivision under a two-beat bar is what that actually sounds like."),
+            ("Can I swing sixteenths?",
+             "Not on this metronome, and for a reason. Swing here means displacing the offbeat of a pair towards the triplet grid, and with sixteenths as the primary division there is no pair left inside the click to displace &mdash; the clicks already are the grid. If you want a swung sixteenth feel, set the subdivision to eighths and turn the swing up: the swung eighth offbeat is the reference the sixteenths are being pulled towards, and hearing it is more useful than hearing all four clicks smeared."),
+        ],
+        related=["bpm-tapper", "chords-scales", "transposer"],
+    ),
+    100: dict(
+        title="100 BPM Metronome - The Top of Andante, and the CPR Tempo",
+        description="A 100 BPM metronome, preset and ready. The upper end of andante, the bottom of the recommended CPR compression rate, and a tempo whose arithmetic is unusually clean.",
+        intro="100 BPM is the top of andante and the last round number before the moderato band begins. It is also the one tempo on this site with a use outside music: resuscitation guidelines put chest compressions at 100 to 120 a minute, which is why every CPR course in the world teaches it with a song. The metronome below is set to 100 and its arithmetic is about as clean as tempo arithmetic gets &mdash; 0.6 seconds a beat, 400 sixteenths a minute.",
+        how_to=[
+            "Press Start. Each beat is 600 milliseconds, and a bar of 4/4 is 2.4 seconds.",
+            "For scale and arpeggio work, use sixteenths: 400 notes a minute is a genuinely useful technical rate, quick enough to matter and slow enough to correct.",
+            "Use the tempo trainer to make 100 a destination rather than a setting. Start at 80, step 4, every 8 bars, stop at 100, and you have a five-step climb that takes about two minutes.",
+            "If you are counting a piece in cut time, remember 100 in 4 and 50 in 2 are the same music. Set beats per bar to 2 and hear which one the phrasing wants.",
+        ],
+        sections=[
+            ("Andante's ceiling, and what is on the other side of it",
+             "<p>Andante's band closes at 108 and moderato's opens at 108, so 100 BPM is near the top of the slow half of the marking system without being in the fast half. That boundary is worth understanding, because it is the point where the words stop describing how the music moves and start describing how quickly it does. Everything below it &mdash; largo, lento, larghetto, adagio, andante &mdash; is named for a quality: broad, slow, at ease, walking. Everything from moderato upwards is named comparatively: moderate, quick-ish, quick, lively, very quick, as quick as possible.</p><p>In practice this means a piece marked Andante and played at 100 is being played at the fast end of its instruction and will sound like it. If the music is written in long note values, that is often exactly right; if it is already busy with sixteenths, 100 may be pushing the marking past what the texture supports. The click cannot tell you which. What it can do is let you hear 90 and 100 back to back and pick.</p>"),
+            ("The one tempo with a use outside music",
+             "<p>Resuscitation guidelines set the rate for chest compressions at 100 to 120 a minute, and the standard way of teaching it is to give people a song at that tempo to think of. The Bee Gees' <em>Stayin' Alive</em>, at a little over 100 BPM, is the canonical choice and has been endorsed in training material for years, partly for the tempo and partly for the title. <em>Another One Bites the Dust</em> is the other one people cite, at a similar rate and with a title that has aged less gracefully in context.</p><p>The reason it works is the reason a metronome works at all: a rate you have to count is a rate you will lose under stress, and a rate you can hear is one you can hold. That is the same argument for practising a difficult passage against a click rather than to your own internal pulse, in a much higher-stakes setting.</p>"),
+        ],
+        faq=[
+            ("How many beats is 100 BPM per second?",
+             "One and two thirds, which is why 100 is less convenient than it looks. Each beat is 0.6 seconds, a bar of 4/4 is 2.4 seconds, and there are 400 sixteenth notes in a minute. Only the per-minute figures come out round; the per-second ones do not, unlike at 60 or 120."),
+            ("Is 100 BPM fast?",
+             "It is at the top of andante and just short of moderato, so by the markings it is the fast end of slow. Most pop and rock sits above it, most ballads below it, and it is a common tempo for a mid-tempo song that wants to feel unhurried without dragging."),
+            ("Should I practise at 100 with eighths or sixteenths?",
+             "Match the click to the fastest note value in the passage. If the music is in eighths, an eighth-note click at 200 a minute gives you a check on every note you play. If it is in sixteenths, use sixteenths &mdash; 400 a minute sounds relentless for about ten seconds and then becomes the most useful thing on the page, because a run that is not even cannot stay hidden against it."),
+        ],
+        related=["bpm-tapper", "tuner", "ear-trainer"],
+    ),
+}
+
+
+BPM_COPY.update({
+    110: dict(
+        title="110 BPM Metronome - Moderato Begins, and the Rung Most Players Skip",
+        description="A 110 BPM metronome, preset and ready. The first round tempo inside moderato, and the step between 100 and 120 that practice ladders usually jump straight over.",
+        intro="110 BPM is the first round number that is properly moderato and nothing else &mdash; andante closes at 108, allegretto does not open until 112, so 110 sits alone in a single band. It is also the rung of the ladder people skip. Practice tempos get set in tens up to 100 and then jump to 120, and 110 is where a passage that survived 100 quietly falls apart. The metronome below is set to 110.",
+        how_to=[
+            "Press Start. A beat is 545 milliseconds and a bar of 4/4 is 2.18 seconds.",
+            "Play the passage you last practised at 100. If it is not as clean, you have found the tempo worth working at, and it is not 120.",
+            "Set the trainer to start 100, step 2, every 8 bars, stop at 120. Two-BPM steps through this region are small enough to be undetectable and put you at 110 on the way past rather than as a destination.",
+            "For eighth-note strumming or picking, put the subdivision on eighths &mdash; 220 clicks a minute &mdash; and see whether your offbeats are actually halfway or merely near it.",
+        ],
+        sections=[
+            ("The rung between 100 and 120",
+             "<p>There is nothing acoustically special about 110. What is special is where it sits in most people's habits: practice tempos get chosen in tens, and the jump from 100 to 120 is a twenty per cent increase in one step, which is four to five times the size of the steps a ramp would use anywhere else. A passage that is genuinely secure at 100 and genuinely broken at 120 has its actual boundary somewhere in between, and if you never play the tempos in between you never find it.</p><p>The practical fix is not to add 110 to your list of round numbers. It is to stop choosing tempos by hand. Set the trainer to climb in twos from 100 to 120 and the question answers itself: you will hear exactly which step is the one where the left hand stops keeping up, and that is the tempo to spend the session at. This is the whole argument for a ramp over a dial &mdash; the dial encourages round numbers, and your hands do not care about round numbers.</p>"),
+            ("What moderato is actually asking for",
+             "<p>Moderato covers 108 to 120 and means, unhelpfully, moderate. It is the hinge of the whole system: below it the words describe a quality, above it they describe increasing speed. A piece marked Moderato is being told to be neither slow nor fast, which is more of an instruction than it sounds &mdash; it rules out the two easiest interpretive choices and leaves you having to find the tempo the phrases actually want.</p><p>110 is also close to the rate a lot of familiar recorded music sits at. <em>Another One Bites the Dust</em> is commonly cited at around 110, and it is one of the two songs resuscitation training uses to fix the compression rate in people's heads, alongside <em>Stayin' Alive</em> a little below it. If you need a way to feel this tempo without a click, that bass line is a reliable one.</p>"),
+        ],
+        faq=[
+            ("Why would I practise at 110 rather than 100 or 120?",
+             "Because the tempo where a passage fails is rarely a round number, and if you only ever play round numbers you will only ever know that it works at 100 and does not at 120. Finding the actual boundary tells you what to practise: the specific bar that breaks first, at the specific speed it breaks at, rather than the whole passage twenty per cent slower than you need."),
+            ("Is 110 BPM moderato or allegretto?",
+             "Moderato. The standard bands put moderato at 108 to 120 and allegretto at 112 to 120, so 110 is inside the first and just short of the second. Two BPM higher and both would apply. This is the kind of overlap that makes the Italian words useful as descriptions and unreliable as measurements."),
+            ("How do I get an even offbeat at this tempo?",
+             "Turn on eighth notes and listen for whether your offbeat lands on the click or slightly before it. Rushing the offbeat is the single most common timing fault in strummed and picked playing, and it is almost invisible without a subdivided click because the downbeats stay right. If the offbeats are early, slow to 90, fix them there, and ramp back up in twos."),
+        ],
+        related=["bpm-tapper", "chords-scales", "tuner"],
+    ),
+    120: dict(
+        title="120 BPM Metronome - Two Beats a Second, and Every Default There Is",
+        description="A 120 BPM metronome, preset and ready. Exactly two beats a second, the boundary between moderato and allegro, the military quick march, and the default tempo of almost every DAW.",
+        intro="120 BPM is the tempo everything defaults to, and for once the default is defensible. It is exactly two beats a second, so a bar of 4/4 is two seconds and the arithmetic of every subdivision stays whole. It is the boundary where moderato ends and allegro begins. It is the marching cadence of most of the world's armies, and the floor of four-to-the-floor dance music. The metronome below is set to 120, which is also where it starts.",
+        how_to=[
+            "Press Start. Two beats a second, 500 milliseconds each, a two-second bar of 4/4.",
+            "Set beats per bar to 2 to hear it as a march: the accent lands on every other beat and the pendulum swings once per pair.",
+            "For dance and pop, leave it in 4 with eighths on. 240 eighths a minute is the hi-hat rate of most four-to-the-floor music and is the layer that actually carries the groove.",
+            "Use 120 as the ceiling of a ramp rather than a starting point: 80, step 4, every 8 bars, stop at 120 is ten steps and a complete practice session.",
+        ],
+        sections=[
+            ("Why 120 is the default in every piece of software",
+             "<p>Two beats a second is the reason. At 120 BPM a beat is exactly 500 milliseconds, a bar of 4/4 is exactly two seconds, an eighth is 250 milliseconds and a sixteenth is 125 &mdash; every subdivision down to the sixteenth lands on a whole number of milliseconds. For a sequencer laying out a grid, or a person trying to convert bars to minutes in their head, that is worth a lot, and it is why 120 became the number every DAW opens on and every metronome ships set to.</p><p>The musical case is just as strong. 120 is fast enough to feel like motion and slow enough to be countable, which puts it at the centre of an enormous amount of repertoire. It is the boundary between moderato, which closes at 120, and allegro, which opens there &mdash; the single number where the slow half of the marking system hands over to the fast half. A piece marked Allegro and played at 120 is at the bottom of its instruction; a piece marked Moderato and played at 120 is at the top of its. Both are legitimate readings of the same tick.</p>"),
+            ("The marching tempo, and the dancing one",
+             "<p>120 steps a minute is quick time in the United States armed forces and close to the standard in most others, which are generally set between about 112 and 120. That is not a coincidence of taste: it is roughly the cadence at which an adult of average height covers ground efficiently for a long time, which is what a marching pace is for. If you want to feel 120 without a metronome, walk briskly and count your left foot as the downbeat &mdash; you will be within a few BPM.</p><p>The same number turns up at the bottom of four-to-the-floor dance music. Disco settled around 110 to 125, house generally sits between 120 and 130, and the convention of a kick on every beat means the tempo is unusually literal &mdash; the BPM is the kick rate, with nothing to interpret. Set beats per bar to 4, accent on, eighths on, and what you are hearing is the skeleton of that entire idiom.</p>"),
+        ],
+        faq=[
+            ("Why is 120 BPM the standard default tempo?",
+             "Because it divides cleanly and sits in the middle of usable music. Two beats a second makes every subdivision a whole number of milliseconds, which matters to sequencer grids and to anyone doing tempo arithmetic in their head, and 120 is simultaneously the top of moderato and the bottom of allegro, so it is the least committal tempo a piece of software can pick on your behalf."),
+            ("Is 120 BPM fast?",
+             "It is the exact point at which the markings start calling music fast: allegro's band opens at 120 and runs to 156. In practice 120 reads as brisk rather than fast &mdash; it is a marching pace, a dance-floor pace, and roughly the tempo of a great deal of pop music. Anything that sounds genuinely quick is usually above 140."),
+            ("Is 120 in 4/4 the same as 60 in cut time?",
+             "The same clicks, a different count. At 120 in 4/4 you count four beats a bar and the metronome accents every fourth. Set beats per bar to 2 and you have a half-note pulse at 60 with the quarter notes as its subdivision &mdash; identical timing, but the accent now falls half as often, and phrases you were hearing in fours you will start hearing in twos. Which is right depends on where the music's weight actually lands."),
+            ("How many bars of 4/4 fit in a minute at 120?",
+             "Thirty, exactly. Each bar is two seconds. That makes 120 the easiest tempo there is for working out how long a section will run: a 32-bar chorus is 64 seconds, and a three-minute song is 90 bars."),
+        ],
+        related=["bpm-tapper", "tuner", "tone-generator"],
+    ),
+    130: dict(
+        title="130 BPM Metronome - Allegro Proper, and 260 Eighth Notes a Minute",
+        description="A 130 BPM metronome, preset and ready. Squarely inside allegro, the tempo techno starts where house leaves off, and the rate constant downstrokes stop being sustainable.",
+        intro="130 BPM is allegro without qualification &mdash; past the moderato overlap at 120, well short of the vivace band at 156. It is also the tempo at which straight eighth notes reach 260 a minute, which is roughly where a guitarist playing constant downstrokes runs out of forearm, and where house music hands over to techno. The metronome below is set to 130.",
+        how_to=[
+            "Press Start. A beat is 462 milliseconds, and a bar of 4/4 is 1.85 seconds.",
+            "Turn on eighths for a rhythm-guitar or hi-hat feel: 260 a minute, one every 231 milliseconds.",
+            "For a shuffle, set eighths and swing to about 33 per cent - that puts the offbeat on the triplet grid, the classic shuffle feel, and at this tempo it is unmistakable.",
+            "If you are drilling a passage towards this tempo, ramp to it rather than starting here: 100, step 5, every 8 bars, stop at 130 is six steps.",
+        ],
+        sections=[
+            ("260 eighth notes a minute",
+             "<p>Tempo stops being an abstraction the moment you count what your hands have to do. At 130 BPM an eighth note lasts 231 milliseconds, and a bar of steady eighths in 4/4 is eight of them in 1.85 seconds. Over a three-minute song that is around 780 strokes. Sustained downstroke picking &mdash; the technique that gives a certain kind of rock rhythm guitar its relentlessness, because a down-up alternation audibly does not sound the same &mdash; is a physical endurance problem long before it is a musical one, and 130 is around where most players find the limit of doing it for a whole song rather than a whole bar.</p><p>The same arithmetic is why the subdivision setting matters more at this tempo than at slower ones. At 80 you can hear whether an eighth is late without any help. At 130 the gap between an eighth that is on time and one that is 20 milliseconds early is not something you will notice against a bare quarter-note click, and 20 milliseconds is a lot &mdash; it is nearly a tenth of the note. Turn the eighths on and the error has something to be measured against.</p>"),
+            ("Where house stops and techno starts",
+             "<p>Four-to-the-floor dance music divides up along tempo lines more cleanly than almost any other idiom, because the kick drum is on every beat and there is nothing to interpret: the BPM is simply the rate you hear. House generally lives between 120 and 130, and techno generally starts around where house leaves off, from 130 upward. 130 is the seam, which is why plenty of records sit exactly on it and could be filed either way.</p><p>If you are playing or programming at this tempo, the useful thing the metronome adds is the layer above the kick. Set eighths on for the hi-hat rate, or triplets for the shuffled feels that show up at the slower end of techno, and the pattern you are working on has a grid to sit against rather than just a pulse.</p>"),
+        ],
+        faq=[
+            ("Is 130 BPM fast?",
+             "By the markings it is allegro, the fast half of the system, but nowhere near the top of it &mdash; allegro runs to 156 and vivace to 176 above that. In dance music terms 130 is on the energetic side of normal. It is a tempo you can count comfortably and play sixteenths at only with real technique, since sixteenths at 130 are 520 notes a minute."),
+            ("What swing percentage gives a shuffle at 130?",
+             "About 33 per cent. Swing here is the fraction of one subdivision by which the offbeat is delayed, so with eighths selected, 33 per cent puts the second eighth two thirds of the way through the beat &mdash; the triplet grid, which is the definition of a shuffle. 50 per cent gives a dotted eighth and a sixteenth instead, and above that a hard swing starts to sound stiff rather than loose, especially at fast tempos."),
+            ("How many sixteenths a minute is 130 BPM?",
+             "520, one every 115 milliseconds. That is a genuinely demanding rate for a sustained run, and it is worth knowing before you decide a passage is playable at tempo &mdash; the question is not whether you can play the notes, it is whether you can place 520 of them a minute evenly."),
+        ],
+        related=["bpm-tapper", "transposer", "tone-generator"],
+    ),
+    140: dict(
+        title="140 BPM Metronome - Fast Allegro, and the Tempo That Is Also 70",
+        description="A 140 BPM metronome, preset and ready. The upper half of allegro, the standard tempo for trap and dubstep played half-time, and the usual ceiling of an 80-to-140 practice ramp.",
+        intro="140 BPM is the upper half of allegro and the most common ceiling for a practice ramp that started at 80. It is also the clearest example anywhere of a tempo being two tempos at once: trap and dubstep are both written and counted at 140, and both are heard at 70, because the backbeat lands every other bar's worth of the fast count. The metronome below is set to 140.",
+        how_to=[
+            "Press Start. A beat is 429 milliseconds, and a bar of 4/4 is 1.71 seconds.",
+            "To feel the half-time version, set beats per bar to 2 while it runs. The clicks do not move; the accent does, and the same tempo now reads as 70.",
+            "As a ramp target, set start 80, step 4, every 8 bars, stop at 140. That is fifteen steps across sixteen tempos, a little under five minutes of continuous playing.",
+            "Eighths at 140 are 280 a minute. If a passage is in eighths, click them rather than the beat - at this speed the beat alone leaves too much room between checkpoints.",
+        ],
+        sections=[
+            ("One tempo, two feels",
+             "<p>140 BPM is where the half-time trick is most visible. Trap and dubstep are both notated and sequenced at around 140, with hi-hats running at that rate or faster, but the snare lands only twice in the space where a straightforward 140 track would put four &mdash; so the body hears a backbeat at 70 while the top of the kit is moving at 140. The tempo has not changed. The accent pattern has.</p><p>You can hear the whole effect on this page with one control. Start the metronome at 140 with the accent on and beats per bar at 4, and it reads as a quick four. Change beats per bar to 2 without stopping it: not one click moves, but the accented beat now arrives every 857 milliseconds instead of every 1.71 seconds, and the same stream of clicks reads as a slower, heavier pulse with a subdivision on top. That is the difference between a tempo and a feel, demonstrated with a checkbox.</p><p>The same relationship makes <a href=\"/70-bpm-metronome/\">70 BPM</a> the natural practice tempo for anything written at 140: exactly half, so nothing about the subdivision has to be re-learned on the way up.</p>"),
+            ("Where the ramp usually ends",
+             "<p>140 is the most common stopping point for a practice ramp, and not by accident. A great deal of repertoire is marked somewhere between 120 and 152, which is the fast end of allegro, and 140 sits in the middle of that. A ramp from 80 to 140 in steps of 4 is fifteen steps across sixteen tempos; at eight bars a tempo, and bars that shorten from 3 seconds at the bottom to 1.7 at the top, that is a little under five minutes of unbroken playing &mdash; short enough to do daily and long enough that the top of it is a real test.</p><p>What the trainer is really buying you is the removal of a decision. Left to choose tempos by hand, most players jump in tens, stop to type a number, lose the thread, and end up playing the passage far fewer times than they think. A ramp that climbs on its own keeps the instrument in your hands, and the number on the screen becomes information rather than a task.</p>"),
+        ],
+        faq=[
+            ("Is 140 BPM fast?",
+             "It is well into allegro, whose band runs 120 to 156, so by the markings it is properly fast without being at the top of the range. Whether it feels fast depends entirely on what is happening underneath: 140 with a half-time backbeat feels like 70, and 140 with sixteenth-note hi-hats feels like a great deal more."),
+            ("Why is trap written at 140 when it sounds slow?",
+             "Because the snare marks a backbeat at half that rate while the hi-hats run at 140 or double it. Your sense of tempo follows the backbeat, so the track feels like 70, but everything is counted, sequenced and swung at 140. Set this metronome to 140 with beats per bar at 2 and you are hearing the same arrangement of accents."),
+            ("What is the ideal step size for a tempo ramp?",
+             "Small enough that you cannot feel the change happen. Four BPM works well through this region: from 140 to 144 the beat shortens by 12 milliseconds, which nobody notices consciously. What matters more than the step is the rule about failure &mdash; if a rung produces mistakes, the tempo you actually have is the last clean one, and the ramp should go back down rather than through."),
+        ],
+        related=["bpm-tapper", "tuner", "transposer"],
+    ),
+})
+
+
+BPM_COPY.update({
+    150: dict(
+        title="150 BPM Metronome - The Last Tempo That Is Still Allegro",
+        description="A 150 BPM metronome, preset and ready. Near the top of allegro, one step below vivace, the punk and hardcore range, and where sixteenth notes reach ten a second.",
+        intro="150 BPM is close to the ceiling of allegro, which closes at 156, and one small step from vivace. It is also where sixteenth notes hit ten a second &mdash; the rate at which most players stop counting a run and start feeling it as a single gesture &mdash; and where a lot of punk and hardcore begins. The metronome below is set to 150.",
+        how_to=[
+            "Press Start. A beat is 400 milliseconds, and a bar of 4/4 is 1.6 seconds.",
+            "Count in 2 rather than 4 if the phrasing allows it. Above about 140 many players read four fast beats more comfortably as two slower ones with a subdivision.",
+            "Eighths at 150 are 300 a minute. Turn them on for a downstroke or hi-hat reference, and leave swing at zero - swing at this speed reads as a stumble rather than a lilt.",
+            "For a passage in sixteenths, drop to 100 and ramp: start 100, step 5, every 8 bars, stop at 150 is ten steps.",
+        ],
+        sections=[
+            ("Ten notes a second",
+             "<p>At 150 BPM a sixteenth note lasts 100 milliseconds exactly, so a run of sixteenths is ten notes a second. That is a threshold worth knowing about, because it is roughly where conscious note-by-note control ends for most people. Below it you can decide to place a note; above it you are executing a pattern that was decided earlier, and the only thing you can adjust in real time is the shape of the whole gesture.</p><p>The practical consequence is that fast passages have to be practised as patterns, not as sequences of decisions. This is the argument for slow practice with a dense click: at 75 BPM the same sixteenths are five a second and every one of them is a placeable event, so the pattern you are building is an even one. Bring it back to 150 and you are executing something that was correct when it was assembled. Assemble it at speed and you are executing whatever unevenness happened to be there.</p><p>It is also why 150 is a good tempo to test at rather than to learn at. Play the passage here, listen for the note that consistently arrives against the click rather than with it, and take that pair of notes back down to a tempo where you can do something about it.</p>"),
+            ("Allegro's ceiling and punk's floor",
+             "<p>Allegro runs to 156 and vivace opens at 156, so 150 is the last round number that is unambiguously allegro. Above it the vocabulary changes from fast to lively, and the character it implies changes with it &mdash; allegro is bright and quick, vivace is animated, and the difference is real even though the numbers barely move.</p><p>The other thing that lives here is fast guitar music. Punk and hardcore mostly sit between about 150 and 200, and the reason 150 is the floor rather than the middle is physical: the eighth-note rate at 150 is 300 a minute, which is about as fast as continuous downstrokes stay clean, and the idiom depends on that sound. Above this tempo bands generally switch to alternate picking or to counting the bar in 2, both of which change the feel.</p>"),
+        ],
+        faq=[
+            ("Is 150 BPM allegro or vivace?",
+             "Allegro. The standard bands put allegro at 120 to 156 and vivace at 156 to 176, so 150 is inside the first and short of the second. Six BPM higher and it would be both, which is a good illustration of how little precision these words carry at the boundaries."),
+            ("Should I count 150 BPM in 4 or in 2?",
+             "Try both on this page, since changing beats per bar does not stop the click. In 4 you get a fast four with an accent every 1.6 seconds; in 2 you get a half-note pulse at 75 with the quarters as subdivision. Fast music very often reads better in 2, because the phrase lengths are easier to hold and the accent stops arriving so relentlessly."),
+            ("Can I still use subdivisions at 150?",
+             "Eighths, yes, at 300 a minute &mdash; that is a useful and countable reference. Sixteenths at 150 are 600 clicks a minute, one every 100 milliseconds, which most people hear as a buzz rather than as separate events. If you need sixteenth-level accuracy at this tempo, get it at a slower one and bring it back up."),
+        ],
+        related=["bpm-tapper", "transposer", "chords-scales"],
+    ),
+    160: dict(
+        title="160 BPM Metronome - Vivace, and Exactly Twice 80",
+        description="A 160 BPM metronome, preset and ready. Inside the vivace band, the bluegrass and fast-fiddle range, and exactly double the tempo most practice ladders start at.",
+        intro="160 BPM is inside vivace, the band that opens at 156 where allegro closes &mdash; so at 160 the vocabulary has changed from fast to lively. It is also exactly twice 80, which makes it the natural finishing line for a doubling drill: learn it at 80, own it at 160, and the two are the same music with the same subdivisions. The metronome below is set to 160.",
+        how_to=[
+            "Press Start. A beat is 375 milliseconds, and a bar of 4/4 is 1.5 seconds.",
+            "Count in 2 unless the music insists otherwise. At 160 a bar of four arrives every second and a half, and a half-note pulse at 80 is far easier to phrase against.",
+            "Use the trainer to double: start 80, step 4, every 8 bars, stop at 160. Twenty steps, and the ratio at the end is exactly two to one.",
+            "Eighths at 160 are 320 a minute - fine as a reference. Leave sixteenths alone up here; 640 clicks a minute is not a countable grid.",
+        ],
+        sections=[
+            ("Exactly twice 80, and why that matters",
+             "<p>A doubling drill is the cleanest structure a practice session can have, because the two ends are exactly related. Everything you establish at 80 &mdash; which finger goes where, where the phrase breathes, which note the accent lands on &mdash; survives unchanged at 160. Nothing about the subdivision has to be recounted, because a sixteenth at 80 is 187.5 milliseconds and a sixteenth at 160 is 93.75, and the relationship of every note to every other note is identical.</p><p>It also gives the ramp a defensible endpoint. The most common failure of tempo practice is choosing a target that is either arbitrary or unreachable; doubling the tempo you can already play cleanly is neither. Set the trainer to start at 80, step 4, every 8 bars, and stop at 160, and the session has a defined shape and a defined end. Whether you get there today is a separate question from whether you know what you are aiming at.</p>"),
+            ("Vivace, and the music that lives up here",
+             "<p>Vivace means lively, and its band opens at 156, exactly where allegro's closes, and runs to 176 &mdash; by which point presto has already started overlapping from 168. The character it implies is animation rather than raw speed: a vivace is quick because it is energetic, not because it is hurrying.</p><p>In practice a lot of fiddle and string-band music sits in this range. Bluegrass breakdowns and fast reels are commonly played anywhere between about 140 and 180, with 160 a very ordinary tempo for a tune played at a session rather than a competition. That idiom is worth studying against a click for a specific reason: the music is full of continuous eighth notes, played fast, where the whole effect depends on those eighths being dead even. Turn on the eighth-note subdivision, play a run of them at 160, and you will hear whether yours are.</p>"),
+        ],
+        faq=[
+            ("Is 160 BPM vivace or allegro?",
+             "Vivace, just. Allegro's band closes at 156 and vivace's opens there, so 160 is the first round number past the changeover. In practice the words at this end of the scale overlap heavily &mdash; presto begins at 168, only eight BPM higher &mdash; and the character of the music will tell you more than the band does."),
+            ("How do I practise a passage up to 160?",
+             "Start at half speed. 80 BPM is exactly half of 160, so a passage learned at 80 needs no reinterpretation on the way up, only more speed. Use the ramp: start 80, step 4, every 8 bars. If a rung produces mistakes, drop back a rung rather than pushing through &mdash; the tempo you actually have is the fastest one you played cleanly."),
+            ("What subdivision works at 160?",
+             "Eighths, at 320 a minute. Sixteenths at this tempo are 640 clicks a minute, roughly one every 94 milliseconds, which is dense enough that most listeners stop hearing separate clicks and start hearing a tone. If you need sixteenth-level precision in a passage that will end up at 160, build it at 80 with sixteenths clicking and bring it up."),
+        ],
+        related=["bpm-tapper", "tuner", "chords-scales"],
+    ),
+    180: dict(
+        title="180 BPM Metronome - Presto, and the Viennese Waltz in Beats",
+        description="A 180 BPM metronome, preset and ready. Inside the presto band, the competition tempo of the Viennese waltz measured in quarter notes, and the drum and bass range.",
+        intro="180 BPM is presto, whose band opens at 168 and runs to 200. It is fast enough that counting all four beats of a bar stops being useful for most people, and fast enough that two very different idioms meet on it: the Viennese waltz, which competitions set at around sixty bars a minute in 3/4 &mdash; which is 180 quarter notes &mdash; and drum and bass, which sits a little below it. The metronome below is set to 180.",
+        how_to=[
+            "Press Start. A beat is 333 milliseconds, and a bar of 4/4 is 1.33 seconds.",
+            "For a waltz, set beats per bar to 3. Each bar is exactly one second, which is the whole trick of a Viennese waltz - one bar, one second, sixty bars a minute.",
+            "In 4/4, set beats per bar to 2 and count half notes at 90. Above about 170 that is how most players actually hold the bar.",
+            "Leave the subdivision off unless the music genuinely needs it. Eighths at 180 are 360 a minute, which is a reference rather than a grid you can play against.",
+        ],
+        sections=[
+            ("A Viennese waltz, measured in beats instead of bars",
+             "<p>Ballroom tempos are quoted in bars a minute rather than beats, which hides how fast some of them are. The Viennese waltz is set at around sixty bars a minute in competition, and a bar of 3/4 has three quarter notes in it &mdash; so sixty bars a minute is 180 quarter notes a minute. At that speed one bar takes exactly one second, and dancers do not count 1 2 3 at all; they feel one pulse per bar and let the other two beats fall where they will.</p><p>Set beats per bar to 3 on this page and you can hear both readings of the same tick. The accented click arrives once a second and the two unaccented ones fill in behind it. If you count the accents, you are counting bars at 60. If you count every click, you are counting beats at 180. Same clock, and a completely different sense of how fast the music is &mdash; which is a good reminder that a BPM number on its own does not tell you how a piece feels.</p>"),
+            ("Where you stop counting beats",
+             "<p>There is a rate above which counting every beat stops helping. It varies by player and by idiom, but for most people it is somewhere around 160 to 180: past that, saying or thinking four numbers in 1.33 seconds costs more attention than it returns, and the useful unit becomes the bar. Conductors make the same move &mdash; a fast 3/4 is conducted in one, with a single beat per bar, precisely because three separate gestures a second communicate nothing.</p><p>The metronome's job changes accordingly. Up here it is not a checkpoint for every note; it is a reference you sample. Play a phrase and confirm you are still with it at the end. If you are not, the useful diagnosis is almost never the last note &mdash; it is a rushed offbeat several bars earlier, and finding it means dropping to <a href=\"/90-bpm-metronome/\">90 BPM</a>, which is exactly half this tempo, and playing the same phrase with the subdivision clicking.</p><p>Drum and bass, incidentally, lives just below this, generally around 170 to 176, and is another idiom counted in half-time: the breakbeat runs at the full rate while the bass line moves at half of it.</p>"),
+        ],
+        faq=[
+            ("Is 180 BPM presto?",
+             "Yes. Presto's band is given as 168 to 200, so 180 sits comfortably inside it. Vivace overlaps from below, closing at 176, and prestissimo does not begin until 200. At these speeds the bands are packed close together and the words overlap heavily, because there is not much room left between very fast and as fast as possible."),
+            ("How is a Viennese waltz 60 BPM and 180 BPM at once?",
+             "Because ballroom tempos are quoted in bars a minute and musicians quote beats. Sixty bars a minute of 3/4 is 180 quarter notes a minute. Set beats per bar to 3 here and the accented click marks the bar at 60 while every click marks the beat at 180 &mdash; both numbers describe the same music."),
+            ("Should I use a subdivision at 180?",
+             "Rarely. Eighth notes at 180 are 360 a minute, one every 167 milliseconds, which is fast enough that the clicks blur into the beats rather than clarifying them. Up here the more useful move is the opposite: reduce the beats per bar so the accent arrives less often, and let your ear hold the bar rather than the beat."),
+        ],
+        related=["bpm-tapper", "tone-generator", "ear-trainer"],
+    ),
+    200: dict(
+        title="200 BPM Metronome - Where Presto Ends and Prestissimo Begins",
+        description="A 200 BPM metronome, preset and ready. The exact boundary between presto and prestissimo, the up-tempo jazz range, and a tempo almost everyone counts in two.",
+        intro="200 BPM is the top of presto and the bottom of prestissimo &mdash; the only tempo in the marking system where as fast as possible officially begins. It is also a tempo almost nobody actually counts in four. Up-tempo jazz, fast bluegrass and thrash are all counted in two or in one, which is why 200 in 4/4 and 100 in cut time are the same piece of music wearing different clothes. The metronome below is set to 200.",
+        how_to=[
+            "Press Start. A beat is 300 milliseconds, and a bar of 4/4 is 1.2 seconds.",
+            "Set beats per bar to 2 straight away. That gives you a half-note pulse at 100 with the quarters filling in, which is how this tempo is actually played.",
+            "To hear how far the counting can be stretched, leave the beats at 2 and turn the accent off. What is left is a bare pulse at 200 with no bar structure at all - which is what a drummer at this tempo is really keeping.",
+            "For practice, use it as a ramp ceiling from 100: start 100, step 5, every 8 bars, stop at 200 is twenty steps, and the finish line is exactly double the start.",
+        ],
+        sections=[
+            ("Play it as 100 in two",
+             "<p>Cut time is not a notation convenience, it is a statement about where the weight of the music is. At 200 BPM in 4/4, an accent arrives every 1.2 seconds and three unaccented beats crowd in behind it; counted in two, the accent arrives every 600 milliseconds and the music has a half-note pulse at 100 with quarters as its subdivision. The clicks are identical. What changes is how many events you are asking your attention to track, and above about 180 that is the difference between playable and not.</p><p>Up-tempo jazz is the clearest case. Bebop heads are routinely played at 200 and well beyond, and no bass player is thinking in four at those speeds &mdash; the walking line is still four notes a bar, but the count is in two, and the ride cymbal pattern is a shape rather than a sequence of placed hits. Set this page to 2 beats per bar and you are hearing what that feels like from the inside.</p><p>The same relationship makes <a href=\"/100-bpm-metronome/\">100 BPM</a> the honest practice tempo for anything that ends up here: exactly half, so the subdivisions map one to one.</p>"),
+            ("Where the marking system runs out",
+             "<p>Prestissimo's band opens at 200 and the vocabulary has nowhere further to go &mdash; the word means as fast as possible, which is an instruction about effort rather than about speed, and there is no Italian term in general use for anything above it. That is a reasonable place for the system to stop. Most music written above 200 is either counted in a larger unit, so the effective tempo the performer reads is half of it, or it is a texture rather than a line, where individual notes stop being separable events.</p><p>Extreme metal is the obvious modern exception: a blast beat at 200 has the snare on every eighth, 400 a minute, and the tempo is genuinely being played at face value rather than counted in two. So is the fastest end of bluegrass. In both cases what makes it possible is that the pattern is highly repetitive, which is the same reason a fast passage is practised as a pattern and not as a sequence of decisions.</p>"),
+        ],
+        faq=[
+            ("Is 200 BPM presto or prestissimo?",
+             "Both, exactly. Presto's band is 168 to 200 and prestissimo's opens at 200, so 200 is the single number where the fastest two markings in common use meet. Above it the Italian vocabulary is effectively exhausted and composers switch to describing the character instead."),
+            ("How do people count 200 BPM?",
+             "In two, almost always. A half-note pulse at 100 with the quarters as subdivision is far easier to hold than four beats arriving every 300 milliseconds, and it matches where the musical weight actually falls in most fast idioms. Set beats per bar to 2 on this page to hear it &mdash; not one click moves, but the bar becomes countable."),
+            ("Is 200 BPM the same as 100 BPM in cut time?",
+             "The timing is identical; the accent pattern and the count are not. In cut time you feel two half-note beats a bar at 100, with the quarter notes as their subdivision. In 4/4 at 200 you feel four quarter-note beats. Which is correct is a musical question about where the phrase leans, and it is usually answered by the notation the piece was published in."),
+            ("What is the fastest a metronome here will go?",
+             "300 BPM, which is five beats a second and the top of the slider. Beyond about 260 the marking system has no words left and the practical use is mostly as a subdivision reference &mdash; a 300 BPM click is really a sixteenth-note grid for a piece at 75."),
+        ],
+        related=["bpm-tapper", "ear-trainer", "transposer"],
+    ),
+})
+
+
+
+
+# One row per tempo. Structure only: the slug, the heading and the cross-links
+# follow from the number, and the prose lives in BPM_COPY above. Keyed on the
+# BPM itself, so a page cannot exist for a tempo the chip row does not offer
+# and the chassis cannot be preset to a tempo the copy is not about.
+BPM_PAGES = [
+    dict(bpm=b, slug=bpm_slug(b), h1="%d BPM Metronome" % b, nav="%d BPM" % b)
+    for b in BPM_VALUES
+]
+
+BPM_PAGE_BY_BPM = {p["bpm"]: p for p in BPM_PAGES}
+
+
+def other_tempos_html(current_bpm):
+    """Neighbouring tempos first, then the arithmetic partners, then the rest.
+    Nearest-first is the order a reader actually wants: the most likely reason
+    to leave a tempo page is that this tempo is slightly wrong."""
+    order = sorted(BPM_VALUES, key=lambda b: (abs(b - current_bpm), b))
+    links = ""
+    for b in order:
+        if b == current_bpm:
+            continue
+        note = ""
+        if b * 2 == current_bpm:
+            note = " &mdash; half"
+        elif b == current_bpm * 2:
+            note = " &mdash; double"
+        links += f'        <a href="/{bpm_slug(b)}/">{b} BPM{note} &rarr;</a>\n'
+    return links
+
+
+def build_bpm_page(p):
+    """A per-tempo landing page: the same metronome, preset, plus the copy for
+    that tempo. Everything structural here is derived from p["bpm"] — the
+    title, the chassis attribute, the arithmetic table and the marking band —
+    so a new tempo is one number in BPM_VALUES and one entry in BPM_COPY."""
+    bpm = p["bpm"]
+    copy = BPM_COPY[bpm]
+    title = f'{copy["title"]} | perfecttune.net'
+    description = copy["description"]
+    json_ld = (
+        '{"@context":"https://schema.org","@type":"WebApplication","name":"'
+        + p["h1"] + " \\u2014 perfecttune.net" + '",'
+        f'"url":"{SITE}/{p["slug"]}/",'
+        '"applicationCategory":"MusicApplication",'
+        '"operatingSystem":"Any (runs in browser)",'
+        f'"description":"{description}",'
+        '"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},'
+        '"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo",'
+        '"publisher":{"@type":"Organization","name":"perfecttune.net"}}'
+    )
+    h = head(title, description, f"/{p['slug']}/", json_ld)
+    b = header(p["slug"], section="metronome")
+
+    body = f"""  <main id="main">
+    <section class="panel">
+      <div class="wrap">
+        <div class="panel-head">
+          <h1 tabindex="-1">{p['h1']}</h1>
+          <a class="back-to-tools" href="/" data-panel-link="">&larr; All tools</a>
+        </div>
+{tempo_chips(p['slug'])}        <p>{copy['intro']}</p>
+{metronome_workspace(bpm, p['h1'])}
+      </div>
+    </section>
+
+    <section class="content-section" id="how-it-works">
+      <div class="wrap">
+        <h2>How to practise at {bpm} BPM</h2>
+        <div class="how-to">
+          <ol>
+"""
+    for step in copy["how_to"]:
+        body += f"        <li>{step}</li>\n"
+    body += """          </ol>
+        </div>
+      </div>
+    </section>
+"""
+
+    for heading, html in copy["sections"]:
+        body += f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>{heading}</h2>
+{html}
+      </div>
+    </section>
+"""
+
+    body += bpm_math_html(bpm)
+    body += marking_band_html(bpm)
+
+    body += """
+    <section class="content-section">
+      <div class="wrap">
+        <h2>FAQ</h2>
+        <dl class="faq">
+"""
+    for q, a in copy["faq"]:
+        body += f"        <dt>{q}</dt>\n        <dd>{a}</dd>\n"
+    body += """        </dl>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Other tempos</h2>
+        <div class="related-links">
+"""
+    body += other_tempos_html(bpm)
+    body += """        </div>
+      </div>
+    </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Related tools</h2>
+        <div class="related-links">
+"""
+    for rel in copy["related"]:
+        body += f'        <a href="/{rel}/">{TOOL_BY_SLUG[rel]["name"]} &rarr;</a>\n'
+    body += """        </div>
+      </div>
+    </section>
+  </main>
+"""
+
+    full = h + b + body + footer_and_close(
+        scripts_for([TOOL_BY_SLUG["metronome"]]), faq_jsonld(copy["faq"])
+    )
+    write(f"{p['slug']}/index.html", full)
+    write(f"{p['slug']}.html", full)
+
+
+
 # ---------------------------------------------------------------- legal pages --
 
 def build_legal(slug, title_text, body_html):
@@ -1933,6 +2742,7 @@ def build_misc():
         ["/"]
         + [f"/{t['slug']}/" for t in TOOLS]
         + [f"/{p['slug']}/" for p in PRESET_PAGES]
+        + [f"/{p['slug']}/" for p in BPM_PAGES]
         + ["/privacy/", "/terms/"]
         + [f"/articles/{a['slug']}.html" for a in ARTICLES]
     )
@@ -1948,9 +2758,14 @@ if __name__ == "__main__":
         build_tool_page(t)
     for p in PRESET_PAGES:
         build_preset_page(p)
+    for p in BPM_PAGES:
+        build_bpm_page(p)
     build_privacy()
     build_terms()
     build_404()
     build_articles()
     build_misc()
-    print(f"Built perfecttune.net — {len(TOOLS)} tools, {len(PRESET_PAGES)} tuner pages, {len(TUNINGS)} tunings")
+    print(
+        f"Built perfecttune.net — {len(TOOLS)} tools, {len(PRESET_PAGES)} tuner pages, "
+        f"{len(BPM_PAGES)} tempo pages, {len(TUNINGS)} tunings"
+    )

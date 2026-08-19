@@ -288,6 +288,11 @@ p { margin: 0 0 1em; }
 .tb-sheet.is-flat { columns: 1; }
 .tb-sheet.is-flat ul { columns: 2; column-gap: 24px; }
 .tb-sheet ul { margin: 0 0 12px; padding: 0; list-style: none; break-inside: avoid; }
+/* A group with many short entries — thirteen tempo pages — would otherwise be
+   one tall unsplittable list that leaves the second sheet column half empty
+   and pushes the hub link past the sheet's max-height. Two sub-columns bring
+   it down to the height of the group beside it. */
+.tb-sheet ul.tb-cols { columns: 2; column-gap: 16px; }
 .tb-sheet li { break-inside: avoid; }
 .tb-sheet a {
   display: flex; align-items: center; min-height: 36px; padding: 0 14px;
@@ -329,7 +334,7 @@ p { margin: 0 0 1em; }
      grouped sheet the last group and the hub link were rendered off the right
      edge with a blank band where they should have been — `overflow-y` cannot
      scroll to content that overflowed inline. A plain block scrolls. */
-  .tb-sheet, .tb-sheet.is-flat ul {
+  .tb-sheet, .tb-sheet.is-flat ul, .tb-sheet ul.tb-cols {
     columns: auto;
   }
   .tb-sheet {
@@ -782,6 +787,56 @@ a.ctrl-btn { display: inline-block; text-decoration: none; text-align: center; }
   background: linear-gradient(155deg, var(--brass-300), var(--brass-600));
 }
 .string-chart-hint { text-align: left; margin: 10px 0 0; }
+
+/* ------------------------------------------------------------ metronome
+   A bordered sub-block inside an instrument, for a cluster of controls that
+   is a mode of its own rather than one more row of knobs — the subdivision
+   and swing pair, and the tempo trainer. Same recipe as the tuner's string
+   chart above, which is the pattern this follows rather than inventing a
+   second kind of inner card. */
+.mt-block {
+  margin: 18px 0 6px; padding: 14px 16px 12px;
+  border: 1px solid var(--border); border-radius: var(--radius);
+  background: color-mix(in srgb, var(--brass-500) 6%, var(--bg));
+}
+.mt-block-title {
+  font-family: var(--font-mono); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--fg-muted); font-weight: 600; margin: 0 0 4px;
+}
+.mt-block .field-row { margin: 8px 0 0; }
+/* Left-aligned and monospace: these read as instrument state, not as prose. */
+.mt-note {
+  font-family: var(--font-mono); font-size: 12.5px; line-height: 1.5;
+  color: var(--fg-muted); text-align: left; margin: 10px 0 0;
+}
+/* An <output> beside the slider rather than text inside its <label>: the
+   value changes on every drag frame, and rewriting a control's accessible
+   name as you drag makes a screen reader re-announce the control instead of
+   reading its value. */
+.mt-swing-out {
+  font-family: var(--font-mono); font-size: 12px; color: var(--fg-muted);
+  text-transform: none; letter-spacing: normal; text-align: center;
+}
+/* Swing has nothing to displace under a plain quarter or under sixteenths,
+   so the control goes dead rather than lying about what it is doing. */
+.field input[type="range"]:disabled { opacity: 0.4; cursor: not-allowed; }
+/* Doubled class on purpose: `.field label` and `.field input` are also
+   (0,1,1), so a single class would win on source order alone and any rule
+   added below here would silently put the toggles back in uppercase mono. */
+.field.field-toggle {
+  align-self: flex-end; padding-bottom: 8px;
+}
+.field.field-toggle label {
+  display: flex; align-items: center; gap: 6px; font-family: var(--font-body);
+  font-size: 13px; text-transform: none; letter-spacing: normal; color: var(--fg);
+}
+.field.field-toggle input { width: auto; }
+/* On a phone the trainer's fields stack two-up, and a checkbox sharing a row
+   with a labelled number field leaves the label floating over nothing. Give
+   it the whole line. */
+@media (max-width: 640px) {
+  .mt-block .field.field-toggle { flex-basis: 100%; align-self: flex-start; padding-bottom: 0; }
+}
 
 .string-table { width: 100%; border-collapse: collapse; }
 .string-table caption { caption-side: top; }
