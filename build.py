@@ -1070,7 +1070,10 @@ def head(title, description, canonical_path, json_ld, extra_style=""):
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{description}">
   <meta property="og:url" content="{url}">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:image" content="{SITE}/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{title}">
   <meta name="twitter:description" content="{description}">
   <link rel="stylesheet" href="/assets/style.css">
@@ -2638,6 +2641,17 @@ def build_404():
   <link rel="canonical" href="{url}">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#241a14">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="perfecttune.net">
+  <meta property="og:title" content="{title}">
+  <meta property="og:description" content="{description}">
+  <meta property="og:url" content="{url}">
+  <meta property="og:image" content="{SITE}/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{title}">
+  <meta name="twitter:description" content="{description}">
   <link rel="stylesheet" href="/assets/style.css">
   <script type="application/ld+json">{json_ld}</script>
 </head>
