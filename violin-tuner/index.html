@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Violin Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/violin-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a violin to G3 196.00, D4 293.66, A4 440.00 and E5 659.26 Hz. Tap any string for a reference tone, or allow the microphone for live pitch detection.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Violin Tuner","item":"https://perfecttune.net/violin-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -194,6 +195,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -298,10 +303,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -310,6 +333,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is the A string tuned first?", "acceptedAnswer": {"@type": "Answer", "text": "Because it is the reference everything else is measured from. In an orchestra the oboe gives an A and the section matches it; alone with a tuner, A4 440.00 Hz plays the same part. It also sits in the middle of the set, so you can check A against D below and E above as double stops without ever needing an outer string to be correct first."}}, {"@type": "Question", "name": "My peg slips back as soon as I let go.", "acceptedAnswer": {"@type": "Answer", "text": "A peg is a tapered wooden shaft held in a tapered hole by friction alone, so it has to be pushed into the pegbox as it is turned, not simply rotated. Slipping usually means dry air has shrunk the peg; sticking means humidity has swollen it. Peg compound applied sparingly to the two contact bands treats both. Wind the string so it beds against the pegbox wall, which puts some of the friction back."}}, {"@type": "Question", "name": "The tuner says my fifths are slightly off. Are they?", "acceptedAnswer": {"@type": "Answer", "text": "Probably not. A pure fifth tuned by ear is 702 cents wide, while the equal tempered fifth this chart is built on is 700. Tune outward from A in pure fifths and your G lands about four cents below G3 196.00 Hz and your E about two cents above E5 659.26 Hz. That is not an error &mdash; it is the gap between beatless fifths and a tempered scale, and string players live on the pure side of it."}}, {"@type": "Question", "name": "Can I tune without a microphone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Each string in the chart is a playable reference pitch, which is the traditional method anyway: sound the tone, bow your string, and listen for the beating between them. Beats are unusually easy to hear on a violin because the tone is sustained and rich in harmonics. The microphone adds a cents readout, which is useful when you want to see how far a half turn of a fine tuner actually moves a string."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

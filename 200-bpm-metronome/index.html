@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"200 BPM Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/200-bpm-metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"A 200 BPM metronome, preset and ready. The exact boundary between presto and prestissimo, the up-tempo jazz range, and a tempo almost everyone counts in two.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"},{"@type":"ListItem","position":3,"name":"200 BPM Metronome","item":"https://perfecttune.net/200-bpm-metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -299,10 +300,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -311,6 +330,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is 200 BPM presto or prestissimo?", "acceptedAnswer": {"@type": "Answer", "text": "Both, exactly. Presto's band is 168 to 200 and prestissimo's opens at 200, so 200 is the single number where the fastest two markings in common use meet. Above it the Italian vocabulary is effectively exhausted and composers switch to describing the character instead."}}, {"@type": "Question", "name": "How do people count 200 BPM?", "acceptedAnswer": {"@type": "Answer", "text": "In two, almost always. A half-note pulse at 100 with the quarters as subdivision is far easier to hold than four beats arriving every 300 milliseconds, and it matches where the musical weight actually falls in most fast idioms. Set beats per bar to 2 on this page to hear it &mdash; not one click moves, but the bar becomes countable."}}, {"@type": "Question", "name": "Is 200 BPM the same as 100 BPM in cut time?", "acceptedAnswer": {"@type": "Answer", "text": "The timing is identical; the accent pattern and the count are not. In cut time you feel two half-note beats a bar at 100, with the quarter notes as their subdivision. In 4/4 at 200 you feel four quarter-note beats. Which is correct is a musical question about where the phrase leans, and it is usually answered by the notation the piece was published in."}}, {"@type": "Question", "name": "What is the fastest a metronome here will go?", "acceptedAnswer": {"@type": "Answer", "text": "300 BPM, which is five beats a second and the top of the slider. Beyond about 260 the marking system has no words left and the practical use is mostly as a subdivision reference &mdash; a 300 BPM click is really a sixteenth-note grid for a piece at 75."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

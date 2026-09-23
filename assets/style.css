@@ -595,6 +595,14 @@ a.ctrl-btn { display: inline-block; text-decoration: none; text-align: center; }
 .related-links { display: flex; gap: 14px; flex-wrap: wrap; }
 .related-links a { text-decoration: none; font-weight: 600; }
 
+/* "Read more": the articles that explain the tool on this page. A list, not
+   a chip row, because each line carries a sentence of its own. */
+.read-more { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
+.read-more li { display: flex; flex-direction: column; gap: 4px; }
+.read-more a { font-weight: 600; text-decoration: none; }
+.read-more a:hover { text-decoration: underline; }
+.read-more-blurb { font-size: 14px; color: var(--fg-muted); }
+
 /* ------------------------------------------------------------ content sections (SEO copy) */
 .content-section { padding: 30px 0; border-top: 1px solid var(--border-soft); }
 .content-section h2 { font-size: 24px; }
@@ -609,6 +617,19 @@ a.ctrl-btn { display: inline-block; text-decoration: none; text-align: center; }
 .footer-tag { font-size: 13px; color: var(--fg-muted); margin: 0; }
 .footer-links { list-style: none; display: flex; gap: 16px; margin: 0; padding: 0; }
 .footer-links a { font-size: 13px; text-decoration: none; font-weight: 600; }
+
+/* Sibling sites. The footer wrap is a flex row, so this block takes the full
+   width and sits on its own line under the tagline at every size. */
+.footer-peers { flex: 1 0 100%; order: 3; border-top: 1px solid var(--border); padding-top: 16px; }
+.footer-peers-label { font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-muted); margin: 0 0 8px; }
+.footer-peers ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; }
+.footer-peers li { font-size: 13px; color: var(--fg-muted); }
+.footer-peers a { text-decoration: none; font-weight: 600; }
+.footer-peers a:hover { text-decoration: underline; }
+.footer-peers span { color: var(--fg-muted); }
+@media (max-width: 560px) {
+  .footer-peers ul { flex-direction: column; gap: 8px; }
+}
 
 /* the erabbit mark must stay a body-level element AFTER </footer>, with
    zero right/bottom margin so nothing sits below/right of it. See build.py. */

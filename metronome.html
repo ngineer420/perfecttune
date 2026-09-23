@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free browser-based metronome with eighth, triplet and sixteenth subdivisions, adjustable swing, a tempo-ramp trainer and tap tempo. Sample-accurate lookahead scheduling on the Web Audio clock, not setInterval, so it never drifts.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -266,10 +267,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -278,6 +297,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why not just use setInterval for the beat?", "acceptedAnswer": {"@type": "Answer", "text": "setInterval fires late whenever the browser tab is busy, backgrounded, or the OS deprioritizes it — the errors accumulate and the tempo audibly drifts over a long run. Instead, every click’s exact start time is scheduled on the Web Audio clock a fraction of a second ahead of when it plays, which is immune to that kind of jitter."}}, {"@type": "Question", "name": "Do the beat lights count subdivisions too?", "acceptedAnswer": {"@type": "Answer", "text": "No, and deliberately. Turning on sixteenths does not turn a bar of 4/4 into sixteen beats: the lights, the accented downbeat, the pendulum and the bar counter all keep counting quarter notes, and the extra clicks are simply sounded inside each beat at a lower level. A subdivision that moved the accent every fourth click would be a tempo change wearing a disguise."}}, {"@type": "Question", "name": "What does the swing percentage actually mean?", "acceptedAnswer": {"@type": "Answer", "text": "It is the fraction of one subdivision by which the offbeat is delayed. At 0% a pair of eighths is even. At 33% the second eighth arrives two thirds of the way through the beat — that is the triplet-based shuffle you hear in jazz and blues. At 50% it lands three quarters of the way through, which is a dotted eighth followed by a sixteenth, and the slider’s 66% ceiling is harder still — useful mainly for exaggerating a feel while you are learning it. Note that this is a percentage of the subdivision and not of the beat, so it does not line up with the swing control in a sequencer, where 50% usually means straight. Most recorded swing is far gentler than a full shuffle: on this scale, often only 10 to 25%."}}, {"@type": "Question", "name": "Why can I only swing eighths and triplets?", "acceptedAnswer": {"@type": "Answer", "text": "Because swing is a displacement of the offbeat towards the triplet grid, and that only means something when there is an offbeat to displace. A plain quarter has nothing inside it. Sixteenths as the primary division are already denser than the grid swing would push them towards, so a swing control there would just be smearing the timing rather than producing a recognised feel."}}, {"@type": "Question", "name": "How should I use the tempo trainer?", "acceptedAnswer": {"@type": "Answer", "text": "Set the ceiling to the tempo the music is actually marked at, the start to somewhere you can play the passage cleanly with no mistakes at all, and the step small — 4 BPM is usually enough that you cannot feel the change happen. Eight bars per step is a good default: long enough to settle, short enough that a full run from 80 to 140 takes about five minutes. If you start making mistakes, the tempo you can actually play is the last one you got through cleanly, not the one on the screen."}}, {"@type": "Question", "name": "Can I use time signatures like 6/8 or 7/8?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — set beats-per-bar to the numerator and the beat unit to the denominator (2, 4, 8 or 16); the metronome computes each beat’s real duration from both, so a 6/8 bar at a given tempo ticks at the correct eighth-note speed, not a quarter-note one."}}, {"@type": "Question", "name": "What does the pendulum represent?", "acceptedAnswer": {"@type": "Answer", "text": "It’s a real-time view of the same schedule driving the clicks — its position each frame is computed directly from the current and next scheduled beat times, easing between them the way a physical pendulum decelerates at each turnaround, so what you see always matches what you hear. It swings once per beat whatever the subdivision is set to."}}, {"@type": "Question", "name": "How does tap tempo work?", "acceptedAnswer": {"@type": "Answer", "text": "Each tap is timestamped; once you’ve tapped at least twice, perfecttune averages the intervals between your last several taps and sets the BPM from that average — tap steadily for a few beats for the most accurate result."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

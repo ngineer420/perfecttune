@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Bass Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/bass-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a 4 or 5 string bass in the browser. Reference tones from E1 41.20 Hz up to G2 98.00 Hz, plus live mic detection that resolves a low B at 30.87 Hz.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Bass Tuner","item":"https://perfecttune.net/bass-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -194,6 +195,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -298,10 +303,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -310,6 +333,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Will it detect the low B on a five string?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. B0 is 30.87 Hz, and the analysis window lengthens automatically when the tuner is looking that low. One cycle of a 30.87 Hz wave lasts about 32 milliseconds, so half a dozen cycles take roughly a fifth of a second of continuous audio &mdash; the window has to be long enough to contain them or there is nothing periodic to measure. Let the note ring rather than stabbing at it."}}, {"@type": "Question", "name": "Why does the reading jump to a note an octave up?", "acceptedAnswer": {"@type": "Answer", "text": "Because a bass string's fundamental is weak next to its harmonics. Pluck hard near the bridge and the second or third partial can dominate the waveform, and a naive detector locks onto that instead. Autocorrelation on the normalized square difference function measures the repeat period of the whole wave rather than the loudest partial, which is why it holds the octave &mdash; but plucking softly over the neck pickup with the tone rolled back makes its job much easier."}}, {"@type": "Question", "name": "Should I tune through the amp or acoustically?", "acceptedAnswer": {"@type": "Answer", "text": "Either, but keep the amp quiet. The microphone hears the room, so a cabinet pointed straight at the machine will overload the input and can start feeding back. Tuning acoustically works because the string itself is what the mic is reading, not the pickup. If your bass is very quiet unplugged, move it closer to the microphone rather than digging in harder, since a hard pluck bends the pitch sharp for the first moments."}}, {"@type": "Question", "name": "Do I need the microphone at all?", "acceptedAnswer": {"@type": "Answer", "text": "No. Every string in the chart plays its own reference tone, so the whole instrument can be tuned by ear with the mic denied. One caution about playback: E1 41.20 Hz and B0 30.87 Hz are below what most laptop speakers can reproduce, so use headphones or a real speaker. Otherwise you will be matching a harmonic of the reference rather than the reference, and land an octave high."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

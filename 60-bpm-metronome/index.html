@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"60 BPM Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/60-bpm-metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"A 60 BPM metronome, preset and ready. One beat per second exactly, on the border between largo and larghetto - the tempo for long tones, intonation and slow-movement phrasing.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"},{"@type":"ListItem","position":3,"name":"60 BPM Metronome","item":"https://perfecttune.net/60-bpm-metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -301,10 +302,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -313,6 +332,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is 60 BPM the same as one beat per second?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, exactly, and it is the only round tempo where the arithmetic is that clean. Sixty beats in sixty seconds is one per second, so a bar of 4/4 is four seconds and a bar of 3/4 is three. If you ever want to check that a metronome is honest, 60 BPM against a clock's second hand is the test that needs no equipment."}}, {"@type": "Question", "name": "Why do I drift at 60 BPM when I have no trouble at 120?", "acceptedAnswer": {"@type": "Answer", "text": "Because you are being asked to hold the pulse for twice as long without help. Timekeeping error grows with the gap you have to bridge, and a second is a long gap. This is the argument for subdivisions: switch the metronome to eighths and you are bridging half a second at a time, with the beat still accented so you never lose which one is which. If eighths feel easy, sixteenths at 60 are 240 clicks a minute and leave nowhere to hide."}}, {"@type": "Question", "name": "What is the difference between largo and lento?", "acceptedAnswer": {"@type": "Answer", "text": "Character. Both cover roughly the same numbers, but largo means broad and lento means slow. A largo asks for weight and space in each note; a lento just asks you not to hurry. In practice the composer's other instructions &mdash; the dynamics, the articulation, whether the line is one long phrase or a series of separate events &mdash; tell you which reading is wanted more reliably than the word alone does."}}, {"@type": "Question", "name": "Can I use a 60 BPM click for a piece in 6/8?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, but decide what the 60 is counting first. If the dotted quarter is the pulse, set beats per bar to 2 and turn on triplets, and each click group is one dotted-quarter beat divided into its three eighths. If you want the eighth note itself at 60, set the beat unit to 8 and beats per bar to 6. The metronome computes each beat's real length from both numbers, so it will not quietly give you a quarter-note pulse when you asked for an eighth-note one."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Ukulele Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/ukulele-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a soprano, concert or tenor ukulele to GCEA. Tap a string for its reference tone, from G4 392.00 Hz down to C4 261.63 Hz, or use live mic detection.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Ukulele Tuner","item":"https://perfecttune.net/ukulele-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -194,6 +195,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -297,10 +302,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -309,6 +332,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is my fourth string higher than my third?", "acceptedAnswer": {"@type": "Answer", "text": "That is reentrant tuning, and it is standard on a ukulele. The fourth string is G4 392.00 Hz while the third is C4 261.63 Hz, so the set does not climb steadily from one side to the other &mdash; it drops, then climbs. Sorted low to high the strings are C4 261.63, E4 329.63, G4 392.00 and A4 440.00 Hz, which means only your first string is higher than your fourth."}}, {"@type": "Question", "name": "I have fitted a low G. What changes?", "acceptedAnswer": {"@type": "Answer", "text": "A low G is a wound string sounding an octave below the chart, at G3 196.00 Hz, and it makes the instrument linear: the strings then rise in pitch from fourth to first the way a guitar does. Live detection reports the pitch you actually produce, so it will read G3. Tuning by ear still works &mdash; sound the G4 392.00 Hz reference and tune to the octave below it, which locks in cleanly with no beating."}}, {"@type": "Question", "name": "Why will a new ukulele not stay in tune?", "acceptedAnswer": {"@type": "Answer", "text": "Nylon and fluorocarbon creep. Under tension the polymer keeps stretching for days rather than minutes, so a fresh set falls in pitch every time you put the instrument down. Retune several times a session and it will stabilise inside about a week. Friction pegs add a second, different cause: if a string gives way suddenly rather than drifting, the peg needs its screw tightened a fraction, not more turning."}}, {"@type": "Question", "name": "Does the size of the ukulele change the tuning?", "acceptedAnswer": {"@type": "Answer", "text": "No. Soprano, concert and tenor all use these same GCEA pitches, so this chart covers all three; scale length changes tension and tone, not the notes. A baritone is the exception, tuned D3 146.83 Hz, G3 196.00 Hz, B3 246.94 Hz and E4 329.63 Hz like the top four strings of a guitar, so none of the numbers on this page apply to one."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

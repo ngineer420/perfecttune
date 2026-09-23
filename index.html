@@ -244,6 +244,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -357,7 +361,7 @@
     <div class="instrument">
       <div class="nameplate">
         <span class="nameplate-label">Tone Generator</span>
-        <span class="status-led" id="tg-status" data-state="idle">Idle</span>
+        <span class="status-led" id="tg-status" data-state="idle" role="status">Idle</span>
       </div>
       <div class="waveform-select">
         <button type="button" class="wave-btn" data-wave="sine" aria-pressed="true"><svg viewBox="0 0 34 20" fill="none" stroke-width="2"><path d="M1 10c3-9 5-9 8 0s5 9 8 0 5-9 8 0 5 9 8 0"/></svg><span>Sine</span></button>
@@ -454,7 +458,7 @@
         <div class="field wide"><label for="cs-type">Chord, scale or mode</label><select id="cs-type"></select></div>
       </div>
       <div class="screen">
-        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25">&mdash;</div>
+        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25" role="status">&mdash;</div>
         <div class="cents-readout" id="cs-formula">&mdash;</div>
       </div>
       <div class="note-chips" id="cs-notes"></div>
@@ -687,6 +691,15 @@
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -694,6 +707,7 @@
     </div>
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

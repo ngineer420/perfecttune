@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"BPM Tapper \u2014 perfecttune.net","url":"https://perfecttune.net/bpm-tapper/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free tap tempo tool: tap along with any track to read its BPM, see how steady your taps actually were, and send the tempo straight to the metronome. No microphone, no upload, no permissions.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"BPM Tapper","item":"https://perfecttune.net/bpm-tapper/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -164,10 +165,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -176,6 +195,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How many taps do I need?", "acceptedAnswer": {"@type": "Answer", "text": "Two taps give you one interval and therefore a number; eight give you a tempo. Every extra tap adds another interval to the average and the last twelve are kept, so a couple of bars of steady tapping settles the reading to within a fraction of a BPM."}}, {"@type": "Question", "name": "What is the steadiness figure?", "acceptedAnswer": {"@type": "Answer", "text": "The standard deviation of the intervals between your taps, in milliseconds. At 120 BPM one beat is 500 ms, so ±10 ms means your taps agreed to within about two percent and the reading is real; ±80 ms means the number is an average of some fairly loose tapping rather than a tempo."}}, {"@type": "Question", "name": "Does it listen to my music?", "acceptedAnswer": {"@type": "Answer", "text": "No — there is no microphone involved in this tool at all. It measures the timing of your own taps and nothing else. The only sound it can make is an optional click on each tap, which is switched off by default."}}, {"@type": "Question", "name": "Why does it reset when I stop?", "acceptedAnswer": {"@type": "Answer", "text": "A gap of more than 2.2 seconds is treated as the end of a measurement rather than as one very slow beat. Without that rule, coming back after a pause would fold a long idle gap into the average and drag the tempo down with it."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

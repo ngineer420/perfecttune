@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Half Step Down Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/half-step-down-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune every string down one semitone to E flat standard: 77.78, 103.83, 138.59, 185.00, 233.08 and 311.13 Hz, by ear from reference tones or with the mic.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Half Step Down Tuner","item":"https://perfecttune.net/half-step-down-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -206,6 +207,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -310,10 +315,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -322,6 +345,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is E flat the same as D sharp?", "acceptedAnswer": {"@type": "Answer", "text": "The same pitches, spelled differently. E&#9837;2 77.78 Hz and D&#9839;2 77.78 Hz are one note on a guitar, but the flat spelling is the one that matches the music: guitarists in this tuning end up playing in E&#9837;, A&#9837; and B&#9837;, which are written with flats. Calling it D&#9839; standard forces sharp key names with double sharps inside them, which nobody wants to read off a chart."}}, {"@type": "Question", "name": "Do I need heavier strings?", "acceptedAnswer": {"@type": "Answer", "text": "Not necessarily, but the guitar will feel different. String tension rises with the square of frequency, so a semitone down removes about eleven percent of the pull on every string. Bends get easier, which is usually the reason to be here at all, and buzz gets likelier, especially with a light gauge over low action. Many players move up one gauge to put the tension back roughly where it was."}}, {"@type": "Question", "name": "Will a capo bring me back to standard?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. A capo at the first fret raises every string a semitone, so the open strings sound E2 82.41 Hz through E4 329.63 Hz again and every standard shape lands at standard pitch. You lose a fret of range at the top and the open strings below the capo are no longer available, but for playing along with something recorded at standard pitch it is an instant fix."}}, {"@type": "Question", "name": "What happens to my floating tremolo?", "acceptedAnswer": {"@type": "Answer", "text": "It tilts. A floating bridge balances string tension against spring tension, so removing eleven percent from the strings lets the springs win: the bridge sinks toward the body, which pulls the pitch down further and puts you into a loop of chasing it. Slacken the spring claw screws in the back cavity a little at a time, retuning between adjustments, until the bridge sits level again."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

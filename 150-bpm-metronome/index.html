@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"150 BPM Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/150-bpm-metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"A 150 BPM metronome, preset and ready. Near the top of allegro, one step below vivace, the punk and hardcore range, and where sixteenth notes reach ten a second.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"},{"@type":"ListItem","position":3,"name":"150 BPM Metronome","item":"https://perfecttune.net/150-bpm-metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -297,10 +298,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -309,6 +328,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is 150 BPM allegro or vivace?", "acceptedAnswer": {"@type": "Answer", "text": "Allegro. The standard bands put allegro at 120 to 156 and vivace at 156 to 176, so 150 is inside the first and short of the second. Six BPM higher and it would be both, which is a good illustration of how little precision these words carry at the boundaries."}}, {"@type": "Question", "name": "Should I count 150 BPM in 4 or in 2?", "acceptedAnswer": {"@type": "Answer", "text": "Try both on this page, since changing beats per bar does not stop the click. In 4 you get a fast four with an accent every 1.6 seconds; in 2 you get a half-note pulse at 75 with the quarters as subdivision. Fast music very often reads better in 2, because the phrase lengths are easier to hold and the accent stops arriving so relentlessly."}}, {"@type": "Question", "name": "Can I still use subdivisions at 150?", "acceptedAnswer": {"@type": "Answer", "text": "Eighths, yes, at 300 a minute &mdash; that is a useful and countable reference. Sixteenths at 150 are 600 clicks a minute, one every 100 milliseconds, which most people hear as a buzz rather than as separate events. If you need sixteenth-level accuracy at this tempo, get it at a slower one and bring it back up."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>
