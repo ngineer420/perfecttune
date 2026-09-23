@@ -36,6 +36,29 @@ THEME_SCRIPT = (
     'r.setAttribute("data-theme",t);}catch(e){}})();</script>'
 )
 
+# The one contact route for the site. The footer carries it on every page and
+# the privacy policy points at it, so the policy promises something that
+# really exists.
+CONTACT = "hello@goodbotbad.bot"
+
+
+def entity_encode(text):
+    """Every character as a decimal numeric character reference.
+
+    The browser decodes these while it parses, so the href is a real mailto
+    and the link needs no JavaScript. It stays in the tab order and a screen
+    reader reads the plain address. A scraper that reads the raw HTML and
+    looks for an at sign finds nothing.
+    """
+    return "".join("&#%d;" % ord(c) for c in text)
+
+
+def contact_link():
+    return '<a href="%s">%s</a>' % (
+        entity_encode("mailto:" + CONTACT), entity_encode(CONTACT)
+    )
+
+
 ERABBIT = (
     '<a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it">'
     '<img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 '
@@ -1285,6 +1308,7 @@ def footer_and_close(scripts, faq_json_ld=None):
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
+        <li>{contact_link()}</li>
       </ul>
     </div>
   </footer>
@@ -2836,7 +2860,7 @@ def build_privacy():
       <h2>Third parties</h2>
       <p>Other than the AdSense script above, this site makes no requests to any external server. There are no other third-party scripts, fonts, or trackers.</p>
       <h2>Contact</h2>
-      <p>Questions about this policy can be sent through the contact details listed on our <a href="https://erabb.it">erabb.it</a> portfolio page.</p>
+      <p>Send questions about this policy to {contact_link()}. The same address is in the footer of every page.</p>
 """
     build_legal("privacy", "Privacy Policy", body)
 
