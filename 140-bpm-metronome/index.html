@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"140 BPM Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/140-bpm-metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"A 140 BPM metronome, preset and ready. The upper half of allegro, the standard tempo for trap and dubstep played half-time, and the usual ceiling of an 80-to-140 practice ramp.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"},{"@type":"ListItem","position":3,"name":"140 BPM Metronome","item":"https://perfecttune.net/140-bpm-metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -297,10 +298,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -309,6 +328,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is 140 BPM fast?", "acceptedAnswer": {"@type": "Answer", "text": "It is well into allegro, whose band runs 120 to 156, so by the markings it is properly fast without being at the top of the range. Whether it feels fast depends entirely on what is happening underneath: 140 with a half-time backbeat feels like 70, and 140 with sixteenth-note hi-hats feels like a great deal more."}}, {"@type": "Question", "name": "Why is trap written at 140 when it sounds slow?", "acceptedAnswer": {"@type": "Answer", "text": "Because the snare marks a backbeat at half that rate while the hi-hats run at 140 or double it. Your sense of tempo follows the backbeat, so the track feels like 70, but everything is counted, sequenced and swung at 140. Set this metronome to 140 with beats per bar at 2 and you are hearing the same arrangement of accents."}}, {"@type": "Question", "name": "What is the ideal step size for a tempo ramp?", "acceptedAnswer": {"@type": "Answer", "text": "Small enough that you cannot feel the change happen. Four BPM works well through this region: from 140 to 144 the beat shortens by 12 milliseconds, which nobody notices consciously. What matters more than the step is the rule about failure &mdash; if a rung produces mistakes, the tempo you actually have is the last clean one, and the ramp should go back down rather than through."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

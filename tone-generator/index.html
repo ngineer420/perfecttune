@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Tone Generator \u2014 perfecttune.net","url":"https://perfecttune.net/tone-generator/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free browser-based tone generator / drone. Sine, square, triangle and sawtooth waveforms, frequency or note-name selection, and a live oscilloscope — 100% client-side, no audio files.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tone Generator","item":"https://perfecttune.net/tone-generator/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -94,7 +95,7 @@
     <div class="instrument">
       <div class="nameplate">
         <span class="nameplate-label">Tone Generator</span>
-        <span class="status-led" id="tg-status" data-state="idle">Idle</span>
+        <span class="status-led" id="tg-status" data-state="idle" role="status">Idle</span>
       </div>
       <div class="waveform-select">
         <button type="button" class="wave-btn" data-wave="sine" aria-pressed="true"><svg viewBox="0 0 34 20" fill="none" stroke-width="2"><path d="M1 10c3-9 5-9 8 0s5 9 8 0 5-9 8 0 5 9 8 0"/></svg><span>Sine</span></button>
@@ -169,10 +170,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/practicing-with-a-drone-tone.html">A Musician's Guide to Practicing With a Drone Tone</a><span class="read-more-blurb">How singers and instrumentalists use a steady reference pitch to build intonation, tune by ear, and hear intervals — and how to set one up for your own practice.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -181,6 +200,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is this a pure tone, and can I trust the frequency?", "acceptedAnswer": {"@type": "Answer", "text": "Yes — the sine waveform is a single oscillator frequency with no harmonics, generated directly by the Web Audio API's OscillatorNode, which is accurate to the sample rate. It's suitable as a genuine reference pitch."}}, {"@type": "Question", "name": "Why do frequency changes fade instead of jumping instantly?", "acceptedAnswer": {"@type": "Answer", "text": "An instant frequency or volume jump on a live oscillator produces an audible click or pop. Changes are applied with a short exponential ramp instead, so you can sweep or nudge the pitch smoothly while it's playing."}}, {"@type": "Question", "name": "What does the oscilloscope actually show?", "acceptedAnswer": {"@type": "Answer", "text": "It reads the oscillator's real output through an AnalyserNode and redraws the exact waveform shape every animation frame — when you switch from sine to square, you're watching the actual signal change, not an illustration of one."}}, {"@type": "Question", "name": "What frequency range is available?", "acceptedAnswer": {"@type": "Answer", "text": "20 Hz to 5000 Hz by direct entry or slider, and the note dropdown covers C0 through B8 — well beyond any acoustic instrument's fundamental range."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

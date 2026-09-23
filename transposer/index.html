@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord Transposer \u2014 perfecttune.net","url":"https://perfecttune.net/transposer/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free chord transposer. Move a progression up or down by any number of semitones and get the chords spelled for the key you land in, with slash basses and quality suffixes preserved exactly as typed.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Chord Transposer","item":"https://perfecttune.net/transposer/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -174,6 +175,15 @@
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -182,6 +192,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How does it choose between F# and Gb?", "acceptedAnswer": {"@type": "Answer", "text": "Auto spells every root as the nearest spelling to the target key on the circle of fifths. Transposing C Am F G7 up three semitones lands in E♭, a key with three flats, so the result is E♭ Cm A♭ B♭7 rather than the D♯ Cm G♯ A♯7 that a sharps-only tool would hand you. Where two spellings sit equally far from the key — F♯ and G♭ are both six accidentals — it takes the sharp. The Sharps and Flats options override the whole thing."}}, {"@type": "Question", "name": "What happens to chord qualities and slash chords?", "acceptedAnswer": {"@type": "Answer", "text": "Nothing at all happens to the quality: everything after the root letter and its accidental is copied through untouched, so 7, maj7, m7b5, sus4, add9 and 13#11 all survive intact. A slash bass is parsed as its own note and transposed with the chord, so Am7/G up two semitones is Bm7/A."}}, {"@type": "Question", "name": "Can I paste a lyric sheet?", "acceptedAnswer": {"@type": "Answer", "text": "Not usefully. Anything starting with a letter from A to G is treated as a chord symbol, so a word like “And” would be transposed along with the chords. Give it chords — anything it does not read as one is passed through untouched and listed underneath the result."}}, {"@type": "Question", "name": "Does transposing change how the progression sounds?", "acceptedAnswer": {"@type": "Answer", "text": "In equal temperament the intervals inside every chord are preserved exactly, which is the whole point of twelve equal semitones, so the harmony is identical. What changes is the register, which open strings and easy keyboard shapes are available, and how the voicings sit under the hand."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Drop D Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/drop-d-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Drop the sixth string from E2 82.41 Hz to D2 73.42 Hz. Tap any string for its reference tone or use live mic detection, then check the octave against D3.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Drop D Tuner","item":"https://perfecttune.net/drop-d-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -206,6 +207,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -310,10 +315,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -322,6 +345,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How far is the sixth string moving?", "acceptedAnswer": {"@type": "Answer", "text": "Two semitones, a whole tone, from E2 82.41 Hz down to D2 73.42 Hz. In frequency that is a drop of nearly 9 Hz, but the useful test is the octave: D3 146.83 Hz on the open fourth string is double D2, so the two strings sounded together should give one clean pitch. A slow pulse means you are close but not there yet, and the pulse rate is roughly how many Hz out you are at the upper octave."}}, {"@type": "Question", "name": "Why do the other strings go sharp?", "acceptedAnswer": {"@type": "Answer", "text": "The neck carries the combined pull of six strings, which runs to many tens of kilograms, and it flexes under that load. Take a whole tone off the sixth string and the total drops, the neck straightens a fraction, and the remaining five come up slightly sharp in response. The shift is usually only a couple of cents, but it is real, and it is why you check all six after dropping rather than assuming five were left alone."}}, {"@type": "Question", "name": "What actually gets easier in drop D?", "acceptedAnswer": {"@type": "Answer", "text": "Power chords on the bottom three strings collapse into a single barre. With the sixth string down a tone, root, fifth and octave line up on one fret, so one finger plays the shape and it slides without refingering. You also gain a low D2 73.42 Hz as an open pedal note, which is why so much riff writing in D and D minor lives here rather than in standard tuning."}}, {"@type": "Question", "name": "Does the sixth string buzz once it is slack?", "acceptedAnswer": {"@type": "Answer", "text": "It can. Lower tension means a wider vibration arc for the same picking force, so a string that cleared the frets in standard may rattle against them in drop D, particularly with low action or a light gauge. Pick a little softer, or move to a set with a heavier sixth. Nothing on the guitar needs adjusting for one string down a tone, but a setup that suited standard is now slightly generous."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

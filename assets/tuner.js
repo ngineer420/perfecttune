@@ -58,6 +58,15 @@
     var autoBtn = document.getElementById("tn-auto");
     var playAllBtn = document.getElementById("tn-play-all");
     var chartNote = document.getElementById("tn-target-note");
+    /*
+     * The note and the cents figure redraw on every animation frame. A live
+     * region on those nodes would speak over itself, so the announcement gets
+     * a node of its own and passes through the guard in live-region.js: at
+     * most one announcement every 600 ms, and never the same words twice.
+     */
+    var live = window.PTLive
+      ? window.PTLive.announcer(document.getElementById("tn-live"), 600)
+      : { say: function () {}, reset: function () {}, clear: function () {} };
     var gauge = Gauge ? Gauge.mountCents(gaugeMount, { sweep: 55, range: 50 }) : null;
 
     var tuning = Tunings.byId(root.getAttribute("data-default-tuning"));
@@ -223,6 +232,7 @@
 
     function setIdle() {
       setStatus("Idle", "idle");
+      live.clear();
       startBtn.hidden = false;
       stopBtn.hidden = true;
       hasReading = false;
@@ -257,6 +267,7 @@
       if (freq === null) {
         hasReading = false;
         setStatus("Listening…", "listening");
+        live.say("No clear pitch. Play one string and let it ring.");
         centsEl.innerHTML = "No clear pitch — play one string and let it ring.";
         noteEl.classList.remove("in-tune");
         return;
@@ -269,17 +280,19 @@
         idx = near.cents <= AUTO_SNAP_CENTS ? near.index : -1;
       }
 
-      var label, targetFreq, cents;
+      var label, targetFreq, cents, spokenNote;
       if (idx >= 0) {
         var s = tuning.strings[idx];
         targetFreq = stringFreq(idx);
         cents = centsBetween(freq, targetFreq);
         label = s.name + '<span class="octave">' + s.octave + "</span>";
+        spokenNote = s.name + s.octave;
       } else {
         var a = Notes.analyze(freq, a4v);
         targetFreq = a.targetFreq;
         cents = a.cents;
         label = a.name + '<span class="octave">' + a.octave + "</span>";
+        spokenNote = a.name + a.octave;
       }
 
       smoothedCents = hasReading ? smoothedCents * 0.65 + cents * 0.35 : cents;
@@ -300,6 +313,19 @@
       freqEl.textContent = freq.toFixed(1) + " Hz";
       targetEl.textContent = targetFreq.toFixed(2) + " Hz";
       if (gauge) gauge.setValue(Math.max(-50, Math.min(50, smoothedCents)));
+
+      /*
+       * Speak the note, not the needle. The cents figure moves on every
+       * frame and rounding it into the announcement would make a new
+       * sentence twice a second. Rounding to the nearest 5 cents outside
+       * the in-tune band keeps the direction useful and the region quiet.
+       */
+      if (inTune) {
+        live.say(spokenNote + ", in tune");
+      } else {
+        var step = Math.round(Math.abs(cents) / 5) * 5;
+        live.say(spokenNote + ", " + step + " cents " + (cents > 0 ? "sharp" : "flat"));
+      }
     }
 
     /* ------------------------------------------------------- analysis loop */

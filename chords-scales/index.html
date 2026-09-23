@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Chord and Scale Dictionary \u2014 perfecttune.net","url":"https://perfecttune.net/chords-scales/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Free chord and scale dictionary. Pick a root and a quality to get the notes, the piano keys and every fretboard position — generated from interval formulas and spelled correctly for the key, not looked up in a table of pictures.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Chord and Scale Dictionary","item":"https://perfecttune.net/chords-scales/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -101,7 +102,7 @@
         <div class="field wide"><label for="cs-type">Chord, scale or mode</label><select id="cs-type"></select></div>
       </div>
       <div class="screen">
-        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25">&mdash;</div>
+        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25" role="status">&mdash;</div>
         <div class="cents-readout" id="cs-formula">&mdash;</div>
       </div>
       <div class="note-chips" id="cs-notes"></div>
@@ -214,6 +215,15 @@
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -222,6 +232,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which chords and scales are included?", "acceptedAnswer": {"@type": "Answer", "text": "Nine chord qualities — major (0-4-7), minor (0-3-7), diminished (0-3-6), augmented (0-4-8), dominant 7th (0-4-7-10), major 7th (0-4-7-11), minor 7th (0-3-7-10), sus2 (0-2-7) and sus4 (0-5-7) — plus the major scale (0-2-4-5-7-9-11), natural minor (0-2-3-5-7-8-10), harmonic minor (0-2-3-5-7-8-11), melodic minor ascending (0-2-3-5-7-9-11), and the seven diatonic modes, which are generated as rotations of the major scale rather than typed out as seven separate rows that could drift apart."}}, {"@type": "Question", "name": "Why does it write E# instead of F?", "acceptedAnswer": {"@type": "Answer", "text": "Because a seven-note scale uses each letter name exactly once, and a chord's third has to be spelled as a third of some kind. In F# major the seventh degree sits a semitone below the octave and has to be an E of some sort, so it is E#, not F — writing F would use the letter F twice and leave the scale with no E at all. The tool takes the letter from the degree and then works out the accidental, which is what you would do by hand."}}, {"@type": "Question", "name": "What is the fretboard diagram showing?", "acceptedAnswer": {"@type": "Answer", "text": "Every place those notes fall on a standard-tuned guitar (E A D G B E) between the open strings and the twelfth fret, with the root highlighted — a map of the available material, not one fingering. A real voicing picks a handful of those positions, and which handful depends on your hand, the register you want, and the chord you came from."}}, {"@type": "Question", "name": "What does the double-accidentals note mean?", "acceptedAnswer": {"@type": "Answer", "text": "Some roots spell out correctly but impractically. The D# major triad is D#–F##–A#, which is right and is almost never written; the same three pitches are notated Eb–G–Bb. When a selection needs double sharps or double flats, the tool still shows the strict spelling and then names the enharmonic key you would actually meet on paper."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

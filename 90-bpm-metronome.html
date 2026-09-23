@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"90 BPM Metronome \u2014 perfecttune.net","url":"https://perfecttune.net/90-bpm-metronome/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"A 90 BPM metronome, preset and ready. The middle of andante, the heart of boom-bap hip-hop, and the speed where a sixteenth-note run starts to expose uneven fingers.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Metronome","item":"https://perfecttune.net/metronome/"},{"@type":"ListItem","position":3,"name":"90 BPM Metronome","item":"https://perfecttune.net/90-bpm-metronome/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -298,10 +299,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/why-your-metronome-should-not-use-setinterval.html">Why Your Metronome Should Never Use setInterval (And How Ours Does)</a><span class="read-more-blurb">The Web Audio lookahead scheduler pattern that keeps a software metronome sample-accurate, and why naive setInterval-per-beat timers drift.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -310,6 +329,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Is 90 BPM fast or slow?", "acceptedAnswer": {"@type": "Answer", "text": "It is in the middle of andante, the band that covers 76 to 108, which puts it in the middle of the slow half of the marking system. In popular music terms it is mid-tempo: slower than almost anything you would dance to, faster than a ballad, and about the rate of a relaxed heartbeat under mild exertion."}}, {"@type": "Question", "name": "What time signature should I use at 90?", "acceptedAnswer": {"@type": "Answer", "text": "Whatever the music is in &mdash; but if it is in 6/8 or 12/8, set beats per bar to 2 or 4 and turn on triplets rather than setting beats per bar to 6 or 12. The metronome will happily click six times a bar, but that gives you six equal beats, and 6/8 is two beats of three, not six of one. The triplet subdivision under a two-beat bar is what that actually sounds like."}}, {"@type": "Question", "name": "Can I swing sixteenths?", "acceptedAnswer": {"@type": "Answer", "text": "Not on this metronome, and for a reason. Swing here means displacing the offbeat of a pair towards the triplet grid, and with sixteenths as the primary division there is no pair left inside the click to displace &mdash; the clicks already are the grid. If you want a swung sixteenth feel, set the subdivision to eighths and turn the swing up: the swung eighth offbeat is the reference the sixteenths are being pulled towards, and hearing it is more useful than hearing all four clicks smeared."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

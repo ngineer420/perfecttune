@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Banjo Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/banjo-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a 5 string banjo to open G. Tap a string for its reference tone, from the short fifth string at g4 392.00 Hz down to D3 146.83 Hz, or use the mic.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Banjo Tuner","item":"https://perfecttune.net/banjo-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -200,6 +201,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -304,10 +309,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -316,6 +339,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why is the fifth string the highest?", "acceptedAnswer": {"@type": "Answer", "text": "Because it is the shortest. It runs from a small nut at the fifth fret down to the bridge, so only about three quarters of the scale is vibrating, and it gets its own peg sticking out of the side of the neck at that point. It is a drone: in Scruggs style your thumb strikes it open, over and over, while the melody happens on the long strings. Position on the instrument tells you nothing about pitch here."}}, {"@type": "Question", "name": "The open strings already sound like a chord.", "acceptedAnswer": {"@type": "Answer", "text": "They do, and that is the whole point of open G. The five strings sound G, B and D with two of the Ds doubled, which is a G major triad and nothing else, so a bare strum is already a chord and a straight barre at any fret gives you another one. The fifth fret is C, the seventh is D. It is a large part of why so much bluegrass and clawhammer repertoire sits in G."}}, {"@type": "Question", "name": "How do I play in another key without retuning?", "acceptedAnswer": {"@type": "Answer", "text": "A capo handles the four long strings, but it cannot reach the fifth string, which starts past it. The usual answer is small spikes fitted under the fifth string at the seventh and ninth frets: hook the string under one and the drone jumps to a4 or b4, matching a capo at the second or fourth fret. Failing that, you retune that one string with its peg each time you move."}}, {"@type": "Question", "name": "My banjo drifts constantly. Is that normal?", "acceptedAnswer": {"@type": "Answer", "text": "More than a guitar does, yes. The head is a stretched membrane that reacts to humidity and temperature, and the bridge stands on it unglued, held down by string pressure alone, so anything that changes the head changes the pitch. Friction pegs, where fitted, add slipping on top of that. Tune, play for a minute, tune again &mdash; a banjo settles rather than staying put."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

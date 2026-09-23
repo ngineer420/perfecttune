@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Open G Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/open-g-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune to open G: D2 73.42, G2 98.00, D3 146.83, G3 196.00, B3 246.94 and D4 293.66 Hz. Reference tones for every string plus live mic pitch detection.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Open G Tuner","item":"https://perfecttune.net/open-g-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -206,6 +207,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -312,10 +317,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -324,6 +347,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Which strings actually change?", "acceptedAnswer": {"@type": "Answer", "text": "Three, all down a whole tone: the sixth from E2 82.41 Hz to D2 73.42 Hz, the fifth from A2 110.00 Hz to G2 98.00 Hz, and the first from E4 329.63 Hz to D4 293.66 Hz. The fourth, third and second stay exactly as they were, at D3 146.83 Hz, G3 196.00 Hz and B3 246.94 Hz. That half-unchanged set is why open G is quick to reach and quick to leave again."}}, {"@type": "Question", "name": "Why do some players take the sixth string off?", "acceptedAnswer": {"@type": "Answer", "text": "Because the sixth is a D, a fifth below the root, so a full strum puts the chord in second inversion with D2 73.42 Hz at the bottom instead of G. Remove it and G2 98.00 Hz becomes the lowest note, so every open strum is a root position G and the rhythm playing sits square underneath a band. Five string electrics set up this way are a long tradition in open G rhythm guitar."}}, {"@type": "Question", "name": "Is open G the same as Spanish tuning?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. Open G has been called Spanish tuning since the nineteenth century, after a piece written in it, in the same way that open D is called Vestapol. Both names survive mostly among slide and blues players. There is also a raised variant that puts the sixth string up at G rather than dropping it, but the standard modern set is the one on this page."}}, {"@type": "Question", "name": "Do I need a special setup for slide?", "acceptedAnswer": {"@type": "Answer", "text": "Higher action helps, because a slide rides on top of the strings and low action lets them rattle against the frets underneath it. Many players keep a second instrument with the action raised at nut and saddle and a heavier gauge fitted, which also stops the slackened sixth and fifth strings from buzzing. Slide on a normal setup is possible with a light touch, but you will be fighting the guitar."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

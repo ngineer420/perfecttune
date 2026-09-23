@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Guitar Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/guitar-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a guitar in your browser using reference tones for every string or live microphone pitch detection. Standard, drop D, DADGAD, open G and open D.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Guitar Tuner","item":"https://perfecttune.net/guitar-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -206,6 +207,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -314,10 +319,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -326,6 +349,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can I tune without a microphone?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, and nothing is missing if you do. Every string in the chart is a playable reference tone at its exact frequency, so with the mic denied or absent you still have all six pitches on tap. Play the tone, play your string, and listen for the beating between them to slow down and stop. The microphone only adds the second mode: live detection of the pitch you are actually producing, reported in cents."}}, {"@type": "Question", "name": "Is anything I play sent to a server?", "acceptedAnswer": {"@type": "Answer", "text": "No. The microphone stream is only ever connected to a local Web Audio AnalyserNode in your own browser tab, where it is analyzed for pitch and discarded frame by frame. The detection itself &mdash; a normalized square difference autocorrelation with McLeod peak picking &mdash; runs on your own device. Nothing is recorded, saved, or sent anywhere, and closing the tab ends the stream."}}, {"@type": "Question", "name": "Why is my guitar out of tune again a minute later?", "acceptedAnswer": {"@type": "Answer", "text": "Usually one of three things. New strings are still stretching and will keep dropping for their first few hours. Tuning down to a note leaves the winding slack at the post, so always arrive from below &mdash; if you overshoot, go flat and come back up. And the neck behaves like a spring, so tightening one string releases a little tension on the other five. A second pass answers all three."}}, {"@type": "Question", "name": "What does the A4 setting do?", "acceptedAnswer": {"@type": "Answer", "text": "It sets the reference the entire chart is derived from. Every frequency above follows from A4 by equal temperament, so moving A4 moves all six targets together. The default is 440 Hz and the range is 415 to 466 Hz. Use 415 Hz for baroque pitch, or match a piano that has settled a few Hz off standard rather than tuning the guitar into a fight with it."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>

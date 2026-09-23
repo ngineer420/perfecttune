@@ -17,12 +17,16 @@ and serves that directory's index.html with the correct text/html type
 a download). So every tool/legal page ships as BOTH "<slug>/index.html"
 (the true clean path) and "<slug>.html" (a flat alias, also text/html).
 """
+import datetime
+import json
 import os
+import re
+import subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SITE = "https://perfecttune.net"
-TODAY = "2026-07-18"      # first publication date — articles keep it
-UPDATED = "2026-08-19"    # last build: sitemap lastmod and the legal pages
+PUBLISHED = "2026-07-18"  # first publication date — articles keep it
+TODAY = datetime.date.today().isoformat()
 PUB_ID = "ca-pub-7560786263587509"
 
 THEME_SCRIPT = (
@@ -449,6 +453,10 @@ def tuner_workspace(t, nameplate):
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -676,7 +684,7 @@ TOOLS = [
     <div class="instrument">
       <div class="nameplate">
         <span class="nameplate-label">Tone Generator</span>
-        <span class="status-led" id="tg-status" data-state="idle">Idle</span>
+        <span class="status-led" id="tg-status" data-state="idle" role="status">Idle</span>
       </div>
       <div class="waveform-select">
         <button type="button" class="wave-btn" data-wave="sine" aria-pressed="true"><svg viewBox="0 0 34 20" fill="none" stroke-width="2"><path d="M1 10c3-9 5-9 8 0s5 9 8 0 5-9 8 0 5 9 8 0"/></svg><span>Sine</span></button>
@@ -801,7 +809,7 @@ TOOLS = [
         <div class="field wide"><label for="cs-type">Chord, scale or mode</label><select id="cs-type"></select></div>
       </div>
       <div class="screen">
-        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25">&mdash;</div>
+        <div class="note-name" id="cs-title" style="font-size:34px;line-height:1.25" role="status">&mdash;</div>
         <div class="cents-readout" id="cs-formula">&mdash;</div>
       </div>
       <div class="note-chips" id="cs-notes"></div>
@@ -1050,10 +1058,68 @@ ARTICLES = [
     ),
 ]
 
+ARTICLE_BY_SLUG = {a["slug"]: a for a in ARTICLES}
+
+# Which article belongs on which tool page. No tool page linked to an article
+# at all, so every article was three clicks from the traffic. The match is by
+# subject: a page gets an article only when that article explains that page,
+# which is why nothing here carries all three.
+ARTICLES_FOR = {
+    "tuner": ["how-instrument-tuners-actually-work"],
+    "metronome": ["why-your-metronome-should-not-use-setinterval"],
+    "bpm-tapper": ["why-your-metronome-should-not-use-setinterval"],
+    "tone-generator": ["practicing-with-a-drone-tone"],
+    "ear-trainer": ["practicing-with-a-drone-tone"],
+}
+
+
+def article_links_html(slugs):
+    """A "Read more" section for the articles that explain this page."""
+    if not slugs:
+        return ""
+    rows = ""
+    for slug in slugs:
+        a = ARTICLE_BY_SLUG[slug]
+        rows += (
+            f'          <li><a href="/articles/{slug}.html">{a["title"]}</a>'
+            f'<span class="read-more-blurb">{a["description"]}</span></li>\n'
+        )
+    return f"""
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+{rows}        </ul>
+      </div>
+    </section>
+"""
+
+
 # ---------------------------------------------------------------- helpers --
 
-def head(title, description, canonical_path, json_ld, extra_style=""):
+def breadcrumb_jsonld(crumbs):
+    """BreadcrumbList for one page below the root.
+
+    `crumbs` is the trail under Home, in order, as (name, path) pairs. The
+    last pair is the page itself. The homepage passes nothing and gets no
+    BreadcrumbList, because a one-item trail to itself says nothing.
+    """
+    if not crumbs:
+        return ""
+    items = [{"@type": "ListItem", "position": 1, "name": "Home", "item": SITE + "/"}]
+    for i, (name, path) in enumerate(crumbs, start=2):
+        items.append({"@type": "ListItem", "position": i, "name": name, "item": SITE + path})
+    data = {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": items}
+    return json.dumps(data, ensure_ascii=False, separators=(",", ":"))
+
+
+def head(title, description, canonical_path, json_ld, extra_style="",
+         crumbs=(), og_type="website"):
     url = SITE + canonical_path
+    crumb_json = breadcrumb_jsonld(crumbs)
+    crumb_script = (
+        f'\n  <script type="application/ld+json">{crumb_json}</script>' if crumb_json else ""
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1065,7 +1131,7 @@ def head(title, description, canonical_path, json_ld, extra_style=""):
   <link rel="canonical" href="{url}">
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
   <meta name="theme-color" content="#241a14">
-  <meta property="og:type" content="website">
+  <meta property="og:type" content="{og_type}">
   <meta property="og:site_name" content="perfecttune.net">
   <meta property="og:title" content="{title}">
   <meta property="og:description" content="{description}">
@@ -1078,7 +1144,7 @@ def head(title, description, canonical_path, json_ld, extra_style=""):
   <meta name="twitter:description" content="{description}">
   <link rel="stylesheet" href="/assets/style.css">
   {extra_style}
-  <script type="application/ld+json">{json_ld}</script>
+  <script type="application/ld+json">{json_ld}</script>{crumb_script}
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={PUB_ID}" crossorigin="anonymous"></script>
 </head>
 """
@@ -1184,12 +1250,38 @@ def header(current_slug, section=None):
 {toolbar(current_slug, section)}"""
 
 
+# Sibling sites in the same portfolio, and why each one belongs here. Four,
+# not nineteen: a visitor who came to tune a guitar is plausibly also timing a
+# practice session or working out a rhythm, and a list of every domain we own
+# would read as a link farm rather than as a recommendation.
+PEERS = [
+    ("https://clocklab.net", "ClockLab", "Timers, stopwatch and alarm clock"),
+    ("https://calculatoreuphoria.com", "Calculator Euphoria", "Everyday calculators"),
+    ("https://drawlots.net", "Draw Lots", "Random picker and dice"),
+    ("https://paperprintouts.com", "Paper Printouts", "Printable paper and grids"),
+]
+
+
+def peers_html():
+    items = "\n".join(
+        f'        <li><a href="{url}" rel="noopener">{name}</a> <span>{blurb}</span></li>'
+        for url, name, blurb in PEERS
+    )
+    return f"""      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+{items}
+        </ul>
+      </nav>"""
+
+
 def footer_and_close(scripts, faq_json_ld=None):
     faq_script = f'<script type="application/ld+json">{faq_json_ld}</script>\n  ' if faq_json_ld else ""
     script_tags = "\n  ".join(f'<script src="/assets/{s}"></script>' for s in scripts)
     return f"""  <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+{peers_html()}
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -1197,7 +1289,8 @@ def footer_and_close(scripts, faq_json_ld=None):
     </div>
   </footer>
   {ERABBIT}
-  {faq_script}<script src="/assets/notes.js"></script>
+  {faq_script}<script src="/assets/live-region.js"></script>
+  <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>
   <script src="/assets/gauge.js"></script>
@@ -1251,11 +1344,132 @@ def scripts_for(tools):
     return out
 
 
+# Every page this run actually rewrote. `page_date()` reads it, so a page the
+# build changed carries today and a page it left alone keeps its real age.
+CHANGED = set()
+
+# --check: compare only, write nothing, exit 1 if any page is stale. A second
+# agent hand-editing one generated page between builds is how these repos drift.
+CHECK = False
+
+
 def write(path, content):
+    """Write a page, but leave an identical file untouched.
+
+    The skip is what makes the dates below honest. A rebuild that changes
+    nothing must not move every <lastmod> in the sitemap to today, so the
+    generator compares first and only writes a file whose bytes differ.
+    """
     full = os.path.join(ROOT, path)
-    os.makedirs(os.path.dirname(full), exist_ok=True)
+    try:
+        with open(full, encoding="utf-8") as f:
+            if f.read() == content:
+                return False
+    except OSError:
+        pass
+    CHANGED.add(path)
+    if CHECK:
+        return True
+    os.makedirs(os.path.dirname(full) or ROOT, exist_ok=True)
     with open(full, "w", encoding="utf-8") as f:
         f.write(content)
+    return True
+
+
+def _git_date(path):
+    """The date of the last commit that touched this file, or None.
+
+    Git is the first source because a fresh clone gives every file the same
+    mtime, which would date the whole sitemap to the day somebody cloned it.
+    """
+    try:
+        out = subprocess.run(
+            ["git", "-C", ROOT, "log", "-1", "--format=%cs", "--", path],
+            capture_output=True, text=True, timeout=10,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return None
+    date = out.stdout.strip()
+    return date or None
+
+
+_DIRTY = None
+
+
+def _dirty_paths():
+    """Files that differ from the last commit, as repo-relative paths.
+
+    A page this build rewrote is not the only page that is newer than its
+    last commit: an earlier build in the same branch left files changed too.
+    Both must date to today, or the sitemap would report a page as older than
+    the content it serves.
+    """
+    global _DIRTY
+    if _DIRTY is not None:
+        return _DIRTY
+    _DIRTY = set()
+    try:
+        out = subprocess.run(
+            ["git", "-C", ROOT, "status", "--porcelain", "--untracked-files=all"],
+            capture_output=True, text=True, timeout=20,
+        )
+    except (OSError, subprocess.SubprocessError):
+        return _DIRTY
+    for line in out.stdout.splitlines():
+        name = line[3:].strip()
+        if " -> " in name:              # a rename reports both sides
+            name = name.split(" -> ", 1)[1]
+        _DIRTY.add(name.strip('"'))
+    return _DIRTY
+
+
+def page_date(path):
+    """The date a page last changed, for <lastmod> and dateModified.
+
+    Newer than its last commit -> today. Otherwise the date of the last
+    commit that touched it. Outside a git checkout, the file's own mtime.
+    Git comes before mtime because a fresh clone gives every file the same
+    mtime, which would date the whole sitemap to the day somebody cloned it.
+    """
+    if path in CHANGED or path in _dirty_paths():
+        return TODAY
+    date = _git_date(path)
+    if date:
+        return date
+    full = os.path.join(ROOT, path)
+    try:
+        return datetime.date.fromtimestamp(os.path.getmtime(full)).isoformat()
+    except OSError:
+        return TODAY
+
+
+def write_dated(path, render, pattern):
+    """Write a page that prints its own last-changed date.
+
+    A page carrying its date cannot be compared against its own output
+    directly: the date is part of the bytes, so a plain comparison would
+    rewrite the page every day and the date would then be true only because
+    it made itself true. So this reads the date already on disk, rebuilds the
+    page with that date, and keeps it when nothing else moved.
+
+    `render(date)` returns the finished HTML. `pattern` is a regex with one
+    group that finds the date inside it.
+    """
+    full = os.path.join(ROOT, path)
+    try:
+        with open(full, encoding="utf-8") as f:
+            prev = f.read()
+    except OSError:
+        prev = None
+    if prev is not None:
+        m = re.search(pattern, prev)
+        if m:
+            kept = render(m.group(1))
+            if kept == prev:
+                return prev
+    content = render(TODAY)
+    write(path, content)
+    return content
 
 
 # ---------------------------------------------------------------- homepage --
@@ -1386,7 +1600,8 @@ def build_tool_page(t):
         '"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},'
         '"publisher":{"@type":"Organization","name":"perfecttune.net"}}'
     )
-    h = head(title, description, f"/{t['slug']}/", json_ld)
+    h = head(title, description, f"/{t['slug']}/", json_ld,
+             crumbs=((t["name"], f"/{t['slug']}/"),))
     b = header(t["slug"])
 
     priv = privacy_note_html() + "\n" if t["slug"] == "tuner" else ""
@@ -1450,8 +1665,9 @@ def build_tool_page(t):
     body += """        </div>
       </div>
     </section>
-  </main>
 """
+    body += article_links_html(ARTICLES_FOR.get(t["slug"], []))
+    body += "  </main>\n"
 
     full = h + b + body + footer_and_close(scripts_for([t]), faq_jsonld(t["faq"]))
     write(f"{t['slug']}/index.html", full)
@@ -1763,7 +1979,8 @@ def build_preset_page(p):
         '"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch",'
         '"publisher":{"@type":"Organization","name":"perfecttune.net"}}'
     )
-    h = head(title, description, f"/{p['slug']}/", json_ld)
+    h = head(title, description, f"/{p['slug']}/", json_ld,
+             crumbs=(("Tuner", "/tuner/"), (p["h1"], f"/{p['slug']}/")))
     b = header(p["slug"], section="tuner")
 
     body = f"""  <main id="main">
@@ -1837,8 +2054,9 @@ def build_preset_page(p):
     body += """        </div>
       </div>
     </section>
-  </main>
 """
+    body += article_links_html(ARTICLES_FOR["tuner"])
+    body += "  </main>\n"
 
     full = h + b + body + footer_and_close(scripts_for([TOOL_BY_SLUG["tuner"]]), faq_jsonld(copy["faq"]))
     write(f"{p['slug']}/index.html", full)
@@ -2480,7 +2698,8 @@ def build_bpm_page(p):
         '"featureList":"Preset tempo, eighth triplet and sixteenth subdivisions, adjustable swing, tempo-ramp trainer, tap tempo",'
         '"publisher":{"@type":"Organization","name":"perfecttune.net"}}'
     )
-    h = head(title, description, f"/{p['slug']}/", json_ld)
+    h = head(title, description, f"/{p['slug']}/", json_ld,
+             crumbs=(("Metronome", "/metronome/"), (p["h1"], f"/{p['slug']}/")))
     b = header(p["slug"], section="metronome")
 
     body = f"""  <main id="main">
@@ -2554,8 +2773,9 @@ def build_bpm_page(p):
     body += """        </div>
       </div>
     </section>
-  </main>
 """
+    body += article_links_html(ARTICLES_FOR["metronome"])
+    body += "  </main>\n"
 
     full = h + b + body + footer_and_close(
         scripts_for([TOOL_BY_SLUG["metronome"]]), faq_jsonld(copy["faq"])
@@ -2567,29 +2787,44 @@ def build_bpm_page(p):
 
 # ---------------------------------------------------------------- legal pages --
 
-def build_legal(slug, title_text, body_html):
+LEGAL_DATE_RE = r"<em>Last updated (\d{4}-\d{2}-\d{2})\.</em>"
+
+
+def build_legal(slug, title_text, body_fn):
+    """A legal page. `body_fn(date)` returns the body for a given date.
+
+    The "Last updated" line used to be a hand-edited constant. It is now the
+    date the page last really changed, which write_dated works out.
+    """
     title = f"{title_text} | perfecttune.net"
     description = f"{title_text} for perfecttune.net."
     json_ld = (
         '{"@context":"https://schema.org","@type":"WebPage","name":"'
         + title + '","url":"' + SITE + "/" + slug + '/"}'
     )
-    h = head(title, description, f"/{slug}/", json_ld)
-    b = header("")
-    body = f"""  <main id="main" class="legal">
+
+    def render(date):
+        h = head(title, description, f"/{slug}/", json_ld,
+                 crumbs=((title_text, f"/{slug}/"),))
+        b = header("")
+        body = f"""  <main id="main" class="legal">
     <div class="wrap">
       <h1>{title_text}</h1>
-{body_html}
+{body_fn(date)}
     </div>
   </main>
 """
-    full = h + b + body + footer_and_close([])
-    write(f"{slug}/index.html", full)
-    write(f"{slug}.html", full)
+        return h + b + body + footer_and_close([])
+
+    # The flat alias must carry the same date as the clean path, so the dated
+    # page is rendered once and both paths get those exact bytes.
+    content = write_dated(f"{slug}/index.html", render, LEGAL_DATE_RE)
+    write(f"{slug}.html", content)
 
 
 def build_privacy():
-    body = f"""      <p><em>Last updated {UPDATED}.</em></p>
+    def body(date):
+        return f"""      <p><em>Last updated {date}.</em></p>
       <h2>What perfecttune.net does not collect</h2>
       <p>perfecttune.net has no accounts, no server-side database, and no analytics beacons. There is nothing to sign up for and nothing about your usage is logged anywhere we control.</p>
       <h2>Microphone audio (Tuner)</h2>
@@ -2607,7 +2842,8 @@ def build_privacy():
 
 
 def build_terms():
-    body = f"""      <p><em>Last updated {UPDATED}.</em></p>
+    def body(date):
+        return f"""      <p><em>Last updated {date}.</em></p>
       <h2>Using the site</h2>
       <p>perfecttune.net's Tuner, Metronome, Tone Generator, Interval Ear Trainer, Chord and Scale Dictionary, BPM Tapper and Chord Transposer are provided free of charge, as-is, for anyone to use. There is no account to create and no fee to pay.</p>
       <h2>No warranty</h2>
@@ -2722,26 +2958,40 @@ ARTICLE_BODIES = {
 def build_articles():
     for a in ARTICLES:
         title = f"{a['title']} | perfecttune.net"
-        json_ld = (
-            '{"@context":"https://schema.org","@type":"Article","headline":"'
-            + a["title"] + '","description":"' + a["description"] + '",'
-            f'"url":"{SITE}/articles/{a["slug"]}.html","datePublished":"{TODAY}",'
-            '"author":{"@type":"Organization","name":"perfecttune.net"},'
-            '"publisher":{"@type":"Organization","name":"perfecttune.net"}}'
-        )
-        h = head(title, a["description"], f"/articles/{a['slug']}.html", json_ld)
-        b = header("")
-        body = f"""  <main id="main" class="article">
+        path = f"articles/{a['slug']}.html"
+
+        def render(modified, a=a, title=title):
+            json_ld = json.dumps({
+                "@context": "https://schema.org",
+                "@type": "Article",
+                "headline": a["title"],
+                "description": a["description"],
+                "url": f"{SITE}/articles/{a['slug']}.html",
+                "image": f"{SITE}/assets/og-image.png",
+                "datePublished": PUBLISHED,
+                "dateModified": modified,
+                "author": {"@type": "Organization", "name": "perfecttune.net"},
+                "publisher": {"@type": "Organization", "name": "perfecttune.net"},
+            }, ensure_ascii=False, separators=(",", ":"))
+            h = head(title, a["description"], f"/articles/{a['slug']}.html", json_ld,
+                     crumbs=((a["title"], f"/articles/{a['slug']}.html"),),
+                     og_type="article")
+            b = header("")
+            body = f"""  <main id="main" class="article">
     <div class="wrap">
       <h1>{a['title']}</h1>
-      <p class="article-meta">perfecttune.net &middot; {TODAY}</p>
+      <p class="article-meta">perfecttune.net &middot; published {PUBLISHED} &middot; updated {modified}</p>
 {ARTICLE_BODIES[a['slug']]}
       <p><a href="/">&larr; Back to perfecttune.net</a></p>
     </div>
   </main>
 """
-        full = h + b + body + footer_and_close([])
-        write(f"articles/{a['slug']}.html", full)
+            return h + b + body + footer_and_close([])
+
+        # The page prints its own dateModified, so it cannot be compared with
+        # its own output directly. write_dated rebuilds it with the date
+        # already on disk and keeps that date when nothing else moved.
+        write_dated(path, render, r'"dateModified":"(\d{4}-\d{2}-\d{2})"')
 
 
 # ---------------------------------------------------------------- misc --
@@ -2760,12 +3010,26 @@ def build_misc():
         + ["/privacy/", "/terms/"]
         + [f"/articles/{a['slug']}.html" for a in ARTICLES]
     )
-    entries = "\n".join(f"  <url><loc>{SITE}{u}</loc><lastmod>{UPDATED}</lastmod></url>" for u in urls)
+    def source_of(u):
+        """The file a sitemap URL is served from."""
+        if u == "/":
+            return "index.html"
+        if u.endswith("/"):
+            return u.strip("/") + "/index.html"
+        return u.lstrip("/")
+
+    entries = "\n".join(
+        f"  <url><loc>{SITE}{u}</loc><lastmod>{page_date(source_of(u))}</lastmod></url>"
+        for u in urls
+    )
     sitemap = f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>\n'
     write("sitemap.xml", sitemap)
 
 
 if __name__ == "__main__":
+    import sys
+
+    CHECK = "--check" in sys.argv
     write("assets/tunings.js", build_tunings_js())
     build_homepage()
     for t in TOOLS:
@@ -2779,6 +3043,14 @@ if __name__ == "__main__":
     build_404()
     build_articles()
     build_misc()
+    if CHECK:
+        if CHANGED:
+            print("stale in %d file(s):" % len(CHANGED))
+            for name in sorted(CHANGED):
+                print("  " + name)
+            sys.exit(1)
+        print("every generated file is current")
+        sys.exit(0)
     print(
         f"Built perfecttune.net — {len(TOOLS)} tools, {len(PRESET_PAGES)} tuner pages, "
         f"{len(BPM_PAGES)} tempo pages, {len(TUNINGS)} tunings"

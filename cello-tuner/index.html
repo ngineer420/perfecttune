@@ -23,6 +23,7 @@
   <link rel="stylesheet" href="/assets/style.css">
   
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Cello Tuner \u2014 perfecttune.net","url":"https://perfecttune.net/cello-tuner/","applicationCategory":"MusicApplication","operatingSystem":"Any (runs in browser)","description":"Tune a cello to C2 65.41, G2 98.00, D3 146.83 and A3 220.00 Hz. Tap any string for a reference tone, or allow the microphone for live pitch detection.","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":"Reference tone per string, microphone pitch detection, adjustable concert pitch","publisher":{"@type":"Organization","name":"perfecttune.net"}}</script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://perfecttune.net/"},{"@type":"ListItem","position":2,"name":"Tuner","item":"https://perfecttune.net/tuner/"},{"@type":"ListItem","position":3,"name":"Cello Tuner","item":"https://perfecttune.net/cello-tuner/"}]}</script>
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7560786263587509" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -194,6 +195,10 @@
           <div class="note-name" id="tn-note"><span class="octave">&mdash;</span></div>
           <div class="cents-readout" id="tn-cents">Optional. Tap Start listening for a live needle, or tune by ear with the tones above.</div>
         </div>
+        <!-- The note and the cents figure redraw many times a second, so the
+             announcement is a separate node. assets/live-region.js writes it
+             at most twice a second, and never twice with the same words. -->
+        <p class="visually-hidden" id="tn-live" role="status"></p>
         <div class="field-row" style="margin-top:14px">
           <div class="field"><label>Detected</label><div class="readout-sub" id="tn-freq" style="font-size:15px">&mdash;</div></div>
           <div class="field"><label>Target</label><div class="readout-sub" id="tn-target" style="font-size:15px">&mdash;</div></div>
@@ -298,10 +303,28 @@
         </div>
       </div>
     </section>
+
+    <section class="content-section">
+      <div class="wrap">
+        <h2>Read more</h2>
+        <ul class="read-more">
+          <li><a href="/articles/how-instrument-tuners-actually-work.html">How Instrument Tuners Actually Work: Pitch Detection Explained</a><span class="read-more-blurb">A plain-language look at autocorrelation pitch detection — how a browser tuner turns raw microphone audio into a note name and a cents-off reading, entirely on your device.</span></li>
+        </ul>
+      </div>
+    </section>
   </main>
   <footer class="site-footer">
     <div class="wrap">
       <p class="footer-tag">perfecttune.net &mdash; a musician's toolkit. Audio is processed on-device and never leaves your browser.</p>
+      <nav class="footer-peers" aria-label="Related sites">
+        <p class="footer-peers-label" id="footer-peers-label">More tools from the same workshop</p>
+        <ul aria-labelledby="footer-peers-label">
+        <li><a href="https://clocklab.net" rel="noopener">ClockLab</a> <span>Timers, stopwatch and alarm clock</span></li>
+        <li><a href="https://calculatoreuphoria.com" rel="noopener">Calculator Euphoria</a> <span>Everyday calculators</span></li>
+        <li><a href="https://drawlots.net" rel="noopener">Draw Lots</a> <span>Random picker and dice</span></li>
+        <li><a href="https://paperprintouts.com" rel="noopener">Paper Printouts</a> <span>Printable paper and grids</span></li>
+        </ul>
+      </nav>
       <ul class="footer-links">
         <li><a href="/privacy/">Privacy</a></li>
         <li><a href="/terms/">Terms</a></li>
@@ -310,6 +333,7 @@
   </footer>
   <a href="https://erabb.it" class="erabbit-mark" aria-label="erabb.it"><img src="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐇</text></svg>" width="10" height="10" alt=""></a>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Why does the C reference tone sound thin on my laptop?", "acceptedAnswer": {"@type": "Answer", "text": "Because C2 is 65.41 Hz and a laptop speaker cannot move enough air that low. What reaches you is mostly the harmonics above the fundamental, and your ear reconstructs the missing pitch from their spacing &mdash; convincing enough to tune to, but weak and easy to mishear by an octave. Headphones or any speaker with a real driver will play the actual fundamental, and the difference is obvious the moment you switch."}}, {"@type": "Question", "name": "Pegs or fine tuners?", "acceptedAnswer": {"@type": "Answer", "text": "Fine tuners for everyday work. Most cellos carry four of them, one per string, because the tension involved makes peg work coarse: a few degrees of rotation can move a string most of a semitone. Keep the pegs for restringing or for a string that has dropped badly, and push the peg inward as you turn so it grips. Geared pegs, if your instrument has them, turn like machine heads and hold without pressure."}}, {"@type": "Question", "name": "How do I check a fifth by ear?", "acceptedAnswer": {"@type": "Answer", "text": "Bow two adjacent strings together and listen for beating inside the sound. A fifth that is nearly right pulses slowly; as you close in the pulse slows further and stops, and the two notes lock into one steady sound. Bow lightly so both strings speak evenly, adjust only the string you are currently tuning, and work downward from A3 220.00 Hz so your reference is always the string above."}}, {"@type": "Question", "name": "One note on my cello howls and the tuner cannot read it.", "acceptedAnswer": {"@type": "Answer", "text": "That is a wolf tone: a note whose frequency coincides with a strong resonance in the body, so the top and the string compete for the same energy and the sound stutters instead of sustaining. It usually lands around E, F or F&#9839; on the G or C string, and it is a property of the instrument rather than of your tuning. Tune on open strings and other notes, and fit a suppressor to the affected string if it is severe."}}]}</script>
+  <script src="/assets/live-region.js"></script>
   <script src="/assets/notes.js"></script>
   <script src="/assets/theory.js"></script>
   <script src="/assets/audio.js"></script>
