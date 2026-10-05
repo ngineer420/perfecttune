@@ -1273,14 +1273,11 @@ def header(current_slug, section=None):
 {toolbar(current_slug, section)}"""
 
 
-# Sibling sites in the same portfolio, and why each one belongs here. Four,
-# not nineteen: a visitor who came to tune a guitar is plausibly also timing a
-# practice session or working out a rhythm, and a list of every domain we own
-# would read as a link farm rather than as a recommendation.
+# Sibling sites in the same portfolio, and why each one belongs here. One,
+# not nineteen: a visitor who came to tune a guitar plausibly also wants staff
+# or tab paper to write on, and a list of every domain we own would read as a
+# link farm rather than as a recommendation.
 PEERS = [
-    ("https://clocklab.net", "ClockLab", "Timers, stopwatch and alarm clock"),
-    ("https://calculatoreuphoria.com", "Calculator Euphoria", "Everyday calculators"),
-    ("https://drawlots.net", "Draw Lots", "Random picker and dice"),
     ("https://paperprintouts.com", "Paper Printouts", "Printable paper and grids"),
 ]
 
